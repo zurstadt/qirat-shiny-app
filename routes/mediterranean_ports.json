@@ -1,0 +1,280 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "almeria",
+        "thurayya_code": "MARIYYA_025W368N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-2.5, 36.8]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "bajaya",
+        "thurayya_code": "BAJAYA_050E367N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [5, 36.7]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "tunis",
+        "thurayya_code": "TUNIS_101E367N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1, 36.7]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "tripoli",
+        "thurayya_code": "ATRABULUS_131E328N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.1, 32.8]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "barqa",
+        "thurayya_code": "BARQA_208E323N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [20.8, 32.3]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "alexandria",
+        "thurayya_code": "ISKANDARIYYA_299E311N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [29.9, 31.1]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "granada",
+        "thurayya_code": "GHARNATA_035W372N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.5, 37.2]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "valencia",
+        "thurayya_code": "BALANSIYYA_004W394N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.4, 39.4]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "ceuta",
+        "thurayya_code": "SABTA_053W358N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.3, 35.8]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "tangier",
+        "thurayya_code": "TANJA_058W357N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.8, 35.7]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "mahdia",
+        "thurayya_code": "MAHDIYYA_110E354N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [11, 35.4]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "fustat",
+        "thurayya_code": "FUSTAT_313E300N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [31.3, 30]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "sicily",
+        "thurayya_code": "SIQILLIYA_130E380N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.3, 38.1]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "ibiza",
+        "thurayya_code": "YABISA_014E390N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [1.43, 38.91]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "djerba",
+        "thurayya_code": "JARBA_109E338N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.9, 33.8]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "malta",
+        "thurayya_code": "MALITA_145E359N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [14.5, 35.9]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "qulzum",
+        "thurayya_code": "QULZUM_325E300N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [32.5, 30]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "ayla",
+        "thurayya_code": "AYLA_349E295N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [34.9, 29.5]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "aydhab",
+        "thurayya_code": "AYDHAB_352E222N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [35.2, 22.3]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "jeddah",
+        "thurayya_code": "JUDDA_394E215N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [39.2, 21.5]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "aden",
+        "thurayya_code": "ADAN_450E128N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [45, 12.8]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "basra",
+        "thurayya_code": "BASRA_477E305N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [47.8, 30.5]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "siraf",
+        "thurayya_code": "SIRAF_525E276N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [52.3, 27.7]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "hormuz",
+        "thurayya_code": "HURMUZ_562E272N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [56.3, 27.1]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "sohar",
+        "thurayya_code": "SUHAR_567E245N_S"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [56.7, 24.5]
+      }
+    }
+  ]
+}

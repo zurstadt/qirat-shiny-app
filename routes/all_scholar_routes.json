@@ -1,0 +1,2180 @@
+{
+  "al-falanqī muḥammad b. muḥammad b. ʿabd allāh b. muʿāḏ al-laḫmī al-ʾišbīlī ʾabū bakr": {
+    "author": "al-falanqī muḥammad b. muḥammad b. ʿabd allāh b. muʿāḏ al-laḫmī al-ʾišbīlī ʾabū bakr",
+    "regionality": "maġrib",
+    "death_century": "6.0",
+    "places_original": "ʾišbīliyyah;qalʿat banī ḥammād;fās",
+    "places_sequence": ["ʾišbīliyyah", "fās"],
+    "routes": [
+      {
+        "from": "ʾišbīliyyah",
+        "from_code": "ISHBILIYYA_059W374N_R",
+        "to": "fās",
+        "to_code": "FAS_050W340N_S",
+        "path": ["ISHBILIYYA_059W374N_S", "SABTA_053W358N_S", "FAS_050W340N_S"],
+        "distance_km": 450,
+        "segments": 2,
+        "sea_crossings": true,
+        "sea_crossing_count": 1
+      }
+    ],
+    "total_distance_km": 450,
+    "uses_sea_routes": true
+  },
+  "al-ḥasan b. ʾaḥmad b. al-ḥasan b. sahl al-ʿaṭṭār al-hamaḏānī ʾabū al-ʿalāʾ": {
+    "author": "al-ḥasan b. ʾaḥmad b. al-ḥasan b. sahl al-ʿaṭṭār al-hamaḏānī ʾabū al-ʿalāʾ",
+    "regionality": "mašriq",
+    "death_century": "6.0",
+    "places_original": "hamaḏān;ʾiṣbahān;baġdād;wāsiṭ",
+    "places_sequence": ["hamaḏān", "ʾiṣbahān", "baġdād", "wāsiṭ"],
+    "routes": [
+      {
+        "from": "hamaḏān",
+        "from_code": "HAMADHAN_485E347N_R",
+        "to": "ʾiṣbahān",
+        "to_code": "ISBAHAN_516E326N_R",
+        "path": ["HAMADHAN_485E347N_S", "JURAB_489E342N_S", "ROUTPOINT0510_491E340N_O", "KARAJ_495E338N_S", "ABTIA_500E336N_S", "JARBADHAQAN_502E333N_S", "QANUWAN_506E332N_S", "MARJWA-ZAHR_509E330N_S", "ISBAHAN_516E326N_S"],
+        "distance_km": 393.7,
+        "segments": 8,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ʾiṣbahān",
+        "from_code": "ISBAHAN_516E326N_R",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["ISBAHAN_516E326N_S", "MARJWA-ZAHR_509E330N_S", "QANUWAN_506E332N_S", "JARBADHAQAN_502E333N_S", "ABTIA_500E336N_S", "KARAJ_495E338N_S", "ROUTPOINT0510_491E340N_O", "JURAB_489E342N_S", "RAMAN_486E342N_S", "NIHAWAND_483E342N_S", "QASRLUSUS_479E344N_S", "QANTARANUMAN_476E344N_S", "BISUTUN_474E343N_S", "QARMASIN_470E343N_S", "ZUBAYDIYYA_468E342N_S", "TAZAR_464E341N_S", "MARJ_462E343N_S", "MADHARWISTAN_460E344N_S", "HULWAN_459E344N_S", "QASRSHIRIN_456E344N_S", "KHANIQIN_454E343N_S", "JALULA_451E341N_S", "HARUNIYYA_450E339N_S", "DASKARA_449E339N_S", "DAYRBAZAMA_447E336N_S", "NAHRAWAN_445E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 849.6,
+        "segments": 26,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "wāsiṭ",
+        "to_code": "WASIT_463E321N_S",
+        "path": ["BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S"],
+        "distance_km": 252.2,
+        "segments": 10,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1495.5,
+    "uses_sea_routes": false
+  },
+  "al-ḥasan b. ʾaḥmad b. ʿabd al-ġaffār ʾabū ʿalī al-fārsī": {
+    "author": "al-ḥasan b. ʾaḥmad b. ʿabd al-ġaffār ʾabū ʿalī al-fārsī",
+    "regionality": "mašriq",
+    "death_century": "4.0",
+    "places_original": "fasā;baġdād;ḥalab;dimašq;šīrāz",
+    "places_sequence": ["fasā", "baġdād", "ḥalab", "dimašq", "šīrāz"],
+    "routes": [
+      {
+        "from": "fasā",
+        "from_code": "FASA_536E289N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["FASA_536E289N_S", "KURM_536E290N_S", "RIBAT_534E291N_S", "KHAWARISTAN_532E292N_S", "KHANMIM_528E293N_S", "QARYARUMMAN_528E293N_S", "SHIRAZ_525E296N_S", "JUWAYM_522E298N_S", "KHULLAR_521E299N_S", "KHARRARA_519E300N_S", "JARKAN_517E300N_S", "QALAJISS_516E301N_S", "NUBANDAJAN_515E301N_S", "KHAWADHAN_515E302N_S", "DAKHWID_512E303N_S", "JUNBADHMALLAGHAN_508E302N_S", "ROUTEPOINTS0699_505E304N_O", "ZAYTUN_503E305N_S", "ARRAJAN_502E306N_S", "SANBIL_501E307N_S", "DAHLIZAN_499E307N_S", "KHABARAN_498E309N_S", "HAWMAZUTT_497E310N_S", "RAMHURMUZ_496E312N_S", "ABDIN_493E312N_S", "AZAM_490E312N_S", "AHWAZ_486E313N_S", "NAHRTIRA_483E314N_S", "BASINNA_483E319N_S", "BAYRUT_479E320N_S", "QURQUB_477E321N_S", "TIB_473E322N_S", "SIKR_467E321N_S", "BADHIBIN_465E321N_S", "WASIT_463E321N_S", "FAMSILH_461E324N_S", "NAHRSABUS_459E324N_S", "ROUTPOINT0301_457E325N_O", "JABBUL_457E325N_S", "NUMANIYYA_454E325N_S", "JARJARAYA_453E327N_S", "DAYRAQUL_449E329N_S", "SIB_448E329N_S", "MADAIN_445E330N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 1158.5,
+        "segments": 44,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "ḥalab",
+        "to_code": "HALAB_371E361N_S",
+        "path": ["BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "NAWUSA_426E338N_S", "ALUS_424E339N_S", "HADITHA_423E341N_S", "FUHAYMA_421E342N_S", "ROUTPOINT0201_421E342N_O", "ROUTPOINT0202_416E343N_O", "NIHIYYA_415E343N_S", "DAZIQI_411E343N_S", "WADISIBA_409E344N_S", "KHALIJBANUJUMAY_408E345N_S", "DALIYA_407E347N_S", "FASH_405E349N_S", "RAHBAMALIKIBNTAWQ_404E349N_S", "QARQISIYYA_404E351N_S", "FAMNAHRSAID_401E353N_S", "MUBARAK_398E355N_S", "RAQQA_390E359N_S", "DAWSAR_384E359N_S", "BALIS_380E360N_S", "HALAB_371E361N_S"],
+        "distance_km": 805.3,
+        "segments": 24,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ḥalab",
+        "from_code": "HALAB_371E361N_S",
+        "to": "dimašq",
+        "to_code": "DIMASHQ_363E335N_S",
+        "path": ["HALAB_371E361N_S", "QINNASRIN_370E359N_S", "TALLMANNAS_367E356N_S", "SAWWARAN_367E352N_S", "HAMA_367E351N_S", "RASTAN_367E349N_S", "HIMS_367E347N_S", "SHAMSIN_367E345N_S", "NABK_367E340N_S", "QUTAYYIFA_366E337N_S", "DIMASHQ_363E335N_S"],
+        "distance_km": 330.1,
+        "segments": 10,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "dimašq",
+        "from_code": "DIMASHQ_363E335N_S",
+        "to": "šīrāz",
+        "to_code": "SHIRAZ_525E296N_S",
+        "path": ["DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S", "BADHIBIN_465E321N_S", "SIKR_467E321N_S", "TIB_473E322N_S", "QURQUB_477E321N_S", "BAYRUT_479E320N_S", "BASINNA_483E319N_S", "NAHRTIRA_483E314N_S", "AHWAZ_486E313N_S", "AZAM_490E312N_S", "ABDIN_493E312N_S", "RAMHURMUZ_496E312N_S", "HAWMAZUTT_497E310N_S", "KHABARAN_498E309N_S", "DAHLIZAN_499E307N_S", "SANBIL_501E307N_S", "ARRAJAN_502E306N_S", "ZAYTUN_503E305N_S", "ROUTEPOINTS0699_505E304N_O", "JUNBADHMALLAGHAN_508E302N_S", "DAKHWID_512E303N_S", "KHAWADHAN_515E302N_S", "NUBANDAJAN_515E301N_S", "QALAJISS_516E301N_S", "JARKAN_517E300N_S", "KHARRARA_519E300N_S", "KHULLAR_521E299N_S", "JUWAYM_522E298N_S", "SHIRAZ_525E296N_S"],
+        "distance_km": 1788.8,
+        "segments": 44,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 4082.7,
+    "uses_sea_routes": false
+  },
+  "al-mubārak b. al-ḥasan b. ʾaḥmad al-baġdādī al-šahrazūrī ʾabū al-karam": {
+    "author": "al-mubārak b. al-ḥasan b. ʾaḥmad al-baġdādī al-šahrazūrī ʾabū al-karam",
+    "regionality": "mašriq",
+    "death_century": "6.0",
+    "places_original": "šahrazūr;baġdād",
+    "places_sequence": ["šahrazūr", "baġdād"],
+    "routes": [
+      {
+        "from": "šahrazūr",
+        "from_code": "SHAHRAZUR_460E352N_R",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["SHAHRAZUR_460E352N_R", "HULWAN_459E344N_S", "QASRSHIRIN_456E344N_S", "KHANIQIN_454E343N_S", "JALULA_451E341N_S", "HARUNIYYA_450E339N_S", "DASKARA_449E339N_S", "DAYRBAZAMA_447E336N_S", "NAHRAWAN_445E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 302.9,
+        "segments": 9,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 302.9,
+    "uses_sea_routes": false
+  },
+  "al-qāsim b. fiyyaruh b. ḫalaf al-ruʿaynī al-šāṭibī ʾabū muḥammad": {
+    "author": "al-qāsim b. fiyyaruh b. ḫalaf al-ruʿaynī al-šāṭibī ʾabū muḥammad",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "6.0",
+    "places_original": "šāṭibah;balansiyyah;al-mašriq;al-ʾiskandariyyah;al-qāhirah",
+    "places_sequence": ["balansiyyah", "al-ʾiskandariyyah", "al-qāhirah"],
+    "routes": [
+      {
+        "from": "balansiyyah",
+        "from_code": "BALANSIYYA_004W394N_R",
+        "to": "al-ʾiskandariyyah",
+        "to_code": "ISKANDARIYYA_299E311N_S",
+        "path": ["BALANSIYYA_004W394N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S"],
+        "distance_km": 3605.6,
+        "segments": 6,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      },
+      {
+        "from": "al-ʾiskandariyyah",
+        "from_code": "ISKANDARIYYA_299E311N_S",
+        "to": "al-qāhirah",
+        "to_code": "QAHIRA_312E300N_S",
+        "path": ["ISKANDARIYYA_299E311N_S", "KARYUN_301E311N_S", "BARSIQ_302E310N_S", "QARTASA_304E310N_S", "MAHALLAABUKHURASHA_306E310N_S", "DAYYAY_307E310N_S", "ROUTPOINT1002_308E310N_O", "MAHALLASURAD_308E309N_S", "MAHALLAMAHRUM_309E307N_S", "FISHAIBNSULAYM_309E307N_S", "BUNDARIYYA_309E307N_S", "TUWWA_309E306N_S", "MANUF_309E304N_S", "SUBKABID_310E304N_S", "SHATNUF_310E302N_S", "SARDUS_311E301N_S", "SHABRUWA_312E301N_S", "QAHIRA_312E300N_S"],
+        "distance_km": 225.2,
+        "segments": 17,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 3830.8,
+    "uses_sea_routes": true
+  },
+  "al-ʾahwāzī al-ḥasan b. ʿalī b. ʾibrāhīm ʾabū ʿalī": {
+    "author": "al-ʾahwāzī al-ḥasan b. ʿalī b. ʾibrāhīm ʾabū ʿalī",
+    "regionality": "mašriq",
+    "death_century": "5.0",
+    "places_original": "ʾahwāz;dimašq;baġdād;al-baṣrah;baṭāʾiḥ",
+    "places_sequence": ["dimašq", "baġdād", "al-baṣrah"],
+    "routes": [
+      {
+        "from": "dimašq",
+        "from_code": "DIMASHQ_363E335N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 776.3,
+        "segments": 6,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "al-baṣrah",
+        "to_code": "BASRA_477E304N_S",
+        "path": ["BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S", "FARUTH_465E318N_S", "QATR_466E317N_O", "ROUTPOINT0302_474E309N_O", "BASRA_477E304N_S"],
+        "distance_km": 499.2,
+        "segments": 14,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1275.5,
+    "uses_sea_routes": false
+  },
+  "b. al-bayyāz yaḥyā b. ʾibrāhīm b. ʾabī zayd al-lawwātī al-mursī ʾabū al-ḥasan": {
+    "author": "b. al-bayyāz yaḥyā b. ʾibrāhīm b. ʾabī zayd al-lawwātī al-mursī ʾabū al-ḥasan",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "5.0",
+    "places_original": "mursiyyah;miṣr;qayrawān;al-mašriq;makkah",
+    "places_sequence": ["mursiyyah", "qayrawān", "makkah"],
+    "routes": [
+      {
+        "from": "mursiyyah",
+        "from_code": "MURSIYA_011W379N_S",
+        "to": "qayrawān",
+        "to_code": "QAYRAWAN_101E357N_S",
+        "path": ["MURSIYA_011W379N_S", "QANT_004W383N_S", "SHATIBA_005W389N_S", "SHAQR_004W391N_S", "BALANSIYYA_004W394N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "QAYRAWAN_101E357N_S"],
+        "distance_km": 1424.7,
+        "segments": 7,
+        "sea_crossings": true,
+        "sea_crossing_count": 3
+      },
+      {
+        "from": "qayrawān",
+        "from_code": "QAYRAWAN_101E357N_S",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["QAYRAWAN_101E357N_S", "ROUTPOINT1217_101E357N_O", "ZAGHWAN_101E364N_S", "AWDHANA_102E365N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "FUSTAT_313E300N_S", "MAKKA_398E213N_S"],
+        "distance_km": 3805,
+        "segments": 9,
+        "sea_crossings": true,
+        "sea_crossing_count": 3
+      }
+    ],
+    "total_distance_km": 5229.7,
+    "uses_sea_routes": true
+  },
+  "b. al-tārīḫ maḥfūẓ b. ʿabd al-bāqī b. al-ḥusayn al-wāsiṭī ʾabū al-karam": {
+    "author": "b. al-tārīḫ maḥfūẓ b. ʿabd al-bāqī b. al-ḥusayn al-wāsiṭī ʾabū al-karam",
+    "regionality": "mašriq",
+    "death_century": "6.0",
+    "places_original": "baġdād;wāsiṭ",
+    "places_sequence": ["baġdād", "wāsiṭ"],
+    "routes": [
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "wāsiṭ",
+        "to_code": "WASIT_463E321N_S",
+        "path": ["BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S"],
+        "distance_km": 252.2,
+        "segments": 10,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 252.2,
+    "uses_sea_routes": false
+  },
+  "b. ballīmah al-ḥasan b. ḫalaf b. ʿabd allāh al-qayrawānī ʾabū ʿalī": {
+    "author": "b. ballīmah al-ḥasan b. ḫalaf b. ʿabd allāh al-qayrawānī ʾabū ʿalī",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "6.0",
+    "places_original": "qayrawān;makkah;miṣr;al-ʾiskandariyyah",
+    "places_sequence": ["qayrawān", "makkah", "al-ʾiskandariyyah"],
+    "routes": [
+      {
+        "from": "qayrawān",
+        "from_code": "QAYRAWAN_101E357N_S",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["QAYRAWAN_101E357N_S", "ROUTPOINT1217_101E357N_O", "ZAGHWAN_101E364N_S", "AWDHANA_102E365N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "FUSTAT_313E300N_S", "MAKKA_398E213N_S"],
+        "distance_km": 3805,
+        "segments": 9,
+        "sea_crossings": true,
+        "sea_crossing_count": 3
+      },
+      {
+        "from": "makkah",
+        "from_code": "MAKKA_398E213N_S",
+        "to": "al-ʾiskandariyyah",
+        "to_code": "ISKANDARIYYA_299E311N_S",
+        "path": ["MAKKA_398E213N_S", "FUSTAT_313E300N_S", "ISKANDARIYYA_299E311N_S"],
+        "distance_km": 1300,
+        "segments": 2,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 5105,
+    "uses_sea_routes": true
+  },
+  "b. furqāšaš muḥammad b. ʾaḥmad b. ʿabd al-raḥmān al-ʾanṣārī ʾabū ʿabd allāh": {
+    "author": "b. furqāšaš muḥammad b. ʾaḥmad b. ʿabd al-raḥmān al-ʾanṣārī ʾabū ʿabd allāh",
+    "regionality": "maġrib",
+    "death_century": "6.0",
+    "places_original": "ṭulayṭalah;ġarnāṭah;fās",
+    "places_sequence": ["ṭulayṭalah", "ġarnāṭah", "fās"],
+    "routes": [
+      {
+        "from": "ṭulayṭalah",
+        "from_code": "TULAYTILA_040W398N_R",
+        "to": "ġarnāṭah",
+        "to_code": "GHARNATA_035W372N_S",
+        "path": ["TULAYTILA_040W398N_S", "ABNASH_039W396N_S", "MALAQUN_039W391N_S", "KARKUYA_040W388N_S", "QURTUBA_047W379N_S", "ROUTPOINT1410_047W378N_O", "ROUTPOINT1409_047W378N_O", "ROUTPOINT1406_044W377N_O", "ROUTPOINT1407_040W374N_O", "ROUTPOINT1408_037W373N_O", "LIBIRA_036W372N_S", "GHARNATA_035W372N_S"],
+        "distance_km": 412.3,
+        "segments": 11,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ġarnāṭah",
+        "from_code": "GHARNATA_035W372N_S",
+        "to": "fās",
+        "to_code": "FAS_050W340N_S",
+        "path": ["GHARNATA_035W372N_S", "LIBIRA_036W372N_S", "ROUTPOINT1408_037W373N_O", "ROUTPOINT1407_040W374N_O", "BAYGHU_042W374N_S", "ROUTPOINT1404_049W375N_O", "ISTIJA_051W375N_S", "ROUTPOINT1405_051W375N_O", "QARMUNA_056W374N_S", "ISHBILIYYA_059W374N_S", "SABTA_053W358N_S", "FAS_050W340N_S"],
+        "distance_km": 686.2,
+        "segments": 11,
+        "sea_crossings": true,
+        "sea_crossing_count": 1
+      }
+    ],
+    "total_distance_km": 1098.6,
+    "uses_sea_routes": true
+  },
+  "b. ḫālawayh al-ḥusayn b. ʾaḥmad b. ḥamdūn al-naḥwī ʾabū ʿabd allāh": {
+    "author": "b. ḫālawayh al-ḥusayn b. ʾaḥmad b. ḥamdūn al-naḥwī ʾabū ʿabd allāh",
+    "regionality": "mašriq",
+    "death_century": "4.0",
+    "places_original": "hamaḏān;baġdād;al-yaman;ḥalab",
+    "places_sequence": ["hamaḏān", "baġdād", "ḥalab"],
+    "routes": [
+      {
+        "from": "hamaḏān",
+        "from_code": "HAMADHAN_485E347N_R",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["HAMADHAN_485E347N_S", "ZAFARANIYYA_484E348N_S", "ASADABADH_481E348N_S", "QASRLUSUS_479E344N_S", "QANTARANUMAN_476E344N_S", "BISUTUN_474E343N_S", "QARMASIN_470E343N_S", "ZUBAYDIYYA_468E342N_S", "TAZAR_464E341N_S", "MARJ_462E343N_S", "MADHARWISTAN_460E344N_S", "HULWAN_459E344N_S", "QASRSHIRIN_456E344N_S", "KHANIQIN_454E343N_S", "JALULA_451E341N_S", "HARUNIYYA_450E339N_S", "DASKARA_449E339N_S", "DAYRBAZAMA_447E336N_S", "NAHRAWAN_445E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 508,
+        "segments": 19,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "ḥalab",
+        "to_code": "HALAB_371E361N_S",
+        "path": ["BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "NAWUSA_426E338N_S", "ALUS_424E339N_S", "HADITHA_423E341N_S", "FUHAYMA_421E342N_S", "ROUTPOINT0201_421E342N_O", "ROUTPOINT0202_416E343N_O", "NIHIYYA_415E343N_S", "DAZIQI_411E343N_S", "WADISIBA_409E344N_S", "KHALIJBANUJUMAY_408E345N_S", "DALIYA_407E347N_S", "FASH_405E349N_S", "RAHBAMALIKIBNTAWQ_404E349N_S", "QARQISIYYA_404E351N_S", "FAMNAHRSAID_401E353N_S", "MUBARAK_398E355N_S", "RAQQA_390E359N_S", "DAWSAR_384E359N_S", "BALIS_380E360N_S", "HALAB_371E361N_S"],
+        "distance_km": 805.3,
+        "segments": 24,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1313.3,
+    "uses_sea_routes": false
+  },
+  "b. kayyāl naṣr allāh b. ʿalī b. manṣūr al-wāsiṭī al-ḥanafī": {
+    "author": "b. kayyāl naṣr allāh b. ʿalī b. manṣūr al-wāsiṭī al-ḥanafī",
+    "regionality": "mašriq",
+    "death_century": "6.0",
+    "places_original": "wāsiṭ;baġdād;al-baṣrah",
+    "places_sequence": ["wāsiṭ", "baġdād", "al-baṣrah"],
+    "routes": [
+      {
+        "from": "wāsiṭ",
+        "from_code": "WASIT_463E321N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["WASIT_463E321N_S", "FAMSILH_461E324N_S", "NAHRSABUS_459E324N_S", "ROUTPOINT0301_457E325N_O", "JABBUL_457E325N_S", "NUMANIYYA_454E325N_S", "JARJARAYA_453E327N_S", "DAYRAQUL_449E329N_S", "SIB_448E329N_S", "MADAIN_445E330N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 252.2,
+        "segments": 10,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "al-baṣrah",
+        "to_code": "BASRA_477E304N_S",
+        "path": ["BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S", "FARUTH_465E318N_S", "QATR_466E317N_O", "ROUTPOINT0302_474E309N_O", "BASRA_477E304N_S"],
+        "distance_km": 499.2,
+        "segments": 14,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 751.4,
+    "uses_sea_routes": false
+  },
+  "b. mālik muḥammad b. ʿabd allāh ʾabū ʿabd allāh al-naḥwī": {
+    "author": "b. mālik muḥammad b. ʿabd allāh ʾabū ʿabd allāh al-naḥwī",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "7.0",
+    "places_original": "dimašq;ǧayyān;ḥalab;al-qāhirah;",
+    "places_sequence": ["dimašq", "ǧayyān", "ḥalab", "al-qāhirah"],
+    "routes": [
+      {
+        "from": "dimašq",
+        "from_code": "DIMASHQ_363E335N_S",
+        "to": "ǧayyān",
+        "to_code": "JAYYAN_038W377N_S",
+        "path": ["DIMASHQ_363E335N_S", "KUSWA_362E333N_S", "ROUTPOINT0121_362E333N_O", "JASIM_360E329N_S", "AQABAFIQ_356E327N_S", "ROUTPOINT0115_355E326N_O", "BAYSAN_354E325N_S", "TAASIR_353E323N_S", "NABULUS_352E322N_S", "LUDD_348E319N_S", "RAMLA_348E319N_S", "ROUTPOINT0109_345E315N_O", "RAFH_342E313N_S", "ARISH_338E311N_S", "WARRADA_335E310N_S", "BAQQARA_331E310N_S", "FARAMA_325E310N_S", "TINNIS_322E312N_S", "DIMYAT_317E314N_S", "BURULLUS_309E315N_S", "IKHNA_307E315N_S", "NASTARAWA_307E314N_S", "RASHID_303E314N_S", "ISKANDARIYYA_299E311N_S", "BARQA_208E323N_S", "MALITA_145E359N_S", "TUNIS_101E367N_S", "BAJAYA_050E367N_S", "YABISA_014E390N_S", "MARIYYA_025W368N_S", "BAJJANA_024W369N_S", "WADIYASH_031W373N_S", "ROUTPOINT1408_037W373N_O", "ROUTPOINT1407_040W374N_O", "ROUTPOINT1406_044W377N_O", "HISNBULKUNA_042W378N_S", "JAYYAN_038W377N_S"],
+        "distance_km": 4919.4,
+        "segments": 36,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      },
+      {
+        "from": "ǧayyān",
+        "from_code": "JAYYAN_038W377N_S",
+        "to": "ḥalab",
+        "to_code": "HALAB_371E361N_S",
+        "path": ["JAYYAN_038W377N_S", "HISNBULKUNA_042W378N_S", "ARJUNA_040W379N_S", "QASTALLA_038W379N_S", "BAYYASA_034W379N_S", "BALANSIYYA_004W394N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "RASHID_303E314N_S", "NASTARAWA_307E314N_S", "IKHNA_307E315N_S", "BURULLUS_309E315N_S", "DIMYAT_317E314N_S", "TINNIS_322E312N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "RAMLA_348E319N_S", "LUDD_348E319N_S", "QALANSUWA_349E322N_S", "LAJJUN_352E326N_S", "TABARIYYA_355E327N_S", "JUBBYUSUF_355E329N_S", "ROUTPOINT0117_355E332N_O", "QARYAUYUN_355E333N_S", "QARUN_357E335N_S", "AYNJARR_359E337N_S", "BALABAKK_361E340N_S", "LABWA_363E341N_S", "JUSIYA_365E344N_S", "HIMS_367E347N_S", "RASTAN_367E349N_S", "HAMA_367E351N_S", "SAWWARAN_367E352N_S", "TALLMANNAS_367E356N_S", "QINNASRIN_370E359N_S", "HALAB_371E361N_S"],
+        "distance_km": 5139.8,
+        "segments": 43,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      },
+      {
+        "from": "ḥalab",
+        "from_code": "HALAB_371E361N_S",
+        "to": "al-qāhirah",
+        "to_code": "QAHIRA_312E300N_S",
+        "path": ["HALAB_371E361N_S", "QINNASRIN_370E359N_S", "TALLMANNAS_367E356N_S", "SAWWARAN_367E352N_S", "HAMA_367E351N_S", "RASTAN_367E349N_S", "HIMS_367E347N_S", "JUSIYA_365E344N_S", "LABWA_363E341N_S", "BALABAKK_361E340N_S", "AYNJARR_359E337N_S", "QARUN_357E335N_S", "QARYAUYUN_355E333N_S", "ROUTPOINT0117_355E332N_O", "JUBBYUSUF_355E329N_S", "TABARIYYA_355E327N_S", "LAJJUN_352E326N_S", "QALANSUWA_349E322N_S", "LUDD_348E319N_S", "RAMLA_348E319N_S", "ROUTPOINT0109_345E315N_O", "RAFH_342E313N_S", "ARISH_338E311N_S", "WARRADA_335E310N_S", "BAQQARA_331E310N_S", "FARAMA_325E310N_S", "JURJIR_321E309N_S", "ROUTPOINT1003_319E307N_O", "FAQUS_317E307N_S", "ABBASIYYA_317E305N_S", "BILBAYS_315E304N_S", "GHAYFA_315E303N_S", "FUSTAT_312E300N_S", "QAHIRA_312E300N_S"],
+        "distance_km": 993,
+        "segments": 33,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 11052.3,
+    "uses_sea_routes": true
+  },
+  "b. mihrān ʾaḥmad b. al-ḥusayn al-ʾiṣbahānī al-nīsābūrī ʾabū bakr": {
+    "author": "b. mihrān ʾaḥmad b. al-ḥusayn al-ʾiṣbahānī al-nīsābūrī ʾabū bakr",
+    "regionality": "mašriq",
+    "death_century": "4.0",
+    "places_original": "ʾiṣbahān;nīsābūr;dimašq;baġdād",
+    "places_sequence": ["ʾiṣbahān", "nīsābūr", "dimašq", "baġdād"],
+    "routes": [
+      {
+        "from": "ʾiṣbahān",
+        "from_code": "ISBAHAN_516E326N_R",
+        "to": "nīsābūr",
+        "to_code": "NAYSABUR_587E361N_R",
+        "path": ["ISBAHAN_516E326N_S", "SAKSH_521E326N_S", "RAKUNIN_527E326N_S", "ROUTPOINT0608_529E326N_O", "NAIN_531E328N_S", "JARMAQ_549E335N_S", "HAWDHAJIB_554E335N_S", "HULWAN_562E339N_S", "NUJAY_564E341N_S", "DASKARDAN_566E342N_S", "DARZINAK_567E343N_S", "BANNA_569E344N_S", "RIBATZANJI_574E348N_S", "KUNDUR_581E351N_S", "TURTHITH_584E351N_S", "NAYSABUR_587E361N_S"],
+        "distance_km": 859.9,
+        "segments": 15,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "nīsābūr",
+        "from_code": "NAYSABUR_587E361N_R",
+        "to": "dimašq",
+        "to_code": "DIMASHQ_363E335N_S",
+        "path": ["NAYSABUR_587E361N_S", "BISKAND_583E360N_S", "HUSAYNABADH_579E361N_S", "SABZAWAR_576E361N_S", "KHUSRAWJIRD_574E361N_S", "MAZINAN_569E362N_S", "BAHMANABADH_568E363N_S", "ASADABADH_564E363N_S", "HAFDAR_561E363N_S", "MURJAN_556E363N_S", "BADHASH_551E363N_S", "HADDADA_548E362N_S", "DAMGHAN_543E361N_S", "JARMJUWI_540E359N_S", "RIBATALIYYABADH_537E357N_S", "SIMNAN_534E354N_S", "RASKALB_530E353N_S", "QARYAMILH_526E352N_S", "KHUWAR_524E352N_S", "KAHDA_520E353N_S", "DIZA_516E353N_O", "ROUTPOINT0504_511E352N_O", "QUSTANA_510E354N_S", "MASHKUYA_507E353N_S", "SAWA_504E349N_S", "DARWADH_501E350N_S", "SUSANQIN_500E350N_S", "MASDAQAN_498E350N_S", "RUDHA_497E351N_S", "BUSTA_497E351N_S", "TAZRA_493E351N_S", "ZARRA_492E350N_S", "BUZANJIRD_489E349N_S", "DARNAWA_487E348N_S", "HAMADHAN_485E347N_S", "ZAFARANIYYA_484E348N_S", "ASADABADH_481E348N_S", "QASRLUSUS_479E344N_S", "QANTARANUMAN_476E344N_S", "BISUTUN_474E343N_S", "QARMASIN_470E343N_S", "ZUBAYDIYYA_468E342N_S", "TAZAR_464E341N_S", "MARJ_462E343N_S", "MADHARWISTAN_460E344N_S", "HULWAN_459E344N_S", "QASRSHIRIN_456E344N_S", "KHANIQIN_454E343N_S", "JALULA_451E341N_S", "HARUNIYYA_450E339N_S", "DASKARA_449E339N_S", "DAYRBAZAMA_447E336N_S", "NAHRAWAN_445E334N_S", "BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "SUWA_378E337N_S", "DIMASHQ_363E335N_S"],
+        "distance_km": 2307,
+        "segments": 59,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "dimašq",
+        "from_code": "DIMASHQ_363E335N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 776.3,
+        "segments": 6,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 3943.3,
+    "uses_sea_routes": false
+  },
+  "b. muǧāhid ʾaḥmad b. mūsā b. al-ʿabbās al-baġdādī ʾabū bakr": {
+    "author": "b. muǧāhid ʾaḥmad b. mūsā b. al-ʿabbās al-baġdādī ʾabū bakr",
+    "regionality": "mašriq",
+    "death_century": "4.0",
+    "places_original": "baġdād;makkah",
+    "places_sequence": ["baġdād", "makkah"],
+    "routes": [
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["BAGHDAD_443E333N_S", "KARKH_443E333N_S", "SARSAR_443E331N_S", "NAHRMALIK_443E330N_S", "JISRKUTHA_443E328N_S", "QASRIBNHUBAYRA_443E327N_S", "JISRSURA_443E326N_S", "HAMMAMIBNUMAR_443E323N_S", "SHAHI_443E322N_S", "KUFA_443E320N_S", "HIRA_443E320N_S", "NAJAF_443E319N_S", "QADISIYYA_441E316N_S", "UDHAYB_441E314N_S", "MUGHITHA_440E311N_S", "QARA_438E308N_S", "WAQISA_437E305N_S", "AQABA_436E300N_S", "QA_436E297N_S", "ZUBALA_435E294N_S", "SHUQUQ_434E290N_S", "BITAN_432E287N_S", "THALABIYYA_431E282N_S", "KHUZAYMIYYA_431E279N_S", "AJFUR_429E274N_S", "FAYD_425E270N_S", "TUZ_422E267N_S", "SAMIRA_420E264N_S", "HAJIR_417E259N_S", "MADINNAQIRA_415E255N_S", "MUGHITHAMAWAN_414E250N_S", "RABADHA_413E246N_S", "SALILA_412E243N_S", "UMAQ_409E240N_S", "MADINBANUSULAYM_408E235N_O", "UFAYIYYA_407E230N_S", "MISLAH_407E224N_S", "GHAMRA_408E218N_S", "AWTAS_406E217N_S", "DHATIRQ_404E216N_S", "MAKKA_398E213N_S"],
+        "distance_km": 1493.7,
+        "segments": 40,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1493.7,
+    "uses_sea_routes": false
+  },
+  "b. ṭāwūs hibat allāh b. ʾaḥmad b. ʿabd allāh al-baġdādī al-dimašqī ʾabū muḥammad": {
+    "author": "b. ṭāwūs hibat allāh b. ʾaḥmad b. ʿabd allāh al-baġdādī al-dimašqī ʾabū muḥammad",
+    "regionality": "mašriq",
+    "death_century": "6.0",
+    "places_original": "dimašq;baġdād;ʾiṣbahān",
+    "places_sequence": ["dimašq", "baġdād", "ʾiṣbahān"],
+    "routes": [
+      {
+        "from": "dimašq",
+        "from_code": "DIMASHQ_363E335N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 776.3,
+        "segments": 6,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "ʾiṣbahān",
+        "to_code": "ISBAHAN_516E326N_R",
+        "path": ["BAGHDAD_443E333N_S", "NAHRAWAN_445E334N_S", "DAYRBAZAMA_447E336N_S", "DASKARA_449E339N_S", "HARUNIYYA_450E339N_S", "JALULA_451E341N_S", "KHANIQIN_454E343N_S", "QASRSHIRIN_456E344N_S", "HULWAN_459E344N_S", "MADHARWISTAN_460E344N_S", "MARJ_462E343N_S", "TAZAR_464E341N_S", "ZUBAYDIYYA_468E342N_S", "QARMASIN_470E343N_S", "BISUTUN_474E343N_S", "QANTARANUMAN_476E344N_S", "QASRLUSUS_479E344N_S", "NIHAWAND_483E342N_S", "RAMAN_486E342N_S", "JURAB_489E342N_S", "ROUTPOINT0510_491E340N_O", "KARAJ_495E338N_S", "ABTIA_500E336N_S", "JARBADHAQAN_502E333N_S", "QANUWAN_506E332N_S", "MARJWA-ZAHR_509E330N_S", "ISBAHAN_516E326N_S"],
+        "distance_km": 849.6,
+        "segments": 26,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1625.9,
+    "uses_sea_routes": false
+  },
+  "b. zurayq al-ḥaddād al-mubārak b. al-mubārak b. ʾaḥmad al-wāsiṭī ʾabū ǧaʿfar": {
+    "author": "b. zurayq al-ḥaddād al-mubārak b. al-mubārak b. ʾaḥmad al-wāsiṭī ʾabū ǧaʿfar",
+    "regionality": "mašriq",
+    "death_century": "6.0",
+    "places_original": "wāsiṭ;baġdād",
+    "places_sequence": ["wāsiṭ", "baġdād"],
+    "routes": [
+      {
+        "from": "wāsiṭ",
+        "from_code": "WASIT_463E321N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["WASIT_463E321N_S", "FAMSILH_461E324N_S", "NAHRSABUS_459E324N_S", "ROUTPOINT0301_457E325N_O", "JABBUL_457E325N_S", "NUMANIYYA_454E325N_S", "JARJARAYA_453E327N_S", "DAYRAQUL_449E329N_S", "SIB_448E329N_S", "MADAIN_445E330N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 252.2,
+        "segments": 10,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 252.2,
+    "uses_sea_routes": false
+  },
+  "b. ʾuḫt ġānim muḥammad b. sulaymān b. ʾaḥmad al-mālaqī al-nafzī ʾabū ʿabd allāh": {
+    "author": "b. ʾuḫt ġānim muḥammad b. sulaymān b. ʾaḥmad al-mālaqī al-nafzī ʾabū ʿabd allāh",
+    "regionality": "maġrib",
+    "death_century": "6.0",
+    "places_original": "nifzah;qurṭubah;mālaqah",
+    "places_sequence": ["qurṭubah", "mālaqah"],
+    "routes": [
+      {
+        "from": "qurṭubah",
+        "from_code": "QURTUBA_047W379N_S",
+        "to": "mālaqah",
+        "to_code": "MALIQA_044W367N_R",
+        "path": ["QURTUBA_047W379N_S", "ROUTPOINT1410_047W378N_O", "ISTIJA_051W375N_S", "MALIQA_044W367N_S"],
+        "distance_km": 163.6,
+        "segments": 3,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 163.6,
+    "uses_sea_routes": false
+  },
+  "b. ʿaẓīmah muḥammad b. ʿabd al-raḥmān b. muḥammad al-ʿabdī al-ʾišbīlī ʾabū al-ḥasan": {
+    "author": "b. ʿaẓīmah muḥammad b. ʿabd al-raḥmān b. muḥammad al-ʿabdī al-ʾišbīlī ʾabū al-ḥasan",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "6.0",
+    "places_original": "ʾišbīliyyah;qurṭubah;dāniyah;al-mašriq;makkah;al-ʾiskandariyyah;al-mahdiyyah;miṣr;marrākuš",
+    "places_sequence": ["ʾišbīliyyah", "qurṭubah", "makkah", "al-ʾiskandariyyah"],
+    "routes": [
+      {
+        "from": "ʾišbīliyyah",
+        "from_code": "ISHBILIYYA_059W374N_R",
+        "to": "qurṭubah",
+        "to_code": "QURTUBA_047W379N_S",
+        "path": ["ISHBILIYYA_059W374N_S", "ROUTPOINT1403_057W376N_O", "QURTUBA_047W379N_S"],
+        "distance_km": 123.4,
+        "segments": 2,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "qurṭubah",
+        "from_code": "QURTUBA_047W379N_S",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["QURTUBA_047W379N_S", "ROUTPOINT1410_047W378N_O", "ROUTPOINT1409_047W378N_O", "ROUTPOINT1406_044W377N_O", "ROUTPOINT1407_040W374N_O", "ROUTPOINT1408_037W373N_O", "WADIYASH_031W373N_S", "BAJJANA_024W369N_S", "MARIYYA_025W368N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "FUSTAT_313E300N_S", "MAKKA_398E213N_S"],
+        "distance_km": 5410,
+        "segments": 16,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      },
+      {
+        "from": "makkah",
+        "from_code": "MAKKA_398E213N_S",
+        "to": "al-ʾiskandariyyah",
+        "to_code": "ISKANDARIYYA_299E311N_S",
+        "path": ["MAKKA_398E213N_S", "FUSTAT_313E300N_S", "ISKANDARIYYA_299E311N_S"],
+        "distance_km": 1300,
+        "segments": 2,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 6833.3,
+    "uses_sea_routes": true
+  },
+  "fāris b. ʾaḥmad b. mūsā al-ḥimṣī al-ḍarīr ʾabū al-fatḥ": {
+    "author": "fāris b. ʾaḥmad b. mūsā al-ḥimṣī al-ḍarīr ʾabū al-fatḥ",
+    "regionality": "mašriq visits maġrib",
+    "death_century": "5.0",
+    "places_original": "ḥimṣ;al-qāhirah",
+    "places_sequence": ["ḥimṣ", "al-qāhirah"],
+    "routes": [
+      {
+        "from": "ḥimṣ",
+        "from_code": "HIMS_367E347N_S",
+        "to": "al-qāhirah",
+        "to_code": "QAHIRA_312E300N_S",
+        "path": ["HIMS_367E347N_S", "JUSIYA_365E344N_S", "LABWA_363E341N_S", "BALABAKK_361E340N_S", "AYNJARR_359E337N_S", "QARUN_357E335N_S", "QARYAUYUN_355E333N_S", "ROUTPOINT0117_355E332N_O", "JUBBYUSUF_355E329N_S", "TABARIYYA_355E327N_S", "LAJJUN_352E326N_S", "QALANSUWA_349E322N_S", "LUDD_348E319N_S", "RAMLA_348E319N_S", "ROUTPOINT0109_345E315N_O", "RAFH_342E313N_S", "ARISH_338E311N_S", "WARRADA_335E310N_S", "BAQQARA_331E310N_S", "FARAMA_325E310N_S", "JURJIR_321E309N_S", "ROUTPOINT1003_319E307N_O", "FAQUS_317E307N_S", "ABBASIYYA_317E305N_S", "BILBAYS_315E304N_S", "GHAYFA_315E303N_S", "FUSTAT_312E300N_S", "QAHIRA_312E300N_S"],
+        "distance_km": 817.5,
+        "segments": 27,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 817.5,
+    "uses_sea_routes": false
+  },
+  "ǧaʿfar b. ʿalī b. hibat allāh al-hamaḏānī/al-hamdānī ʾabū al-faḍl": {
+    "author": "ǧaʿfar b. ʿalī b. hibat allāh al-hamaḏānī/al-hamdānī ʾabū al-faḍl",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "7.0",
+    "places_original": "al-ʾiskandandariyyah;al-qāhirah;dimashq",
+    "places_sequence": ["al-qāhirah", "dimashq"],
+    "routes": [
+      {
+        "from": "al-qāhirah",
+        "from_code": "QAHIRA_312E300N_S",
+        "to": "dimashq",
+        "to_code": "DIMASHQ_363E335N_S",
+        "path": ["QAHIRA_312E300N_S", "FUSTAT_312E300N_S", "GHAYFA_315E303N_S", "BILBAYS_315E304N_S", "ABBASIYYA_317E305N_S", "FAQUS_317E307N_S", "ROUTPOINT1003_319E307N_O", "JURJIR_321E309N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "RAMLA_348E319N_S", "LUDD_348E319N_S", "NABULUS_352E322N_S", "TAASIR_353E323N_S", "BAYSAN_354E325N_S", "ROUTPOINT0115_355E326N_O", "AQABAFIQ_356E327N_S", "JASIM_360E329N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S"],
+        "distance_km": 677.5,
+        "segments": 24,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 677.5,
+    "uses_sea_routes": false
+  },
+  "maǧd al-dīn b. taymiyyah ʿabd al-salām b. ʿabd allāh b. al-ḫiḍr al-ḥarrānī al-ḥanbalī ʾabū al-barakāt": {
+    "author": "maǧd al-dīn b. taymiyyah ʿabd al-salām b. ʿabd allāh b. al-ḫiḍr al-ḥarrānī al-ḥanbalī ʾabū al-barakāt",
+    "regionality": "mašriq",
+    "death_century": "7.0",
+    "places_original": "ḥarrān;baġdād",
+    "places_sequence": ["ḥarrān", "baġdād"],
+    "routes": [
+      {
+        "from": "ḥarrān",
+        "from_code": "HARRAN_390E368N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["HARRAN_390E368N_S", "ROUTPOINT0203_392E364N_O", "KHANUQA_398E357N_S", "QARQISIYYA_404E351N_S", "RAHBAMALIKIBNTAWQ_404E349N_S", "FASH_405E349N_S", "DALIYA_407E347N_S", "KHALIJBANUJUMAY_408E345N_S", "WADISIBA_409E344N_S", "DAZIQI_411E343N_S", "NIHIYYA_415E343N_S", "ROUTPOINT0202_416E343N_O", "ROUTPOINT0201_421E342N_O", "FUHAYMA_421E342N_S", "HADITHA_423E341N_S", "ALUS_424E339N_S", "NAWUSA_426E338N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 703.1,
+        "segments": 21,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 703.1,
+    "uses_sea_routes": false
+  },
+  "makkī b. ʾabī ṭālib ḥammūš b. muḥammad al-qaysī ʾabū muḥammad": {
+    "author": "makkī b. ʾabī ṭālib ḥammūš b. muḥammad al-qaysī ʾabū muḥammad",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "5.0",
+    "places_original": "qayrawān;miṣr;makkah;qurṭubah;bayt al-maqdis",
+    "places_sequence": ["qayrawān", "makkah", "qurṭubah", "bayt al-maqdis"],
+    "routes": [
+      {
+        "from": "qayrawān",
+        "from_code": "QAYRAWAN_101E357N_S",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["QAYRAWAN_101E357N_S", "ROUTPOINT1217_101E357N_O", "ZAGHWAN_101E364N_S", "AWDHANA_102E365N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "FUSTAT_313E300N_S", "MAKKA_398E213N_S"],
+        "distance_km": 3805,
+        "segments": 9,
+        "sea_crossings": true,
+        "sea_crossing_count": 3
+      },
+      {
+        "from": "makkah",
+        "from_code": "MAKKA_398E213N_S",
+        "to": "qurṭubah",
+        "to_code": "QURTUBA_047W379N_S",
+        "path": ["MAKKA_398E213N_S", "FUSTAT_313E300N_S", "ISKANDARIYYA_299E311N_S", "BARQA_208E323N_S", "MALITA_145E359N_S", "TUNIS_101E367N_S", "BAJAYA_050E367N_S", "YABISA_014E390N_S", "MARIYYA_025W368N_S", "BAJJANA_024W369N_S", "WADIYASH_031W373N_S", "ROUTPOINT1408_037W373N_O", "ROUTPOINT1407_040W374N_O", "ROUTPOINT1406_044W377N_O", "ROUTPOINT1409_047W378N_O", "ROUTPOINT1410_047W378N_O", "QURTUBA_047W379N_S"],
+        "distance_km": 5410,
+        "segments": 16,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      },
+      {
+        "from": "qurṭubah",
+        "from_code": "QURTUBA_047W379N_S",
+        "to": "bayt al-maqdis",
+        "to_code": "BAYTMAQDIS_352E317N_S",
+        "path": ["QURTUBA_047W379N_S", "ROUTPOINT1410_047W378N_O", "ROUTPOINT1409_047W378N_O", "ROUTPOINT1406_044W377N_O", "ROUTPOINT1407_040W374N_O", "ROUTPOINT1408_037W373N_O", "WADIYASH_031W373N_S", "BAJJANA_024W369N_S", "MARIYYA_025W368N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "RASHID_303E314N_S", "NASTARAWA_307E314N_S", "IKHNA_307E315N_S", "BURULLUS_309E315N_S", "DIMYAT_317E314N_S", "TINNIS_322E312N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "SUKKARIYYA_346E315N_S", "BAYTJIBRIL_348E316N_S", "ROUTPOINT0104_350E316N_O", "ROUTPOINT0105_351E316N_O", "BAYTLAHM_351E317N_S", "BAYTMAQDIS_352E317N_S"],
+        "distance_km": 4676.4,
+        "segments": 32,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      }
+    ],
+    "total_distance_km": 13891.3,
+    "uses_sea_routes": true
+  },
+  "manṣūr b. al-sindī al-warrāq ʾabū al-qāsim": {
+    "author": "manṣūr b. al-sindī al-warrāq ʾabū al-qāsim",
+    "regionality": "mašriq",
+    "death_century": "4.0",
+    "places_original": "ʾiṣbahān;wāsiṭ",
+    "places_sequence": ["ʾiṣbahān", "wāsiṭ"],
+    "routes": [
+      {
+        "from": "ʾiṣbahān",
+        "from_code": "ISBAHAN_516E326N_R",
+        "to": "wāsiṭ",
+        "to_code": "WASIT_463E321N_S",
+        "path": ["ISBAHAN_516E326N_S", "ROUTPOINT0508_516E326N_O", "KHANLANJAN_515E324N_S", "RIBATBARAKAN_512E320N_S", "LURDAJAN_507E315N_S", "JISRJAHANNAM_502E314N_S", "BADAH_499E312N_S", "ROUTPOINT0402_497E312N_O", "RAMHURMUZ_496E312N_S", "ABDIN_493E312N_S", "AZAM_490E312N_S", "AHWAZ_486E313N_S", "NAHRTIRA_483E314N_S", "BASINNA_483E319N_S", "BAYRUT_479E320N_S", "QURQUB_477E321N_S", "TIB_473E322N_S", "SIKR_467E321N_S", "BADHIBIN_465E321N_S", "WASIT_463E321N_S"],
+        "distance_km": 695.5,
+        "segments": 19,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 695.5,
+    "uses_sea_routes": false
+  },
+  "muḥammad b. al-ḥasan b. ʿalī al-ʾanṭākī ʾabū ṭāhir": {
+    "author": "muḥammad b. al-ḥasan b. ʿalī al-ʾanṭākī ʾabū ṭāhir",
+    "regionality": "mašriq visits maġrib",
+    "death_century": "4.0",
+    "places_original": "ʾanṭākiyah;miṣr;ʾanṭākiyah",
+    "places_sequence": ["ʾanṭākiyah", "ʾanṭākiyah"],
+    "routes": [
+      {
+        "from": "ʾanṭākiyah",
+        "from_code": "ANTAKIYYA_361E361N_S",
+        "to": "ʾanṭākiyah",
+        "to_code": "ANTAKIYYA_361E361N_S",
+        "path": "ANTAKIYYA_361E361N_S",
+        "distance_km": 0,
+        "segments": 0,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 0,
+    "uses_sea_routes": false
+  },
+  "muḥammad b. al-ḥusayn b. bundār al-wāsiṭī al-qalānisī ʾabū al-ʿizz": {
+    "author": "muḥammad b. al-ḥusayn b. bundār al-wāsiṭī al-qalānisī ʾabū al-ʿizz",
+    "regionality": "mašriq",
+    "death_century": "6.0",
+    "places_original": "wāsiṭ;baġdād",
+    "places_sequence": ["wāsiṭ", "baġdād"],
+    "routes": [
+      {
+        "from": "wāsiṭ",
+        "from_code": "WASIT_463E321N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["WASIT_463E321N_S", "FAMSILH_461E324N_S", "NAHRSABUS_459E324N_S", "ROUTPOINT0301_457E325N_O", "JABBUL_457E325N_S", "NUMANIYYA_454E325N_S", "JARJARAYA_453E327N_S", "DAYRAQUL_449E329N_S", "SIB_448E329N_S", "MADAIN_445E330N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 252.2,
+        "segments": 10,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 252.2,
+    "uses_sea_routes": false
+  },
+  "muḥammad b. ǧaʿfar b. ʿabd al-karīm al-ǧurǧānī al-ḫuzāʿī ʾabū al-faḍl": {
+    "author": "muḥammad b. ǧaʿfar b. ʿabd al-karīm al-ǧurǧānī al-ḫuzāʿī ʾabū al-faḍl",
+    "regionality": "mašriq",
+    "death_century": "5.0",
+    "places_original": "ǧurǧān;baġdād;ʾāmul",
+    "places_sequence": ["ǧurǧān", "baġdād", "ʾāmul"],
+    "routes": [
+      {
+        "from": "ǧurǧān",
+        "from_code": "JURJAN_549E373N_R",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["RIBATAMIR_547E375N_S", "RIBATALI_545E372N_S", "ASTARABADH_544E367N_S", "NAMIYA_543E367N_S", "TAMISHA_540E367N_S", "MIHRAWAN_536E366N_S", "SARIYA_531E365N_S", "MAMATIR_527E365N_S", "MILA_525E364N_S", "AMUL_524E364N_S", "ASAK_522E358N_S", "BALUR_520E358N_S", "NAMAHAND_519E357N_S", "ROUTPOINT1604_518E356N_O", "RAYY_515E356N_S", "QUSTANA_510E354N_S", "MASHKUYA_507E353N_S", "SAWA_504E349N_S", "DARWADH_501E350N_S", "SUSANQIN_500E350N_S", "MASDAQAN_498E350N_S", "RUDHA_497E351N_S", "BUSTA_497E351N_S", "TAZRA_493E351N_S", "ZARRA_492E350N_S", "BUZANJIRD_489E349N_S", "DARNAWA_487E348N_S", "HAMADHAN_485E347N_S", "ZAFARANIYYA_484E348N_S", "ASADABADH_481E348N_S", "QASRLUSUS_479E344N_S", "QANTARANUMAN_476E344N_S", "BISUTUN_474E343N_S", "QARMASIN_470E343N_S", "ZUBAYDIYYA_468E342N_S", "TAZAR_464E341N_S", "MARJ_462E343N_S", "MADHARWISTAN_460E344N_S", "HULWAN_459E344N_S", "QASRSHIRIN_456E344N_S", "KHANIQIN_454E343N_S", "JALULA_451E341N_S", "HARUNIYYA_450E339N_S", "DASKARA_449E339N_S", "DAYRBAZAMA_447E336N_S", "NAHRAWAN_445E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 1243.8,
+        "segments": 46,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "ʾāmul",
+        "to_code": "AMUL_524E364N_S",
+        "path": ["BAGHDAD_443E333N_S", "NAHRAWAN_445E334N_S", "DAYRBAZAMA_447E336N_S", "DASKARA_449E339N_S", "HARUNIYYA_450E339N_S", "JALULA_451E341N_S", "KHANIQIN_454E343N_S", "QASRSHIRIN_456E344N_S", "HULWAN_459E344N_S", "MADHARWISTAN_460E344N_S", "MARJ_462E343N_S", "TAZAR_464E341N_S", "ZUBAYDIYYA_468E342N_S", "QARMASIN_470E343N_S", "BISUTUN_474E343N_S", "QANTARANUMAN_476E344N_S", "QASRLUSUS_479E344N_S", "ASADABADH_481E348N_S", "ZAFARANIYYA_484E348N_S", "HAMADHAN_485E347N_S", "DARNAWA_487E348N_S", "BUZANJIRD_489E349N_S", "ZARRA_492E350N_S", "TAZRA_493E351N_S", "BUSTA_497E351N_S", "RUDHA_497E351N_S", "MASDAQAN_498E350N_S", "SUSANQIN_500E350N_S", "DARWADH_501E350N_S", "SAWA_504E349N_S", "MASHKUYA_507E353N_S", "QUSTANA_510E354N_S", "RAYY_515E356N_S", "ROUTPOINT1604_518E356N_O", "NAMAHAND_519E357N_S", "BALUR_520E358N_S", "ASAK_522E358N_S", "AMUL_524E364N_S"],
+        "distance_km": 954.2,
+        "segments": 37,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 2198,
+    "uses_sea_routes": false
+  },
+  "muḥammad b. sufyān al-qayrawānī al-mālikī ʾabū ʿabd allāh": {
+    "author": "muḥammad b. sufyān al-qayrawānī al-mālikī ʾabū ʿabd allāh",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "5.0",
+    "places_original": "qayrawān;miṣr;makkah;al-madīnah",
+    "places_sequence": ["qayrawān", "makkah"],
+    "routes": [
+      {
+        "from": "qayrawān",
+        "from_code": "QAYRAWAN_101E357N_S",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["QAYRAWAN_101E357N_S", "ROUTPOINT1217_101E357N_O", "ZAGHWAN_101E364N_S", "AWDHANA_102E365N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "FUSTAT_313E300N_S", "MAKKA_398E213N_S"],
+        "distance_km": 3805,
+        "segments": 9,
+        "sea_crossings": true,
+        "sea_crossing_count": 3
+      }
+    ],
+    "total_distance_km": 3805,
+    "uses_sea_routes": true
+  },
+  "muḥammad b. šurayḥ b. ʾaḥmad al-ruʿaynī al-ʾišbīlī ʾabū ʿabd allāh": {
+    "author": "muḥammad b. šurayḥ b. ʾaḥmad al-ruʿaynī al-ʾišbīlī ʾabū ʿabd allāh",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "5.0",
+    "places_original": "ʾišbīliyyah;al-mašriq;miṣr;makkah",
+    "places_sequence": ["ʾišbīliyyah", "makkah"],
+    "routes": [
+      {
+        "from": "ʾišbīliyyah",
+        "from_code": "ISHBILIYYA_059W374N_R",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["ISHBILIYYA_059W374N_S", "QARMUNA_056W374N_S", "ROUTPOINT1405_051W375N_O", "ISTIJA_051W375N_S", "ROUTPOINT1404_049W375N_O", "BAYGHU_042W374N_S", "ROUTPOINT1407_040W374N_O", "ROUTPOINT1408_037W373N_O", "WADIYASH_031W373N_S", "BAJJANA_024W369N_S", "MARIYYA_025W368N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "FUSTAT_313E300N_S", "MAKKA_398E213N_S"],
+        "distance_km": 5501.7,
+        "segments": 18,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      }
+    ],
+    "total_distance_km": 5501.7,
+    "uses_sea_routes": true
+  },
+  "muḥammad b. yūsuf ʾabū ḥayyān al-ġarnāṭī": {
+    "author": "muḥammad b. yūsuf ʾabū ḥayyān al-ġarnāṭī",
+    "regionality": "maġrib",
+    "death_century": "8.0",
+    "places_original": "ġarnāṭah;al-qāhirah",
+    "places_sequence": ["ġarnāṭah", "al-qāhirah"],
+    "routes": [
+      {
+        "from": "ġarnāṭah",
+        "from_code": "GHARNATA_035W372N_S",
+        "to": "al-qāhirah",
+        "to_code": "QAHIRA_312E300N_S",
+        "path": ["GHARNATA_035W372N_S", "ROUTPOINT1411_030W367N_O", "MARIYYA_025W368N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "KARYUN_301E311N_S", "BARSIQ_302E310N_S", "QARTASA_304E310N_S", "MAHALLAABUKHURASHA_306E310N_S", "DAYYAY_307E310N_S", "ROUTPOINT1002_308E310N_O", "MAHALLASURAD_308E309N_S", "MAHALLAMAHRUM_309E307N_S", "FISHAIBNSULAYM_309E307N_S", "BUNDARIYYA_309E307N_S", "TUWWA_309E306N_S", "MANUF_309E304N_S", "SUBKABID_310E304N_S", "SHATNUF_310E302N_S", "SARDUS_311E301N_S", "SHABRUWA_312E301N_S", "QAHIRA_312E300N_S"],
+        "distance_km": 4194.7,
+        "segments": 25,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      }
+    ],
+    "total_distance_km": 4194.7,
+    "uses_sea_routes": true
+  },
+  "muḥammad b. ʾaḥmad b. al-hayṯam al-balḫī al-rūḏbārī ʾabū bakr": {
+    "author": "muḥammad b. ʾaḥmad b. al-hayṯam al-balḫī al-rūḏbārī ʾabū bakr",
+    "regionality": "mašriq",
+    "death_century": "5.0",
+    "places_original": "rūḏbār;balḫ;dimašq;ġaznah",
+    "places_sequence": ["balḫ", "dimašq", "ġaznah"],
+    "routes": [
+      {
+        "from": "balḫ",
+        "from_code": "BALKH_668E367N_R",
+        "to": "dimašq",
+        "to_code": "DIMASHQ_363E335N_S",
+        "path": ["BALKH_668E367N_S", "ANBAR_659E362N_S", "ROUTPOINT1704_649E359N_O", "YAHUDIYYA_648E359N_S", "KASHAN_645E358N_S", "TALAQAN_642E357N_S", "RIBATKARZWAN_638E356N_S", "ABSHIN_635E352N_S", "RIBATSHUR_635E350N_S", "SHURMIN_635E347N_S", "RIBATMAYANAH_627E345N_S", "KARUKH_625E344N_S", "HARA_621E343N_S", "BUSANJ_614E343N_S", "KARAH_613E344N_S", "KUSUWI_611E346N_S", "ROUTPOINT1718_608E348N_O", "BUZJAN_606E351N_S", "MALAYAKIRD_602E354N_S", "NUKDAH_600E356N_S", "FARHAKIRD_595E357N_S", "ROUTPOINT1702_592E359N_O", "QASRRIH_591E360N_S", "NAYSABUR_587E361N_S", "BISKAND_583E360N_S", "HUSAYNABADH_579E361N_S", "SABZAWAR_576E361N_S", "KHUSRAWJIRD_574E361N_S", "MAZINAN_569E362N_S", "BAHMANABADH_568E363N_S", "ASADABADH_564E363N_S", "HAFDAR_561E363N_S", "MURJAN_556E363N_S", "BADHASH_551E363N_S", "HADDADA_548E362N_S", "DAMGHAN_543E361N_S", "JARMJUWI_540E359N_S", "RIBATALIYYABADH_537E357N_S", "SIMNAN_534E354N_S", "RASKALB_530E353N_S", "QARYAMILH_526E352N_S", "KHUWAR_524E352N_S", "KAHDA_520E353N_S", "DIZA_516E353N_O", "ROUTPOINT0504_511E352N_O", "QUSTANA_510E354N_S", "MASHKUYA_507E353N_S", "SAWA_504E349N_S", "DARWADH_501E350N_S", "SUSANQIN_500E350N_S", "MASDAQAN_498E350N_S", "RUDHA_497E351N_S", "BUSTA_497E351N_S", "TAZRA_493E351N_S", "ZARRA_492E350N_S", "BUZANJIRD_489E349N_S", "DARNAWA_487E348N_S", "HAMADHAN_485E347N_S", "ZAFARANIYYA_484E348N_S", "ASADABADH_481E348N_S", "QASRLUSUS_479E344N_S", "QANTARANUMAN_476E344N_S", "BISUTUN_474E343N_S", "QARMASIN_470E343N_S", "ZUBAYDIYYA_468E342N_S", "TAZAR_464E341N_S", "MARJ_462E343N_S", "MADHARWISTAN_460E344N_S", "HULWAN_459E344N_S", "QASRSHIRIN_456E344N_S", "KHANIQIN_454E343N_S", "JALULA_451E341N_S", "HARUNIYYA_450E339N_S", "DASKARA_449E339N_S", "DAYRBAZAMA_447E336N_S", "NAHRAWAN_445E334N_S", "BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "SUWA_378E337N_S", "DIMASHQ_363E335N_S"],
+        "distance_km": 3269.6,
+        "segments": 82,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "dimašq",
+        "from_code": "DIMASHQ_363E335N_S",
+        "to": "ġaznah",
+        "to_code": "GHAZNA_684E335N_R",
+        "path": ["DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S", "BADHIBIN_465E321N_S", "SIKR_467E321N_S", "TIB_473E322N_S", "QURQUB_477E321N_S", "BAYRUT_479E320N_S", "BASINNA_483E319N_S", "NAHRTIRA_483E314N_S", "AHWAZ_486E313N_S", "AZAM_490E312N_S", "ABDIN_493E312N_S", "RAMHURMUZ_496E312N_S", "HAWMAZUTT_497E310N_S", "KHABARAN_498E309N_S", "DAHLIZAN_499E307N_S", "SANBIL_501E307N_S", "ARRAJAN_502E306N_S", "ZAYTUN_503E305N_S", "ROUTEPOINTS0699_505E304N_O", "JUNBADHMALLAGHAN_508E302N_S", "DAKHWID_512E303N_S", "KHAWADHAN_515E302N_S", "NUBANDAJAN_515E301N_S", "QALAJISS_516E301N_S", "JARKAN_517E300N_S", "KHARRARA_519E300N_S", "KHULLAR_521E299N_S", "JUWAYM_522E298N_S", "SHIRAZ_525E296N_S", "RAKAN_527E297N_S", "RASSIKR_528E297N_S", "ROUTPOINT0609_532E298N_O", "JUBANAN_534E297N_S", "ABADHA_537E297N_S", "QARYAAS_539E296N_S", "SAHIH_543E297N_S", "SARMAQAN_548E296N_S", "RIBATBUSHTKHAMM_552E295N_S", "SIRJAN_557E294N_S", "ROUTPOINT0605_565E298N_O", "KHANNAB_567E298N_S", "GHUBAYRA_569E297N_S", "KUGHUN_570E296N_S", "RAIN_574E296N_S", "SARWISTAN_578E292N_S", "DARJIN_581E292N_S", "BAMM_583E291N_S", "NARMASIR_586E289N_S", "ISBIDH_599E299N_S", "RAMASHAHRISTAN_612E303N_S", "ZARANJ_616E307N_S", "ROUTPOINT1916_617E308N_O", "ZANBUQ_619E309N_S", "SARUZAN_621E311N_S", "HARURI_623E312N_S", "RIBATKARUDIN_631E313N_S", "RIBATQAHASTAN_635E313N_S", "RIBATABDALLAH_639E313N_S", "BUST_643E313N_S", "FIRUZQAND_646E315N_S", "KUHAK_653E314N_S", "BANJAWAY_654E315N_S", "ROUTPOINT1915_655E314N_O", "BAKRABADH_658E315N_S", "RIBATSARAB_663E318N_S", "KHAYSAR_673E324N_S", "ROUTPOINT1918_679E330N_O", "SAGHAN_680E330N_S", "GHAZNA_684E335N_S"],
+        "distance_km": 3604,
+        "segments": 84,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 6873.6,
+    "uses_sea_routes": false
+  },
+  "muntaǧab al-dīn b. ʾabī al-ʿizz al-hamaḏānī ʾabū yūsuf": {
+    "author": "muntaǧab al-dīn b. ʾabī al-ʿizz al-hamaḏānī ʾabū yūsuf",
+    "regionality": "mašriq visits maġrib",
+    "death_century": "7.0",
+    "places_original": "hamaḏān;miṣr;dimašq",
+    "places_sequence": ["hamaḏān", "dimašq"],
+    "routes": [
+      {
+        "from": "hamaḏān",
+        "from_code": "HAMADHAN_485E347N_R",
+        "to": "dimašq",
+        "to_code": "DIMASHQ_363E335N_S",
+        "path": ["HAMADHAN_485E347N_S", "ZAFARANIYYA_484E348N_S", "ASADABADH_481E348N_S", "QASRLUSUS_479E344N_S", "QANTARANUMAN_476E344N_S", "BISUTUN_474E343N_S", "QARMASIN_470E343N_S", "ZUBAYDIYYA_468E342N_S", "TAZAR_464E341N_S", "MARJ_462E343N_S", "MADHARWISTAN_460E344N_S", "HULWAN_459E344N_S", "QASRSHIRIN_456E344N_S", "KHANIQIN_454E343N_S", "JALULA_451E341N_S", "HARUNIYYA_450E339N_S", "DASKARA_449E339N_S", "DAYRBAZAMA_447E336N_S", "NAHRAWAN_445E334N_S", "BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "SUWA_378E337N_S", "DIMASHQ_363E335N_S"],
+        "distance_km": 1284.3,
+        "segments": 25,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1284.3,
+    "uses_sea_routes": false
+  },
+  "muraǧǧā b. yūnus al-ġāfiqī": {
+    "author": "muraǧǧā b. yūnus al-ġāfiqī",
+    "regionality": "maġrib",
+    "death_century": "6.0",
+    "places_original": "šalab;ʾišbīliyyah;sabtah;ṭanǧah",
+    "places_sequence": ["ʾišbīliyyah", "sabtah"],
+    "routes": [
+      {
+        "from": "ʾišbīliyyah",
+        "from_code": "ISHBILIYYA_059W374N_R",
+        "to": "sabtah",
+        "to_code": "SABTA_053W358N_S",
+        "path": ["ISHBILIYYA_059W374N_S", "SABTA_053W358N_S"],
+        "distance_km": 200,
+        "segments": 1,
+        "sea_crossings": true,
+        "sea_crossing_count": 1
+      }
+    ],
+    "total_distance_km": 200,
+    "uses_sea_routes": true
+  },
+  "naṣr b. ʿabd al-ʿazīz b. ʾaḥmad al-šīrāzī al-fārsī ʾabū al-ḥusayn": {
+    "author": "naṣr b. ʿabd al-ʿazīz b. ʾaḥmad al-šīrāzī al-fārsī ʾabū al-ḥusayn",
+    "regionality": "mašriq visits maġrib",
+    "death_century": "5.0",
+    "places_original": "šīrāz;ḥarrān;baġdād;miṣr",
+    "places_sequence": ["šīrāz", "ḥarrān", "baġdād"],
+    "routes": [
+      {
+        "from": "šīrāz",
+        "from_code": "SHIRAZ_525E296N_S",
+        "to": "ḥarrān",
+        "to_code": "HARRAN_390E368N_S",
+        "path": ["SHIRAZ_525E296N_S", "JUWAYM_522E298N_S", "KHULLAR_521E299N_S", "KHARRARA_519E300N_S", "JARKAN_517E300N_S", "QALAJISS_516E301N_S", "NUBANDAJAN_515E301N_S", "KHAWADHAN_515E302N_S", "DAKHWID_512E303N_S", "JUNBADHMALLAGHAN_508E302N_S", "ROUTEPOINTS0699_505E304N_O", "ZAYTUN_503E305N_S", "ARRAJAN_502E306N_S", "SANBIL_501E307N_S", "DAHLIZAN_499E307N_S", "KHABARAN_498E309N_S", "HAWMAZUTT_497E310N_S", "RAMHURMUZ_496E312N_S", "ABDIN_493E312N_S", "AZAM_490E312N_S", "AHWAZ_486E313N_S", "NAHRTIRA_483E314N_S", "BASINNA_483E319N_S", "BAYRUT_479E320N_S", "QURQUB_477E321N_S", "TIB_473E322N_S", "SIKR_467E321N_S", "BADHIBIN_465E321N_S", "WASIT_463E321N_S", "FAMSILH_461E324N_S", "NAHRSABUS_459E324N_S", "ROUTPOINT0301_457E325N_O", "JABBUL_457E325N_S", "NUMANIYYA_454E325N_S", "JARJARAYA_453E327N_S", "DAYRAQUL_449E329N_S", "SIB_448E329N_S", "MADAIN_445E330N_S", "BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "NAWUSA_426E338N_S", "ALUS_424E339N_S", "HADITHA_423E341N_S", "FUHAYMA_421E342N_S", "ROUTPOINT0201_421E342N_O", "ROUTPOINT0202_416E343N_O", "NIHIYYA_415E343N_S", "DAZIQI_411E343N_S", "WADISIBA_409E344N_S", "KHALIJBANUJUMAY_408E345N_S", "DALIYA_407E347N_S", "FASH_405E349N_S", "RAHBAMALIKIBNTAWQ_404E349N_S", "QARQISIYYA_404E351N_S", "KHANUQA_398E357N_S", "ROUTPOINT0203_392E364N_O", "HARRAN_390E368N_S"],
+        "distance_km": 1715.6,
+        "segments": 59,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ḥarrān",
+        "from_code": "HARRAN_390E368N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["HARRAN_390E368N_S", "ROUTPOINT0203_392E364N_O", "KHANUQA_398E357N_S", "QARQISIYYA_404E351N_S", "RAHBAMALIKIBNTAWQ_404E349N_S", "FASH_405E349N_S", "DALIYA_407E347N_S", "KHALIJBANUJUMAY_408E345N_S", "WADISIBA_409E344N_S", "DAZIQI_411E343N_S", "NIHIYYA_415E343N_S", "ROUTPOINT0202_416E343N_O", "ROUTPOINT0201_421E342N_O", "FUHAYMA_421E342N_S", "HADITHA_423E341N_S", "ALUS_424E339N_S", "NAWUSA_426E338N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 703.1,
+        "segments": 21,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 2418.8,
+    "uses_sea_routes": false
+  },
+  "sibṭ al-ḫayyāṭ ʿabd allāh b. ʿalī b. ʾaḥmad al-baġdādī ʾabū muḥammad": {
+    "author": "sibṭ al-ḫayyāṭ ʿabd allāh b. ʿalī b. ʾaḥmad al-baġdādī ʾabū muḥammad",
+    "regionality": "mašriq",
+    "death_century": "6.0",
+    "places_original": "baġdād;makkah",
+    "places_sequence": ["baġdād", "makkah"],
+    "routes": [
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["BAGHDAD_443E333N_S", "KARKH_443E333N_S", "SARSAR_443E331N_S", "NAHRMALIK_443E330N_S", "JISRKUTHA_443E328N_S", "QASRIBNHUBAYRA_443E327N_S", "JISRSURA_443E326N_S", "HAMMAMIBNUMAR_443E323N_S", "SHAHI_443E322N_S", "KUFA_443E320N_S", "HIRA_443E320N_S", "NAJAF_443E319N_S", "QADISIYYA_441E316N_S", "UDHAYB_441E314N_S", "MUGHITHA_440E311N_S", "QARA_438E308N_S", "WAQISA_437E305N_S", "AQABA_436E300N_S", "QA_436E297N_S", "ZUBALA_435E294N_S", "SHUQUQ_434E290N_S", "BITAN_432E287N_S", "THALABIYYA_431E282N_S", "KHUZAYMIYYA_431E279N_S", "AJFUR_429E274N_S", "FAYD_425E270N_S", "TUZ_422E267N_S", "SAMIRA_420E264N_S", "HAJIR_417E259N_S", "MADINNAQIRA_415E255N_S", "MUGHITHAMAWAN_414E250N_S", "RABADHA_413E246N_S", "SALILA_412E243N_S", "UMAQ_409E240N_S", "MADINBANUSULAYM_408E235N_O", "UFAYIYYA_407E230N_S", "MISLAH_407E224N_S", "GHAMRA_408E218N_S", "AWTAS_406E217N_S", "DHATIRQ_404E216N_S", "MAKKA_398E213N_S"],
+        "distance_km": 1493.7,
+        "segments": 40,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1493.7,
+    "uses_sea_routes": false
+  },
+  "ṭāhir b. ʾaḥmad b. muḥammad al-qazwīnī al-naǧǧār ʾabū muḥammad": {
+    "author": "ṭāhir b. ʾaḥmad b. muḥammad al-qazwīnī al-naǧǧār ʾabū muḥammad",
+    "regionality": "mašriq",
+    "death_century": "6.0",
+    "places_original": "qazwīn;al-rayy;tustar",
+    "places_sequence": ["qazwīn", "al-rayy", "tustar"],
+    "routes": [
+      {
+        "from": "qazwīn",
+        "from_code": "QAZWIN_500E362N_S",
+        "to": "al-rayy",
+        "to_code": "RAYY_515E356N_S",
+        "path": ["QAZWIN_500E362N_S", "RAYY_515E356N_S"],
+        "distance_km": 157.1,
+        "segments": 1,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "al-rayy",
+        "from_code": "RAYY_515E356N_S",
+        "to": "tustar",
+        "to_code": "TUSTAR_488E320N_R",
+        "path": ["RAYY_515E356N_S", "QUSTANA_510E354N_S", "ROUTPOINT0504_511E352N_O", "ROUTPOINT0505_507E348N_O", "AWA_505E346N_S", "KARAJ_495E338N_S", "DARAQAN_487E334N_S", "SABURKHASHT_483E334N_S", "DIZ_484E329N_S", "DIZ_484E323N_S", "JUNDAYSABUR_485E322N_S", "TUSTAR_488E320N_S"],
+        "distance_km": 612.8,
+        "segments": 11,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 769.8,
+    "uses_sea_routes": false
+  },
+  "ṭāhir b. ʿarab b. ʾibrāhīm b. ʾaḥmad ʾabū al-ḥusayn al-ʾiṣbahānī": {
+    "author": "ṭāhir b. ʿarab b. ʾibrāhīm b. ʾaḥmad ʾabū al-ḥusayn al-ʾiṣbahānī",
+    "regionality": "mašriq",
+    "death_century": "9.0",
+    "places_original": "ʾiṣbahān;makkah",
+    "places_sequence": ["ʾiṣbahān", "makkah"],
+    "routes": [
+      {
+        "from": "ʾiṣbahān",
+        "from_code": "ISBAHAN_516E326N_R",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["ISBAHAN_516E326N_S", "ROUTPOINT0508_516E326N_O", "KHANLANJAN_515E324N_S", "RIBATBARAKAN_512E320N_S", "LURDAJAN_507E315N_S", "JISRJAHANNAM_502E314N_S", "BADAH_499E312N_S", "ROUTPOINT0402_497E312N_O", "RAMHURMUZ_496E312N_S", "ABDIN_493E312N_S", "AZAM_490E312N_S", "AHWAZ_486E313N_S", "SUQARBAA_485E309N_S", "HISNMAHDI_483E305N_S", "ROUTPOINT0303_481E304N_O", "BAYAN_480E304N_S", "UBULLA_478E304N_S", "BASRA_477E304N_S", "HAFARABUMUSA_459E284N_S", "NIBAJ_444E263N_S", "AWSAJA_440E259N_S", "RAMA_434E257N_S", "IMMARA_431E253N_S", "TIKHFA_430E249N_S", "DARIYYA_428E246N_S", "JADILA_429E240N_S", "ROUTPOINT0709_428E238N_O", "FALJA_424E235N_S", "DATHINA_419E232N_S", "QUBA_416E227N_S", "SHUBAYKA_415E224N_S", "WAJRA_409E220N_S", "GHAMRA_408E218N_S", "AWTAS_406E217N_S", "DHATIRQ_404E216N_S", "MAKKA_398E213N_S"],
+        "distance_km": 1937.1,
+        "segments": 35,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1937.1,
+    "uses_sea_routes": false
+  },
+  "yaḥyā b. muḥammad b. ḫalaf al-hūzanī al-ʾišbīlī ʾabū zakariyyāʾ": {
+    "author": "yaḥyā b. muḥammad b. ḫalaf al-hūzanī al-ʾišbīlī ʾabū zakariyyāʾ",
+    "regionality": "maġrib",
+    "death_century": "7.0",
+    "places_original": "ʾišbīliyyah;sabtah",
+    "places_sequence": ["ʾišbīliyyah", "sabtah"],
+    "routes": [
+      {
+        "from": "ʾišbīliyyah",
+        "from_code": "ISHBILIYYA_059W374N_R",
+        "to": "sabtah",
+        "to_code": "SABTA_053W358N_S",
+        "path": ["ISHBILIYYA_059W374N_S", "SABTA_053W358N_S"],
+        "distance_km": 200,
+        "segments": 1,
+        "sea_crossings": true,
+        "sea_crossing_count": 1
+      }
+    ],
+    "total_distance_km": 200,
+    "uses_sea_routes": true
+  },
+  "yūsuf b. ʿalī b. ǧubārah al-biskarī al-huḏalī ʾabū al-qāsim": {
+    "author": "yūsuf b. ʿalī b. ǧubārah al-biskarī al-huḏalī ʾabū al-qāsim",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "5.0",
+    "places_original": "al-maġrib;farġānah;nīsābūr;baġdād;ʿasqalān;al-wāsiṭ;miṣr;al-ʾiskandariyyah;hamaḏān;ʾubullah;samarqand;ḥalab;ʾarsūf;qayrawān;ṣaydā;al-baṣrah;ǧurǧān;dimašq;al-kūfah;mayyāfāriqīn;al-raqqah;dayr ʿāqūl;ḥarrān;qābis;ṣūr;al-lāḏiqiyyah;tinnīs;fasā;dimyāṭ;ʾaṭrābulus al-maġrib;ʾiṣbahān;al-ramlah;al-raḥbah;ǧīraft;nayǧus;al-maʿarrah;al-bayḍāʾ;šīrāz",
+    "places_sequence": ["farġānah", "nīsābūr", "baġdād", "ʿasqalān", "al-wāsiṭ", "al-ʾiskandariyyah", "hamaḏān", "samarqand", "ḥalab", "ʾarsūf", "qayrawān", "al-baṣrah", "ǧurǧān", "dimašq", "al-kūfah", "mayyāfāriqīn", "al-raqqah", "ḥarrān", "qābis", "ṣūr", "al-lāḏiqiyyah", "tinnīs", "fasā", "dimyāṭ", "ʾiṣbahān", "al-ramlah", "ǧīraft", "al-bayḍāʾ", "šīrāz"],
+    "routes": [
+      {
+        "from": "farġānah",
+        "from_code": "FARGHANA_720E403N_R",
+        "to": "nīsābūr",
+        "to_code": "NAYSABUR_587E361N_R",
+        "path": ["ZANDARAMASH_720E402N_S", "RISHTAN_715E400N_S", "SUKH_712E399N_S", "ASBARA_707E401N_S", "KAND_705E402N_S", "ROUTPOINT1726_696E402N_O", "KHUJANDA_696E402N_S", "ROUTPOINT1714_692E400N_O", "SABAT_687E399N_S", "ZAMIN_684E399N_S", "BURNAMADH_681E399N_S", "ROUTPOINT1725_679E399N_O", "RIBATSAD_677E398N_S", "BUZMAJAN_673E397N_S", "KABUZANJAKATH_671E397N_S", "SAMARQAND_670E396N_S", "ZARMAN_666E397N_S", "RABINJAN_663E398N_S", "DABUSIYA_660E399N_S", "KHUDIMANKAN_655E401N_S", "KARMIINIYYA_654E401N_S", "TAWAWIS_647E400N_S", "BUKHARA_644E398N_S", "BAYKAND_640E395N_S", "FIRABR_636E391N_S", "AMUL_635E390N_S", "RIBATBARIS_633E388N_S", "JUBBHAMMAD_632E385N_S", "RIBATNASRAK_629E383N_S", "RIBATHADID_628E380N_S", "KUSHMAYHAN_625E377N_S", "MARW_621E376N_S", "JARUJIRD_618E375N_S", "DANDANAQAN_616E372N_S", "TALASTANA_614E370N_S", "USHTURMAGHAK_613E368N_S", "SARAKHS_611E365N_S", "UKINA_607E363N_S", "MAZDURAN_605E361N_S", "SAHIH_601E361N_S", "KHAKISAR_596E360N_S", "QASRRIH_591E360N_S", "NAYSABUR_587E361N_S"],
+        "distance_km": 1422.9,
+        "segments": 42,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "nīsābūr",
+        "from_code": "NAYSABUR_587E361N_R",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["NAYSABUR_587E361N_S", "BISKAND_583E360N_S", "HUSAYNABADH_579E361N_S", "SABZAWAR_576E361N_S", "KHUSRAWJIRD_574E361N_S", "MAZINAN_569E362N_S", "BAHMANABADH_568E363N_S", "ASADABADH_564E363N_S", "HAFDAR_561E363N_S", "MURJAN_556E363N_S", "BADHASH_551E363N_S", "HADDADA_548E362N_S", "DAMGHAN_543E361N_S", "JARMJUWI_540E359N_S", "RIBATALIYYABADH_537E357N_S", "SIMNAN_534E354N_S", "RASKALB_530E353N_S", "QARYAMILH_526E352N_S", "KHUWAR_524E352N_S", "KAHDA_520E353N_S", "DIZA_516E353N_O", "ROUTPOINT0504_511E352N_O", "QUSTANA_510E354N_S", "MASHKUYA_507E353N_S", "SAWA_504E349N_S", "DARWADH_501E350N_S", "SUSANQIN_500E350N_S", "MASDAQAN_498E350N_S", "RUDHA_497E351N_S", "BUSTA_497E351N_S", "TAZRA_493E351N_S", "ZARRA_492E350N_S", "BUZANJIRD_489E349N_S", "DARNAWA_487E348N_S", "HAMADHAN_485E347N_S", "ZAFARANIYYA_484E348N_S", "ASADABADH_481E348N_S", "QASRLUSUS_479E344N_S", "QANTARANUMAN_476E344N_S", "BISUTUN_474E343N_S", "QARMASIN_470E343N_S", "ZUBAYDIYYA_468E342N_S", "TAZAR_464E341N_S", "MARJ_462E343N_S", "MADHARWISTAN_460E344N_S", "HULWAN_459E344N_S", "QASRSHIRIN_456E344N_S", "KHANIQIN_454E343N_S", "JALULA_451E341N_S", "HARUNIYYA_450E339N_S", "DASKARA_449E339N_S", "DAYRBAZAMA_447E336N_S", "NAHRAWAN_445E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 1530.7,
+        "segments": 53,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "ʿasqalān",
+        "to_code": "ASQALAN_345E316N_S",
+        "path": ["BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "SUWA_378E337N_S", "DIMASHQ_363E335N_S", "KUSWA_362E333N_S", "ROUTPOINT0121_362E333N_O", "JASIM_360E329N_S", "AQABAFIQ_356E327N_S", "ROUTPOINT0115_355E326N_O", "BAYSAN_354E325N_S", "TAASIR_353E323N_S", "NABULUS_352E322N_S", "LUDD_348E319N_S", "RAMLA_348E319N_S", "YUBNA_347E318N_S", "ROUTPOINT0111_346E318N_O", "AZDUD_346E317N_S", "ASQALAN_345E316N_S"],
+        "distance_km": 1058.1,
+        "segments": 20,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ʿasqalān",
+        "from_code": "ASQALAN_345E316N_S",
+        "to": "al-wāsiṭ",
+        "to_code": "WASIT_463E321N_S",
+        "path": ["ASQALAN_345E316N_S", "AZDUD_346E317N_S", "ROUTPOINT0111_346E318N_O", "YUBNA_347E318N_S", "RAMLA_348E319N_S", "LUDD_348E319N_S", "NABULUS_352E322N_S", "TAASIR_353E323N_S", "BAYSAN_354E325N_S", "ROUTPOINT0115_355E326N_O", "AQABAFIQ_356E327N_S", "JASIM_360E329N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S"],
+        "distance_km": 1310.3,
+        "segments": 30,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "al-wāsiṭ",
+        "from_code": "WASIT_463E321N_S",
+        "to": "al-ʾiskandariyyah",
+        "to_code": "ISKANDARIYYA_299E311N_S",
+        "path": ["WASIT_463E321N_S", "FAMSILH_461E324N_S", "NAHRSABUS_459E324N_S", "ROUTPOINT0301_457E325N_O", "JABBUL_457E325N_S", "NUMANIYYA_454E325N_S", "JARJARAYA_453E327N_S", "DAYRAQUL_449E329N_S", "SIB_448E329N_S", "MADAIN_445E330N_S", "BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "SUWA_378E337N_S", "DIMASHQ_363E335N_S", "KUSWA_362E333N_S", "ROUTPOINT0121_362E333N_O", "JASIM_360E329N_S", "AQABAFIQ_356E327N_S", "ROUTPOINT0115_355E326N_O", "BAYSAN_354E325N_S", "TAASIR_353E323N_S", "NABULUS_352E322N_S", "LUDD_348E319N_S", "RAMLA_348E319N_S", "ROUTPOINT0109_345E315N_O", "RAFH_342E313N_S", "ARISH_338E311N_S", "WARRADA_335E310N_S", "BAQQARA_331E310N_S", "FARAMA_325E310N_S", "TINNIS_322E312N_S", "DIMYAT_317E314N_S", "BURULLUS_309E315N_S", "IKHNA_307E315N_S", "NASTARAWA_307E314N_S", "RASHID_303E314N_S", "ISKANDARIYYA_299E311N_S"],
+        "distance_km": 1813.6,
+        "segments": 39,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "al-ʾiskandariyyah",
+        "from_code": "ISKANDARIYYA_299E311N_S",
+        "to": "hamaḏān",
+        "to_code": "HAMADHAN_485E347N_R",
+        "path": ["ISKANDARIYYA_299E311N_S", "RASHID_303E314N_S", "NASTARAWA_307E314N_S", "IKHNA_307E315N_S", "BURULLUS_309E315N_S", "DIMYAT_317E314N_S", "TINNIS_322E312N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "RAMLA_348E319N_S", "LUDD_348E319N_S", "NABULUS_352E322N_S", "TAASIR_353E323N_S", "BAYSAN_354E325N_S", "ROUTPOINT0115_355E326N_O", "AQABAFIQ_356E327N_S", "JASIM_360E329N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S", "NAHRAWAN_445E334N_S", "DAYRBAZAMA_447E336N_S", "DASKARA_449E339N_S", "HARUNIYYA_450E339N_S", "JALULA_451E341N_S", "KHANIQIN_454E343N_S", "QASRSHIRIN_456E344N_S", "HULWAN_459E344N_S", "MADHARWISTAN_460E344N_S", "MARJ_462E343N_S", "TAZAR_464E341N_S", "ZUBAYDIYYA_468E342N_S", "QARMASIN_470E343N_S", "BISUTUN_474E343N_S", "QANTARANUMAN_476E344N_S", "QASRLUSUS_479E344N_S", "ASADABADH_481E348N_S", "ZAFARANIYYA_484E348N_S", "HAMADHAN_485E347N_S"],
+        "distance_km": 2069.4,
+        "segments": 48,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "hamaḏān",
+        "from_code": "HAMADHAN_485E347N_R",
+        "to": "samarqand",
+        "to_code": "SAMARQAND_670E396N_S",
+        "path": ["HAMADHAN_485E347N_S", "DARNAWA_487E348N_S", "BUZANJIRD_489E349N_S", "ZARRA_492E350N_S", "TAZRA_493E351N_S", "BUSTA_497E351N_S", "RUDHA_497E351N_S", "MASDAQAN_498E350N_S", "SUSANQIN_500E350N_S", "DARWADH_501E350N_S", "SAWA_504E349N_S", "MASHKUYA_507E353N_S", "QUSTANA_510E354N_S", "ROUTPOINT0504_511E352N_O", "DIZA_516E353N_O", "KAHDA_520E353N_S", "KHUWAR_524E352N_S", "QARYAMILH_526E352N_S", "RASKALB_530E353N_S", "SIMNAN_534E354N_S", "RIBATALIYYABADH_537E357N_S", "JARMJUWI_540E359N_S", "DAMGHAN_543E361N_S", "HADDADA_548E362N_S", "BADHASH_551E363N_S", "MURJAN_556E363N_S", "HAFDAR_561E363N_S", "ASADABADH_564E363N_S", "BAHMANABADH_568E363N_S", "MAZINAN_569E362N_S", "KHUSRAWJIRD_574E361N_S", "SABZAWAR_576E361N_S", "HUSAYNABADH_579E361N_S", "BISKAND_583E360N_S", "NAYSABUR_587E361N_S", "QASRRIH_591E360N_S", "KHAKISAR_596E360N_S", "SAHIH_601E361N_S", "MAZDURAN_605E361N_S", "UKINA_607E363N_S", "SARAKHS_611E365N_S", "USHTURMAGHAK_613E368N_S", "TALASTANA_614E370N_S", "DANDANAQAN_616E372N_S", "JARUJIRD_618E375N_S", "MARW_621E376N_S", "KUSHMAYHAN_625E377N_S", "RIBATHADID_628E380N_S", "RIBATNASRAK_629E383N_S", "JUBBHAMMAD_632E385N_S", "RIBATBARIS_633E388N_S", "AMUL_635E390N_S", "FIRABR_636E391N_S", "BAYKAND_640E395N_S", "BUKHARA_644E398N_S", "TAWAWIS_647E400N_S", "KARMIINIYYA_654E401N_S", "KHUDIMANKAN_655E401N_S", "DABUSIYA_660E399N_S", "RABINJAN_663E398N_S", "ZARMAN_666E397N_S", "SAMARQAND_670E396N_S"],
+        "distance_km": 1979.1,
+        "segments": 61,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "samarqand",
+        "from_code": "SAMARQAND_670E396N_S",
+        "to": "ḥalab",
+        "to_code": "HALAB_371E361N_S",
+        "path": ["SAMARQAND_670E396N_S", "ZARMAN_666E397N_S", "RABINJAN_663E398N_S", "DABUSIYA_660E399N_S", "KHUDIMANKAN_655E401N_S", "KARMIINIYYA_654E401N_S", "TAWAWIS_647E400N_S", "BUKHARA_644E398N_S", "BAYKAND_640E395N_S", "FIRABR_636E391N_S", "AMUL_635E390N_S", "RIBATBARIS_633E388N_S", "JUBBHAMMAD_632E385N_S", "RIBATNASRAK_629E383N_S", "RIBATHADID_628E380N_S", "KUSHMAYHAN_625E377N_S", "MARW_621E376N_S", "JARUJIRD_618E375N_S", "DANDANAQAN_616E372N_S", "TALASTANA_614E370N_S", "USHTURMAGHAK_613E368N_S", "SARAKHS_611E365N_S", "UKINA_607E363N_S", "MAZDURAN_605E361N_S", "SAHIH_601E361N_S", "KHAKISAR_596E360N_S", "QASRRIH_591E360N_S", "NAYSABUR_587E361N_S", "BISKAND_583E360N_S", "HUSAYNABADH_579E361N_S", "SABZAWAR_576E361N_S", "KHUSRAWJIRD_574E361N_S", "MAZINAN_569E362N_S", "BAHMANABADH_568E363N_S", "ASADABADH_564E363N_S", "HAFDAR_561E363N_S", "MURJAN_556E363N_S", "BADHASH_551E363N_S", "HADDADA_548E362N_S", "DAMGHAN_543E361N_S", "JARMJUWI_540E359N_S", "RIBATALIYYABADH_537E357N_S", "SIMNAN_534E354N_S", "RASKALB_530E353N_S", "QARYAMILH_526E352N_S", "KHUWAR_524E352N_S", "KAHDA_520E353N_S", "DIZA_516E353N_O", "ROUTPOINT0504_511E352N_O", "QUSTANA_510E354N_S", "MASHKUYA_507E353N_S", "SAWA_504E349N_S", "DARWADH_501E350N_S", "SUSANQIN_500E350N_S", "MASDAQAN_498E350N_S", "RUDHA_497E351N_S", "BUSTA_497E351N_S", "TAZRA_493E351N_S", "ZARRA_492E350N_S", "BUZANJIRD_489E349N_S", "DARNAWA_487E348N_S", "HAMADHAN_485E347N_S", "ZAFARANIYYA_484E348N_S", "ASADABADH_481E348N_S", "QASRLUSUS_479E344N_S", "QANTARANUMAN_476E344N_S", "BISUTUN_474E343N_S", "QARMASIN_470E343N_S", "ZUBAYDIYYA_468E342N_S", "TAZAR_464E341N_S", "MARJ_462E343N_S", "MADHARWISTAN_460E344N_S", "HULWAN_459E344N_S", "QASRSHIRIN_456E344N_S", "KHANIQIN_454E343N_S", "JALULA_451E341N_S", "HARUNIYYA_450E339N_S", "DASKARA_449E339N_S", "DAYRBAZAMA_447E336N_S", "NAHRAWAN_445E334N_S", "BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "NAWUSA_426E338N_S", "ALUS_424E339N_S", "HADITHA_423E341N_S", "FUHAYMA_421E342N_S", "ROUTPOINT0201_421E342N_O", "ROUTPOINT0202_416E343N_O", "NIHIYYA_415E343N_S", "DAZIQI_411E343N_S", "WADISIBA_409E344N_S", "KHALIJBANUJUMAY_408E345N_S", "DALIYA_407E347N_S", "FASH_405E349N_S", "RAHBAMALIKIBNTAWQ_404E349N_S", "QARQISIYYA_404E351N_S", "FAMNAHRSAID_401E353N_S", "MUBARAK_398E355N_S", "RAQQA_390E359N_S", "DAWSAR_384E359N_S", "BALIS_380E360N_S", "HALAB_371E361N_S"],
+        "distance_km": 3292.4,
+        "segments": 104,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ḥalab",
+        "from_code": "HALAB_371E361N_S",
+        "to": "ʾarsūf",
+        "to_code": "ARSUF_348E321N_S",
+        "path": ["HALAB_371E361N_S", "QINNASRIN_370E359N_S", "TALLMANNAS_367E356N_S", "SAWWARAN_367E352N_S", "HAMA_367E351N_S", "RASTAN_367E349N_S", "HIMS_367E347N_S", "JUSIYA_365E344N_S", "LABWA_363E341N_S", "BALABAKK_361E340N_S", "AYNJARR_359E337N_S", "QARUN_357E335N_S", "QARYAUYUN_355E333N_S", "ROUTPOINT0117_355E332N_O", "MAJDALSALIM_354E332N_S", "SUR_352E332N_S", "AKKA_350E329N_S", "KANISA_349E327N_S", "QAYSARIYYA_348E324N_S", "ARSUF_348E321N_S"],
+        "distance_km": 549.8,
+        "segments": 19,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ʾarsūf",
+        "from_code": "ARSUF_348E321N_S",
+        "to": "qayrawān",
+        "to_code": "QAYRAWAN_101E357N_S",
+        "path": ["ARSUF_348E321N_S", "RAMLA_348E319N_S", "ROUTPOINT0109_345E315N_O", "RAFH_342E313N_S", "ARISH_338E311N_S", "WARRADA_335E310N_S", "BAQQARA_331E310N_S", "FARAMA_325E310N_S", "TINNIS_322E312N_S", "DIMYAT_317E314N_S", "BURULLUS_309E315N_S", "IKHNA_307E315N_S", "NASTARAWA_307E314N_S", "RASHID_303E314N_S", "ISKANDARIYYA_299E311N_S", "BARQA_208E323N_S", "MALITA_145E359N_S", "TUNIS_101E367N_S", "AWDHANA_102E365N_S", "ZAGHWAN_101E364N_S", "ROUTPOINT1217_101E357N_O", "QAYRAWAN_101E357N_S"],
+        "distance_km": 3082.1,
+        "segments": 21,
+        "sea_crossings": true,
+        "sea_crossing_count": 3
+      },
+      {
+        "from": "qayrawān",
+        "from_code": "QAYRAWAN_101E357N_S",
+        "to": "al-baṣrah",
+        "to_code": "BASRA_477E304N_S",
+        "path": ["QAYRAWAN_101E357N_S", "ROUTPOINT1217_101E357N_O", "ZAGHWAN_101E364N_S", "AWDHANA_102E365N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "RASHID_303E314N_S", "NASTARAWA_307E314N_S", "IKHNA_307E315N_S", "BURULLUS_309E315N_S", "DIMYAT_317E314N_S", "TINNIS_322E312N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "RAMLA_348E319N_S", "LUDD_348E319N_S", "NABULUS_352E322N_S", "TAASIR_353E323N_S", "BAYSAN_354E325N_S", "ROUTPOINT0115_355E326N_O", "AQABAFIQ_356E327N_S", "JASIM_360E329N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S", "FARUTH_465E318N_S", "QATR_466E317N_O", "ROUTPOINT0302_474E309N_O", "BASRA_477E304N_S"],
+        "distance_km": 4565.6,
+        "segments": 50,
+        "sea_crossings": true,
+        "sea_crossing_count": 3
+      },
+      {
+        "from": "al-baṣrah",
+        "from_code": "BASRA_477E304N_S",
+        "to": "ǧurǧān",
+        "to_code": "JURJAN_549E373N_R",
+        "path": ["BASRA_477E304N_S", "UBULLA_478E304N_S", "BAYAN_480E304N_S", "ROUTPOINT0303_481E304N_O", "HISNMAHDI_483E305N_S", "SUQARBAA_485E309N_S", "AHWAZ_486E313N_S", "ASKARMUKRAM_488E316N_S", "TUSTAR_488E320N_S", "JUNDAYSABUR_485E322N_S", "DIZ_484E323N_S", "DIZ_484E329N_S", "SABURKHASHT_483E334N_S", "DARAQAN_487E334N_S", "KARAJ_495E338N_S", "AWA_505E346N_S", "ROUTPOINT0505_507E348N_O", "ROUTPOINT0504_511E352N_O", "QUSTANA_510E354N_S", "RAYY_515E356N_S", "ROUTPOINT1604_518E356N_O", "NAMAHAND_519E357N_S", "BALUR_520E358N_S", "ASAK_522E358N_S", "AMUL_524E364N_S", "MILA_525E364N_S", "MAMATIR_527E365N_S", "SARIYA_531E365N_S", "MIHRAWAN_536E366N_S", "TAMISHA_540E367N_S", "NAMIYA_543E367N_S", "ASTARABADH_544E367N_S", "RIBATALI_545E372N_S", "RIBATAMIR_547E375N_S"],
+        "distance_km": 1296.9,
+        "segments": 33,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ǧurǧān",
+        "from_code": "JURJAN_549E373N_R",
+        "to": "dimašq",
+        "to_code": "DIMASHQ_363E335N_S",
+        "path": ["RIBATAMIR_547E375N_S", "RIBATALI_545E372N_S", "ASTARABADH_544E367N_S", "NAMIYA_543E367N_S", "TAMISHA_540E367N_S", "MIHRAWAN_536E366N_S", "SARIYA_531E365N_S", "MAMATIR_527E365N_S", "MILA_525E364N_S", "AMUL_524E364N_S", "ASAK_522E358N_S", "BALUR_520E358N_S", "NAMAHAND_519E357N_S", "ROUTPOINT1604_518E356N_O", "RAYY_515E356N_S", "QUSTANA_510E354N_S", "MASHKUYA_507E353N_S", "SAWA_504E349N_S", "DARWADH_501E350N_S", "SUSANQIN_500E350N_S", "MASDAQAN_498E350N_S", "RUDHA_497E351N_S", "BUSTA_497E351N_S", "TAZRA_493E351N_S", "ZARRA_492E350N_S", "BUZANJIRD_489E349N_S", "DARNAWA_487E348N_S", "HAMADHAN_485E347N_S", "ZAFARANIYYA_484E348N_S", "ASADABADH_481E348N_S", "QASRLUSUS_479E344N_S", "QANTARANUMAN_476E344N_S", "BISUTUN_474E343N_S", "QARMASIN_470E343N_S", "ZUBAYDIYYA_468E342N_S", "TAZAR_464E341N_S", "MARJ_462E343N_S", "MADHARWISTAN_460E344N_S", "HULWAN_459E344N_S", "QASRSHIRIN_456E344N_S", "KHANIQIN_454E343N_S", "JALULA_451E341N_S", "HARUNIYYA_450E339N_S", "DASKARA_449E339N_S", "DAYRBAZAMA_447E336N_S", "NAHRAWAN_445E334N_S", "BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "SUWA_378E337N_S", "DIMASHQ_363E335N_S"],
+        "distance_km": 2020.1,
+        "segments": 52,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "dimašq",
+        "from_code": "DIMASHQ_363E335N_S",
+        "to": "al-kūfah",
+        "to_code": "KUFA_443E320N_S",
+        "path": ["DIMASHQ_363E335N_S", "SUWA_378E337N_S", "ROUTPOINT0906_392E321N_O", "KHAFIYYA_396E319N_S", "ROUTPOINT0907_398E320N_O", "JUBBA_401E318N_S", "KHATTA_407E316N_S", "JAM_414E316N_S", "HUSA_420E317N_S", "ABYAD_424E318N_S", "QUTQUTANA_438E319N_S", "HIRA_443E320N_S", "KUFA_443E320N_S"],
+        "distance_km": 877.2,
+        "segments": 12,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "al-kūfah",
+        "from_code": "KUFA_443E320N_S",
+        "to": "mayyāfāriqīn",
+        "to_code": "MAYYAFARIQIN_410E381N_S",
+        "path": ["KUFA_443E320N_S", "SHAHI_443E322N_S", "HAMMAMIBNUMAR_443E323N_S", "JISRSURA_443E326N_S", "QASRIBNHUBAYRA_443E327N_S", "JISRKUTHA_443E328N_S", "NAHRMALIK_443E330N_S", "SARSAR_443E331N_S", "KARKH_443E333N_S", "BAGHDAD_443E333N_S", "BARADAN_443E335N_S", "UKBARA_442E338N_S", "HARBA_441E339N_S", "ALTH_440E340N_S", "QADISIYYA_439E340N_S", "SAMARRA_438E342N_S", "KARKH_438E342N_S", "DUR_438E344N_S", "JABILTA_437E346N_S", "SUDAQANIYYA_436E348N_S", "BARIMMA_435E350N_S", "SINN_434E352N_S", "BAQIA_433E356N_S", "HADITHA_433E360N_S", "MARJJUHAYNA_432E361N_S", "MAWSIL_431E363N_S", "NINAWA_431E363N_S", "MAZARII_430E366N_S", "MALATHAYA_429E368N_S", "HASANIYYA_427E371N_S", "THAMANIN_426E373N_S", "JAZIRAIBNUMAR_421E372N_S", "TALLFAFAN_417E377N_S", "ARZAN_416E379N_S", "MAYYAFARIQIN_410E381N_S"],
+        "distance_km": 855.7,
+        "segments": 34,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "mayyāfāriqīn",
+        "from_code": "MAYYAFARIQIN_410E381N_S",
+        "to": "al-raqqah",
+        "to_code": "RAQQA_390E359N_S",
+        "path": ["MAYYAFARIQIN_410E381N_S", "AMID_402E379N_S", "HARRAN_390E368N_S", "TALLMAHRA_391E366N_S", "HISNMASLAMA_390E363N_S", "ROUTPOINT0204_390E361N_O", "RAQQA_390E359N_S"],
+        "distance_km": 336.4,
+        "segments": 6,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "al-raqqah",
+        "from_code": "RAQQA_390E359N_S",
+        "to": "ḥarrān",
+        "to_code": "HARRAN_390E368N_S",
+        "path": ["RAQQA_390E359N_S", "ROUTPOINT0204_390E361N_O", "HISNMASLAMA_390E363N_S", "TALLMAHRA_391E366N_S", "HARRAN_390E368N_S"],
+        "distance_km": 106.6,
+        "segments": 4,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ḥarrān",
+        "from_code": "HARRAN_390E368N_S",
+        "to": "qābis",
+        "to_code": "QABIS_100E338N_S",
+        "path": ["HARRAN_390E368N_S", "TALLMAHRA_391E366N_S", "HISNMASLAMA_390E363N_S", "ROUTPOINT0204_390E361N_O", "RAQQA_390E359N_S", "RUSAFA_387E356N_S", "NIHYA_373E344N_S", "QARYATAN_372E342N_S", "JARUD_367E338N_S", "QUTAYYIFA_366E337N_S", "DIMASHQ_363E335N_S", "KUSWA_362E333N_S", "ROUTPOINT0121_362E333N_O", "JASIM_360E329N_S", "AQABAFIQ_356E327N_S", "ROUTPOINT0115_355E326N_O", "BAYSAN_354E325N_S", "TAASIR_353E323N_S", "NABULUS_352E322N_S", "LUDD_348E319N_S", "RAMLA_348E319N_S", "ROUTPOINT0109_345E315N_O", "RAFH_342E313N_S", "ARISH_338E311N_S", "WARRADA_335E310N_S", "BAQQARA_331E310N_S", "FARAMA_325E310N_S", "TINNIS_322E312N_S", "DIMYAT_317E314N_S", "BURULLUS_309E315N_S", "IKHNA_307E315N_S", "NASTARAWA_307E314N_S", "RASHID_303E314N_S", "ISKANDARIYYA_299E311N_S", "BARQA_208E323N_S", "ATRABULUS_131E328N_S", "SABRA_124E327N_S", "BARJAMT_116E330N_S", "FAWWARA_105E335N_S", "KATANA_102E336N_S", "QABIS_100E338N_S"],
+        "distance_km": 3701.6,
+        "segments": 40,
+        "sea_crossings": true,
+        "sea_crossing_count": 2
+      },
+      {
+        "from": "qābis",
+        "from_code": "QABIS_100E338N_S",
+        "to": "ṣūr",
+        "to_code": "SUR_352E332N_S",
+        "path": ["QABIS_100E338N_S", "KATANA_102E336N_S", "FAWWARA_105E335N_S", "BARJAMT_116E330N_S", "SABRA_124E327N_S", "ATRABULUS_131E328N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "RASHID_303E314N_S", "NASTARAWA_307E314N_S", "IKHNA_307E315N_S", "BURULLUS_309E315N_S", "DIMYAT_317E314N_S", "TINNIS_322E312N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "RAMLA_348E319N_S", "LUDD_348E319N_S", "KAFARSABA_348E321N_S", "QAYSARIYYA_348E324N_S", "KANISA_349E327N_S", "AKKA_350E329N_S", "SUR_352E332N_S"],
+        "distance_km": 3135.8,
+        "segments": 26,
+        "sea_crossings": true,
+        "sea_crossing_count": 2
+      },
+      {
+        "from": "ṣūr",
+        "from_code": "SUR_352E332N_S",
+        "to": "al-lāḏiqiyyah",
+        "to_code": "LADHIQIYYA_358E355N_S",
+        "path": ["SUR_352E332N_S", "ADHNUN_352E333N_S", "SARAFANDA_352E334N_S", "SAYDA_353E335N_S", "NAIMA_354E337N_S", "BAYRUT_355E339N_S", "ROUTPOINT0118_355E339N_O", "JUNIYYA_356E339N_S", "JUBAYL_356E341N_S", "BATHRUN_356E342N_S", "ANAFA_357E343N_S", "ATRABULUS_358E344N_S", "ROUTPOINT0122_359E348N_O", "ANTARTUS_359E348N_S", "MARAQIYYA_359E350N_S", "BULUNYAS_359E351N_S", "JABALA_359E353N_S", "LADHIQIYYA_358E355N_S"],
+        "distance_km": 288.9,
+        "segments": 17,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "al-lāḏiqiyyah",
+        "from_code": "LADHIQIYYA_358E355N_S",
+        "to": "tinnīs",
+        "to_code": "TINNIS_322E312N_S",
+        "path": ["LADHIQIYYA_358E355N_S", "JABALA_359E353N_S", "BULUNYAS_359E351N_S", "MARAQIYYA_359E350N_S", "ANTARTUS_359E348N_S", "ROUTPOINT0122_359E348N_O", "ATRABULUS_358E344N_S", "ANAFA_357E343N_S", "BATHRUN_356E342N_S", "JUBAYL_356E341N_S", "JUNIYYA_356E339N_S", "ROUTPOINT0118_355E339N_O", "BAYRUT_355E339N_S", "NAIMA_354E337N_S", "SAYDA_353E335N_S", "SARAFANDA_352E334N_S", "ADHNUN_352E333N_S", "SUR_352E332N_S", "AKKA_350E329N_S", "KANISA_349E327N_S", "QAYSARIYYA_348E324N_S", "KAFARSABA_348E321N_S", "LUDD_348E319N_S", "RAMLA_348E319N_S", "ROUTPOINT0109_345E315N_O", "RAFH_342E313N_S", "ARISH_338E311N_S", "WARRADA_335E310N_S", "BAQQARA_331E310N_S", "FARAMA_325E310N_S", "TINNIS_322E312N_S"],
+        "distance_km": 749.5,
+        "segments": 30,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "tinnīs",
+        "from_code": "TINNIS_322E312N_S",
+        "to": "fasā",
+        "to_code": "FASA_536E289N_S",
+        "path": ["TINNIS_322E312N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "RAMLA_348E319N_S", "LUDD_348E319N_S", "NABULUS_352E322N_S", "TAASIR_353E323N_S", "BAYSAN_354E325N_S", "ROUTPOINT0115_355E326N_O", "AQABAFIQ_356E327N_S", "JASIM_360E329N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S", "BADHIBIN_465E321N_S", "SIKR_467E321N_S", "TIB_473E322N_S", "QURQUB_477E321N_S", "BAYRUT_479E320N_S", "BASINNA_483E319N_S", "NAHRTIRA_483E314N_S", "AHWAZ_486E313N_S", "AZAM_490E312N_S", "ABDIN_493E312N_S", "RAMHURMUZ_496E312N_S", "HAWMAZUTT_497E310N_S", "KHABARAN_498E309N_S", "DAHLIZAN_499E307N_S", "SANBIL_501E307N_S", "ARRAJAN_502E306N_S", "ZAYTUN_503E305N_S", "ROUTEPOINTS0699_505E304N_O", "JUNBADHMALLAGHAN_508E302N_S", "DAKHWID_512E303N_S", "KHAWADHAN_515E302N_S", "NUBANDAJAN_515E301N_S", "QALAJISS_516E301N_S", "JARKAN_517E300N_S", "KHARRARA_519E300N_S", "KHULLAR_521E299N_S", "JUWAYM_522E298N_S", "SHIRAZ_525E296N_S", "QARYARUMMAN_528E293N_S", "KHANMIM_528E293N_S", "KHAWARISTAN_532E292N_S", "RIBAT_534E291N_S", "KURM_536E290N_S", "FASA_536E289N_S"],
+        "distance_km": 2473.9,
+        "segments": 67,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "fasā",
+        "from_code": "FASA_536E289N_S",
+        "to": "dimyāṭ",
+        "to_code": "DIMYAT_317E314N_S",
+        "path": ["FASA_536E289N_S", "KURM_536E290N_S", "RIBAT_534E291N_S", "KHAWARISTAN_532E292N_S", "KHANMIM_528E293N_S", "QARYARUMMAN_528E293N_S", "SHIRAZ_525E296N_S", "JUWAYM_522E298N_S", "KHULLAR_521E299N_S", "KHARRARA_519E300N_S", "JARKAN_517E300N_S", "QALAJISS_516E301N_S", "NUBANDAJAN_515E301N_S", "KHAWADHAN_515E302N_S", "DAKHWID_512E303N_S", "JUNBADHMALLAGHAN_508E302N_S", "ROUTEPOINTS0699_505E304N_O", "ZAYTUN_503E305N_S", "ARRAJAN_502E306N_S", "SANBIL_501E307N_S", "DAHLIZAN_499E307N_S", "KHABARAN_498E309N_S", "HAWMAZUTT_497E310N_S", "RAMHURMUZ_496E312N_S", "ABDIN_493E312N_S", "AZAM_490E312N_S", "AHWAZ_486E313N_S", "NAHRTIRA_483E314N_S", "BASINNA_483E319N_S", "BAYRUT_479E320N_S", "QURQUB_477E321N_S", "TIB_473E322N_S", "SIKR_467E321N_S", "BADHIBIN_465E321N_S", "WASIT_463E321N_S", "FAMSILH_461E324N_S", "NAHRSABUS_459E324N_S", "ROUTPOINT0301_457E325N_O", "JABBUL_457E325N_S", "NUMANIYYA_454E325N_S", "JARJARAYA_453E327N_S", "DAYRAQUL_449E329N_S", "SIB_448E329N_S", "MADAIN_445E330N_S", "BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "SUWA_378E337N_S", "DIMASHQ_363E335N_S", "KUSWA_362E333N_S", "ROUTPOINT0121_362E333N_O", "JASIM_360E329N_S", "AQABAFIQ_356E327N_S", "ROUTPOINT0115_355E326N_O", "BAYSAN_354E325N_S", "TAASIR_353E323N_S", "NABULUS_352E322N_S", "LUDD_348E319N_S", "RAMLA_348E319N_S", "ROUTPOINT0109_345E315N_O", "RAFH_342E313N_S", "ARISH_338E311N_S", "WARRADA_335E310N_S", "BAQQARA_331E310N_S", "FARAMA_325E310N_S", "TINNIS_322E312N_S", "DIMYAT_317E314N_S"],
+        "distance_km": 2523.5,
+        "segments": 68,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "dimyāṭ",
+        "from_code": "DIMYAT_317E314N_S",
+        "to": "ʾiṣbahān",
+        "to_code": "ISBAHAN_516E326N_R",
+        "path": ["DIMYAT_317E314N_S", "TINNIS_322E312N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "RAMLA_348E319N_S", "LUDD_348E319N_S", "NABULUS_352E322N_S", "TAASIR_353E323N_S", "BAYSAN_354E325N_S", "ROUTPOINT0115_355E326N_O", "AQABAFIQ_356E327N_S", "JASIM_360E329N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S", "NAHRAWAN_445E334N_S", "DAYRBAZAMA_447E336N_S", "DASKARA_449E339N_S", "HARUNIYYA_450E339N_S", "JALULA_451E341N_S", "KHANIQIN_454E343N_S", "QASRSHIRIN_456E344N_S", "HULWAN_459E344N_S", "MADHARWISTAN_460E344N_S", "MARJ_462E343N_S", "TAZAR_464E341N_S", "ZUBAYDIYYA_468E342N_S", "QARMASIN_470E343N_S", "BISUTUN_474E343N_S", "QANTARANUMAN_476E344N_S", "QASRLUSUS_479E344N_S", "NIHAWAND_483E342N_S", "RAMAN_486E342N_S", "JURAB_489E342N_S", "ROUTPOINT0510_491E340N_O", "KARAJ_495E338N_S", "ABTIA_500E336N_S", "JARBADHAQAN_502E333N_S", "QANUWAN_506E332N_S", "MARJWA-ZAHR_509E330N_S", "ISBAHAN_516E326N_S"],
+        "distance_km": 2214.6,
+        "segments": 50,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ʾiṣbahān",
+        "from_code": "ISBAHAN_516E326N_R",
+        "to": "al-ramlah",
+        "to_code": "RAMLA_348E319N_S",
+        "path": ["ISBAHAN_516E326N_S", "MARJWA-ZAHR_509E330N_S", "QANUWAN_506E332N_S", "JARBADHAQAN_502E333N_S", "ABTIA_500E336N_S", "KARAJ_495E338N_S", "ROUTPOINT0510_491E340N_O", "JURAB_489E342N_S", "RAMAN_486E342N_S", "NIHAWAND_483E342N_S", "QASRLUSUS_479E344N_S", "QANTARANUMAN_476E344N_S", "BISUTUN_474E343N_S", "QARMASIN_470E343N_S", "ZUBAYDIYYA_468E342N_S", "TAZAR_464E341N_S", "MARJ_462E343N_S", "MADHARWISTAN_460E344N_S", "HULWAN_459E344N_S", "QASRSHIRIN_456E344N_S", "KHANIQIN_454E343N_S", "JALULA_451E341N_S", "HARUNIYYA_450E339N_S", "DASKARA_449E339N_S", "DAYRBAZAMA_447E336N_S", "NAHRAWAN_445E334N_S", "BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "SUWA_378E337N_S", "DIMASHQ_363E335N_S", "KUSWA_362E333N_S", "ROUTPOINT0121_362E333N_O", "JASIM_360E329N_S", "AQABAFIQ_356E327N_S", "ROUTPOINT0115_355E326N_O", "BAYSAN_354E325N_S", "TAASIR_353E323N_S", "NABULUS_352E322N_S", "LUDD_348E319N_S", "RAMLA_348E319N_S"],
+        "distance_km": 1864.5,
+        "segments": 42,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "al-ramlah",
+        "from_code": "RAMLA_348E319N_S",
+        "to": "ǧīraft",
+        "to_code": "JIRUFT_578E286N_S",
+        "path": ["RAMLA_348E319N_S", "LUDD_348E319N_S", "NABULUS_352E322N_S", "TAASIR_353E323N_S", "BAYSAN_354E325N_S", "ROUTPOINT0115_355E326N_O", "AQABAFIQ_356E327N_S", "JASIM_360E329N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S", "BADHIBIN_465E321N_S", "SIKR_467E321N_S", "TIB_473E322N_S", "QURQUB_477E321N_S", "BAYRUT_479E320N_S", "BASINNA_483E319N_S", "NAHRTIRA_483E314N_S", "AHWAZ_486E313N_S", "AZAM_490E312N_S", "ABDIN_493E312N_S", "RAMHURMUZ_496E312N_S", "HAWMAZUTT_497E310N_S", "KHABARAN_498E309N_S", "DAHLIZAN_499E307N_S", "SANBIL_501E307N_S", "ARRAJAN_502E306N_S", "ZAYTUN_503E305N_S", "ROUTEPOINTS0699_505E304N_O", "JUNBADHMALLAGHAN_508E302N_S", "DAKHWID_512E303N_S", "KHAWADHAN_515E302N_S", "NUBANDAJAN_515E301N_S", "QALAJISS_516E301N_S", "JARKAN_517E300N_S", "KHARRARA_519E300N_S", "KHULLAR_521E299N_S", "JUWAYM_522E298N_S", "SHIRAZ_525E296N_S", "RAKAN_527E297N_S", "RASSIKR_528E297N_S", "ROUTPOINT0609_532E298N_O", "JUBANAN_534E297N_S", "ABADHA_537E297N_S", "QARYAAS_539E296N_S", "SAHIH_543E297N_S", "SARMAQAN_548E296N_S", "RIBATBUSHTKHAMM_552E295N_S", "SIRJAN_557E294N_S", "BAKHTA_561E291N_S", "ROUTPOINT0610_562E290N_O", "DARBANA_574E290N_S", "JIRUFT_578E286N_S"],
+        "distance_km": 2605.8,
+        "segments": 68,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ǧīraft",
+        "from_code": "JIRUFT_578E286N_S",
+        "to": "al-bayḍāʾ",
+        "to_code": "BAYDA_005E418N_S",
+        "path": ["JIRUFT_578E286N_S", "DARBANA_574E290N_S", "ROUTPOINT0610_562E290N_O", "BAKHTA_561E291N_S", "SIRJAN_557E294N_S", "RIBATBUSHTKHAMM_552E295N_S", "SARMAQAN_548E296N_S", "SAHIH_543E297N_S", "QARYAAS_539E296N_S", "ABADHA_537E297N_S", "JUBANAN_534E297N_S", "ROUTPOINT0609_532E298N_O", "RASSIKR_528E297N_S", "RAKAN_527E297N_S", "SHIRAZ_525E296N_S", "JUWAYM_522E298N_S", "KHULLAR_521E299N_S", "KHARRARA_519E300N_S", "JARKAN_517E300N_S", "QALAJISS_516E301N_S", "NUBANDAJAN_515E301N_S", "KHAWADHAN_515E302N_S", "DAKHWID_512E303N_S", "JUNBADHMALLAGHAN_508E302N_S", "ROUTEPOINTS0699_505E304N_O", "ZAYTUN_503E305N_S", "ARRAJAN_502E306N_S", "SANBIL_501E307N_S", "DAHLIZAN_499E307N_S", "KHABARAN_498E309N_S", "HAWMAZUTT_497E310N_S", "RAMHURMUZ_496E312N_S", "ABDIN_493E312N_S", "AZAM_490E312N_S", "AHWAZ_486E313N_S", "NAHRTIRA_483E314N_S", "BASINNA_483E319N_S", "BAYRUT_479E320N_S", "QURQUB_477E321N_S", "TIB_473E322N_S", "SIKR_467E321N_S", "BADHIBIN_465E321N_S", "WASIT_463E321N_S", "FAMSILH_461E324N_S", "NAHRSABUS_459E324N_S", "ROUTPOINT0301_457E325N_O", "JABBUL_457E325N_S", "NUMANIYYA_454E325N_S", "JARJARAYA_453E327N_S", "DAYRAQUL_449E329N_S", "SIB_448E329N_S", "MADAIN_445E330N_S", "BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "SUWA_378E337N_S", "DIMASHQ_363E335N_S", "KUSWA_362E333N_S", "ROUTPOINT0121_362E333N_O", "JASIM_360E329N_S", "AQABAFIQ_356E327N_S", "ROUTPOINT0115_355E326N_O", "BAYSAN_354E325N_S", "TAASIR_353E323N_S", "NABULUS_352E322N_S", "LUDD_348E319N_S", "RAMLA_348E319N_S", "ROUTPOINT0109_345E315N_O", "RAFH_342E313N_S", "ARISH_338E311N_S", "WARRADA_335E310N_S", "BAQQARA_331E310N_S", "FARAMA_325E310N_S", "TINNIS_322E312N_S", "DIMYAT_317E314N_S", "BURULLUS_309E315N_S", "IKHNA_307E315N_S", "NASTARAWA_307E314N_S", "RASHID_303E314N_S", "ISKANDARIYYA_299E311N_S", "BARQA_208E323N_S", "MALITA_145E359N_S", "TUNIS_101E367N_S", "BAJAYA_050E367N_S", "YABISA_014E390N_S", "BALANSIYYA_004W394N_S", "ROUTPOINT1417_005E407N_O", "SARAQUSA_009W416N_S", "WASHQA_003W421N_S"],
+        "distance_km": 7188.1,
+        "segments": 90,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      },
+      {
+        "from": "al-bayḍāʾ",
+        "from_code": "BAYDA_005E418N_S",
+        "to": "šīrāz",
+        "to_code": "SHIRAZ_525E296N_S",
+        "path": ["WASHQA_003W421N_S", "SARAQUSA_009W416N_S", "ROUTPOINT1417_005E407N_O", "BALANSIYYA_004W394N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "RASHID_303E314N_S", "NASTARAWA_307E314N_S", "IKHNA_307E315N_S", "BURULLUS_309E315N_S", "DIMYAT_317E314N_S", "TINNIS_322E312N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "RAMLA_348E319N_S", "LUDD_348E319N_S", "NABULUS_352E322N_S", "TAASIR_353E323N_S", "BAYSAN_354E325N_S", "ROUTPOINT0115_355E326N_O", "AQABAFIQ_356E327N_S", "JASIM_360E329N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S", "BADHIBIN_465E321N_S", "SIKR_467E321N_S", "TIB_473E322N_S", "QURQUB_477E321N_S", "BAYRUT_479E320N_S", "BASINNA_483E319N_S", "NAHRTIRA_483E314N_S", "AHWAZ_486E313N_S", "AZAM_490E312N_S", "ABDIN_493E312N_S", "RAMHURMUZ_496E312N_S", "HAWMAZUTT_497E310N_S", "KHABARAN_498E309N_S", "DAHLIZAN_499E307N_S", "SANBIL_501E307N_S", "ARRAJAN_502E306N_S", "ZAYTUN_503E305N_S", "ROUTEPOINTS0699_505E304N_O", "JUNBADHMALLAGHAN_508E302N_S", "DAKHWID_512E303N_S", "KHAWADHAN_515E302N_S", "NUBANDAJAN_515E301N_S", "QALAJISS_516E301N_S", "JARKAN_517E300N_S", "KHARRARA_519E300N_S", "KHULLAR_521E299N_S", "JUWAYM_522E298N_S", "SHIRAZ_525E296N_S"],
+        "distance_km": 6609.7,
+        "segments": 76,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      }
+    ],
+    "total_distance_km": 61522.7,
+    "uses_sea_routes": true
+  },
+  "ʾabū al-ḥasan b. ġalbūn ṭāhir b. ʿabd al-munʿim b. ʿubayd allāh al-ḥalabī": {
+    "author": "ʾabū al-ḥasan b. ġalbūn ṭāhir b. ʿabd al-munʿim b. ʿubayd allāh al-ḥalabī",
+    "regionality": "mašriq visits maġrib",
+    "death_century": "4.0",
+    "places_original": "ḥalab;baġdād;al-baṣrah;miṣr",
+    "places_sequence": ["ḥalab", "baġdād", "al-baṣrah"],
+    "routes": [
+      {
+        "from": "ḥalab",
+        "from_code": "HALAB_371E361N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["HALAB_371E361N_S", "BALIS_380E360N_S", "DAWSAR_384E359N_S", "RAQQA_390E359N_S", "MUBARAK_398E355N_S", "FAMNAHRSAID_401E353N_S", "QARQISIYYA_404E351N_S", "RAHBAMALIKIBNTAWQ_404E349N_S", "FASH_405E349N_S", "DALIYA_407E347N_S", "KHALIJBANUJUMAY_408E345N_S", "WADISIBA_409E344N_S", "DAZIQI_411E343N_S", "NIHIYYA_415E343N_S", "ROUTPOINT0202_416E343N_O", "ROUTPOINT0201_421E342N_O", "FUHAYMA_421E342N_S", "HADITHA_423E341N_S", "ALUS_424E339N_S", "NAWUSA_426E338N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 805.3,
+        "segments": 24,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "al-baṣrah",
+        "to_code": "BASRA_477E304N_S",
+        "path": ["BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S", "FARUTH_465E318N_S", "QATR_466E317N_O", "ROUTPOINT0302_474E309N_O", "BASRA_477E304N_S"],
+        "distance_km": 499.2,
+        "segments": 14,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1304.5,
+    "uses_sea_routes": false
+  },
+  "ʾabū al-ṭayyib b. ġalbūn ʿabd al-munʿim b. ʿubayd allāh al-ḥalabī": {
+    "author": "ʾabū al-ṭayyib b. ġalbūn ʿabd al-munʿim b. ʿubayd allāh al-ḥalabī",
+    "regionality": "mašriq visits maġrib",
+    "death_century": "4.0",
+    "places_original": "ḥalab;baġdād;miṣr",
+    "places_sequence": ["ḥalab", "baġdād"],
+    "routes": [
+      {
+        "from": "ḥalab",
+        "from_code": "HALAB_371E361N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["HALAB_371E361N_S", "BALIS_380E360N_S", "DAWSAR_384E359N_S", "RAQQA_390E359N_S", "MUBARAK_398E355N_S", "FAMNAHRSAID_401E353N_S", "QARQISIYYA_404E351N_S", "RAHBAMALIKIBNTAWQ_404E349N_S", "FASH_405E349N_S", "DALIYA_407E347N_S", "KHALIJBANUJUMAY_408E345N_S", "WADISIBA_409E344N_S", "DAZIQI_411E343N_S", "NIHIYYA_415E343N_S", "ROUTPOINT0202_416E343N_O", "ROUTPOINT0201_421E342N_O", "FUHAYMA_421E342N_S", "HADITHA_423E341N_S", "ALUS_424E339N_S", "NAWUSA_426E338N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 805.3,
+        "segments": 24,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 805.3,
+    "uses_sea_routes": false
+  },
+  "ʾaḥmad b. al-ṣaqr b. ṯābit al-ṭāʾī al-manbiǧī ʾabū al-ḥasan": {
+    "author": "ʾaḥmad b. al-ṣaqr b. ṯābit al-ṭāʾī al-manbiǧī ʾabū al-ḥasan",
+    "regionality": "mašriq",
+    "death_century": "4.0",
+    "places_original": "manbiǧ;dimašq",
+    "places_sequence": ["manbiǧ", "dimašq"],
+    "routes": [
+      {
+        "from": "manbiǧ",
+        "from_code": "MANBIJ_379E365N_S",
+        "to": "dimašq",
+        "to_code": "DIMASHQ_363E335N_S",
+        "path": ["MANBIJ_379E365N_S", "HALAB_371E361N_S", "QINNASRIN_370E359N_S", "TALLMANNAS_367E356N_S", "SAWWARAN_367E352N_S", "HAMA_367E351N_S", "RASTAN_367E349N_S", "HIMS_367E347N_S", "SHAMSIN_367E345N_S", "NABK_367E340N_S", "QUTAYYIFA_366E337N_S", "DIMASHQ_363E335N_S"],
+        "distance_km": 411.9,
+        "segments": 11,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 411.9,
+    "uses_sea_routes": false
+  },
+  "ʾaḥmad b. hibat allāh b. ʾaḥmad b. al-kirāyah al-ǧazarī ʾabū al-ʿabbās": {
+    "author": "ʾaḥmad b. hibat allāh b. ʾaḥmad b. al-kirāyah al-ǧazarī ʾabū al-ʿabbās",
+    "regionality": "mašriq",
+    "death_century": "6.0",
+    "places_original": "al-ǧazīrah;baġdād",
+    "places_sequence": ["al-ǧazīrah", "baġdād"],
+    "routes": [
+      {
+        "from": "al-ǧazīrah",
+        "from_code": "JAZIRA_312E300N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["FUSTAT_312E300N_S", "GHAYFA_315E303N_S", "BILBAYS_315E304N_S", "ABBASIYYA_317E305N_S", "FAQUS_317E307N_S", "ROUTPOINT1003_319E307N_O", "JURJIR_321E309N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "RAMLA_348E319N_S", "LUDD_348E319N_S", "NABULUS_352E322N_S", "TAASIR_353E323N_S", "BAYSAN_354E325N_S", "ROUTPOINT0115_355E326N_O", "AQABAFIQ_356E327N_S", "JASIM_360E329N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 1452,
+        "segments": 29,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1452,
+    "uses_sea_routes": false
+  },
+  "ʾaḥmad b. masrūr b. ʿabd al-wahhāb al-baladī al-baġdādī al-ḫabbāz ʾabū naṣr": {
+    "author": "ʾaḥmad b. masrūr b. ʿabd al-wahhāb al-baladī al-baġdādī al-ḫabbāz ʾabū naṣr",
+    "regionality": "mašriq",
+    "death_century": "5.0",
+    "places_original": "balad;baġdād",
+    "places_sequence": ["balad", "baġdād"],
+    "routes": [
+      {
+        "from": "balad",
+        "from_code": "BALAD_427E364N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["BALAD_427E364N_S", "MAWSIL_431E363N_S", "MARJJUHAYNA_432E361N_S", "HADITHA_433E360N_S", "BAQIA_433E356N_S", "SINN_434E352N_S", "BARIMMA_435E350N_S", "SUDAQANIYYA_436E348N_S", "JABILTA_437E346N_S", "DUR_438E344N_S", "KARKH_438E342N_S", "SAMARRA_438E342N_S", "QADISIYYA_439E340N_S", "ALTH_440E340N_S", "HARBA_441E339N_S", "UKBARA_442E338N_S", "BARADAN_443E335N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 414.2,
+        "segments": 17,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 414.2,
+    "uses_sea_routes": false
+  },
+  "ʾaḥmad b. muḥammad al-qurṭubī al-qaysī ʾabū ǧaʿfar": {
+    "author": "ʾaḥmad b. muḥammad al-qurṭubī al-qaysī ʾabū ǧaʿfar",
+    "regionality": "maġrib",
+    "death_century": "7.0",
+    "places_original": "qurṭubah;ʾišbīliyyah;sabtah",
+    "places_sequence": ["qurṭubah", "ʾišbīliyyah", "sabtah"],
+    "routes": [
+      {
+        "from": "qurṭubah",
+        "from_code": "QURTUBA_047W379N_S",
+        "to": "ʾišbīliyyah",
+        "to_code": "ISHBILIYYA_059W374N_R",
+        "path": ["QURTUBA_047W379N_S", "ROUTPOINT1403_057W376N_O", "ISHBILIYYA_059W374N_S"],
+        "distance_km": 123.4,
+        "segments": 2,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ʾišbīliyyah",
+        "from_code": "ISHBILIYYA_059W374N_R",
+        "to": "sabtah",
+        "to_code": "SABTA_053W358N_S",
+        "path": ["ISHBILIYYA_059W374N_S", "SABTA_053W358N_S"],
+        "distance_km": 200,
+        "segments": 1,
+        "sea_crossings": true,
+        "sea_crossing_count": 1
+      }
+    ],
+    "total_distance_km": 323.4,
+    "uses_sea_routes": true
+  },
+  "ʾaḥmad b. ʾabī ʿumar al-ḫurāsānī al-ʾandarābī ʾabū ʿabd allāh": {
+    "author": "ʾaḥmad b. ʾabī ʿumar al-ḫurāsānī al-ʾandarābī ʾabū ʿabd allāh",
+    "regionality": "mašriq",
+    "death_century": "5.0",
+    "places_original": "nīsābūr;ʾandarāb",
+    "places_sequence": ["nīsābūr", "ʾandarāb"],
+    "routes": [
+      {
+        "from": "nīsābūr",
+        "from_code": "NAYSABUR_587E361N_R",
+        "to": "ʾandarāb",
+        "to_code": "ANDARAB_693E356N_S",
+        "path": ["NAYSABUR_587E361N_S", "QASRRIH_591E360N_S", "ROUTPOINT1702_592E359N_O", "FARHAKIRD_595E357N_S", "NUKDAH_600E356N_S", "MALAYAKIRD_602E354N_S", "BUZJAN_606E351N_S", "ROUTPOINT1718_608E348N_O", "KUSUWI_611E346N_S", "KARAH_613E344N_S", "BUSANJ_614E343N_S", "HARA_621E343N_S", "KARUKH_625E344N_S", "RIBATMAYANAH_627E345N_S", "SHURMIN_635E347N_S", "RIBATSHUR_635E350N_S", "ABSHIN_635E352N_S", "RIBATKARZWAN_638E356N_S", "TALAQAN_642E357N_S", "KASHAN_645E358N_S", "YAHUDIYYA_648E359N_S", "ROUTPOINT1704_649E359N_O", "ANBAR_659E362N_S", "BALKH_668E367N_S", "KHULM_677E367N_S", "SIMINJAN_680E362N_S", "ROUTPOINT1706_684E361N_O", "ROUTPOINT1707_687E360N_O", "ANDARAB_693E356N_S"],
+        "distance_km": 1250.4,
+        "segments": 28,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1250.4,
+    "uses_sea_routes": false
+  },
+  "ʾaḥmad b. ʿalī b. faṣīḥ al-hamaḏānī faḫr al-dīn": {
+    "author": "ʾaḥmad b. ʿalī b. faṣīḥ al-hamaḏānī faḫr al-dīn",
+    "regionality": "mašriq",
+    "death_century": "8.0",
+    "places_original": "kūfah;dimašq",
+    "places_sequence": ["kūfah", "dimašq"],
+    "routes": [
+      {
+        "from": "kūfah",
+        "from_code": "KUFA_443E320N_S",
+        "to": "dimašq",
+        "to_code": "DIMASHQ_363E335N_S",
+        "path": ["KUFA_443E320N_S", "HIRA_443E320N_S", "QUTQUTANA_438E319N_S", "ABYAD_424E318N_S", "HUSA_420E317N_S", "JAM_414E316N_S", "KHATTA_407E316N_S", "JUBBA_401E318N_S", "ROUTPOINT0907_398E320N_O", "KHAFIYYA_396E319N_S", "ROUTPOINT0906_392E321N_O", "SUWA_378E337N_S", "DIMASHQ_363E335N_S"],
+        "distance_km": 877.2,
+        "segments": 12,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 877.2,
+    "uses_sea_routes": false
+  },
+  "ʾasʿad b. al-ḥusayn b. saʿd al-qāḍī ʾabū ḏarr al-yazdī": {
+    "author": "ʾasʿad b. al-ḥusayn b. saʿd al-qāḍī ʾabū ḏarr al-yazdī",
+    "regionality": "mašriq",
+    "death_century": "6.0",
+    "places_original": "ʾiṣbahān;yazd;baġdād",
+    "places_sequence": ["ʾiṣbahān", "yazd", "baġdād"],
+    "routes": [
+      {
+        "from": "ʾiṣbahān",
+        "from_code": "ISBAHAN_516E326N_R",
+        "to": "yazd",
+        "to_code": "YAZD_543E319N_R",
+        "path": ["ISBAHAN_516E326N_S", "ROUTPOINT0508_516E326N_O", "KHANRUSH_517E322N_S", "QUMISA_518E320N_S", "RUZKAN_519E318N_S", "AZKAS_521E315N_S", "SARWISTAN_524E314N_S", "ABADHA_526E311N_S", "SARMAQ_527E310N_S", "KARA_531E307N_S", "QARYABIDH_531E306N_S", "ABARQUH_532E311N_S", "QARYAASAD_538E315N_S", "QARYAMAJUS_541E317N_S", "YAZD_543E319N_S"],
+        "distance_km": 498.5,
+        "segments": 14,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "yazd",
+        "from_code": "YAZD_543E319N_R",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["YAZD_543E319N_S", "QARYAMAJUS_541E317N_S", "QARYAASAD_538E315N_S", "ABARQUH_532E311N_S", "QARYABIDH_531E306N_S", "KARA_531E307N_S", "SARMAQ_527E310N_S", "ABADHA_526E311N_S", "SARWISTAN_524E314N_S", "AZKAS_521E315N_S", "RUZKAN_519E318N_S", "QUMISA_518E320N_S", "KHANRUSH_517E322N_S", "ROUTPOINT0508_516E326N_O", "ISBAHAN_516E326N_S", "MARJWA-ZAHR_509E330N_S", "QANUWAN_506E332N_S", "JARBADHAQAN_502E333N_S", "ABTIA_500E336N_S", "KARAJ_495E338N_S", "ROUTPOINT0510_491E340N_O", "JURAB_489E342N_S", "RAMAN_486E342N_S", "NIHAWAND_483E342N_S", "QASRLUSUS_479E344N_S", "QANTARANUMAN_476E344N_S", "BISUTUN_474E343N_S", "QARMASIN_470E343N_S", "ZUBAYDIYYA_468E342N_S", "TAZAR_464E341N_S", "MARJ_462E343N_S", "MADHARWISTAN_460E344N_S", "HULWAN_459E344N_S", "QASRSHIRIN_456E344N_S", "KHANIQIN_454E343N_S", "JALULA_451E341N_S", "HARUNIYYA_450E339N_S", "DASKARA_449E339N_S", "DAYRBAZAMA_447E336N_S", "NAHRAWAN_445E334N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 1348.1,
+        "segments": 40,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1846.7,
+    "uses_sea_routes": false
+  },
+  "ʿabd al-karīm b. ʿabd al-ṣamad ʾabū maʿšar al-ṭabarī": {
+    "author": "ʿabd al-karīm b. ʿabd al-ṣamad ʾabū maʿšar al-ṭabarī",
+    "regionality": "mašriq",
+    "death_century": "5.0",
+    "places_original": "baġdād;makkah",
+    "places_sequence": ["baġdād", "makkah"],
+    "routes": [
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["BAGHDAD_443E333N_S", "KARKH_443E333N_S", "SARSAR_443E331N_S", "NAHRMALIK_443E330N_S", "JISRKUTHA_443E328N_S", "QASRIBNHUBAYRA_443E327N_S", "JISRSURA_443E326N_S", "HAMMAMIBNUMAR_443E323N_S", "SHAHI_443E322N_S", "KUFA_443E320N_S", "HIRA_443E320N_S", "NAJAF_443E319N_S", "QADISIYYA_441E316N_S", "UDHAYB_441E314N_S", "MUGHITHA_440E311N_S", "QARA_438E308N_S", "WAQISA_437E305N_S", "AQABA_436E300N_S", "QA_436E297N_S", "ZUBALA_435E294N_S", "SHUQUQ_434E290N_S", "BITAN_432E287N_S", "THALABIYYA_431E282N_S", "KHUZAYMIYYA_431E279N_S", "AJFUR_429E274N_S", "FAYD_425E270N_S", "TUZ_422E267N_S", "SAMIRA_420E264N_S", "HAJIR_417E259N_S", "MADINNAQIRA_415E255N_S", "MUGHITHAMAWAN_414E250N_S", "RABADHA_413E246N_S", "SALILA_412E243N_S", "UMAQ_409E240N_S", "MADINBANUSULAYM_408E235N_O", "UFAYIYYA_407E230N_S", "MISLAH_407E224N_S", "GHAMRA_408E218N_S", "AWTAS_406E217N_S", "DHATIRQ_404E216N_S", "MAKKA_398E213N_S"],
+        "distance_km": 1493.7,
+        "segments": 40,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1493.7,
+    "uses_sea_routes": false
+  },
+  "ʿabd al-raḥmān b. ʾismāʿīl b. al-ḥaddād ʾabū al-qāsim": {
+    "author": "ʿabd al-raḥmān b. ʾismāʿīl b. al-ḥaddād ʾabū al-qāsim",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "7.0",
+    "places_original": "tūnis;marrākuš;ʾišbīliyyah;al-mašriq;makkah;al-ʾiskandariyyah;siqilliyyah;sabtah;šalab;ġarnāṭah",
+    "places_sequence": ["tūnis", "ʾišbīliyyah", "makkah", "al-ʾiskandariyyah", "sabtah", "ġarnāṭah"],
+    "routes": [
+      {
+        "from": "tūnis",
+        "from_code": "TUNIS_101E367N_S",
+        "to": "ʾišbīliyyah",
+        "to_code": "ISHBILIYYA_059W374N_R",
+        "path": ["TUNIS_101E367N_S", "BAJAYA_050E367N_S", "YABISA_014E390N_S", "MARIYYA_025W368N_S", "BAJJANA_024W369N_S", "WADIYASH_031W373N_S", "ROUTPOINT1408_037W373N_O", "ROUTPOINT1407_040W374N_O", "BAYGHU_042W374N_S", "ROUTPOINT1404_049W375N_O", "ISTIJA_051W375N_S", "ROUTPOINT1405_051W375N_O", "QARMUNA_056W374N_S", "ISHBILIYYA_059W374N_S"],
+        "distance_km": 1826.4,
+        "segments": 13,
+        "sea_crossings": true,
+        "sea_crossing_count": 3
+      },
+      {
+        "from": "ʾišbīliyyah",
+        "from_code": "ISHBILIYYA_059W374N_R",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["ISHBILIYYA_059W374N_S", "QARMUNA_056W374N_S", "ROUTPOINT1405_051W375N_O", "ISTIJA_051W375N_S", "ROUTPOINT1404_049W375N_O", "BAYGHU_042W374N_S", "ROUTPOINT1407_040W374N_O", "ROUTPOINT1408_037W373N_O", "WADIYASH_031W373N_S", "BAJJANA_024W369N_S", "MARIYYA_025W368N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "FUSTAT_313E300N_S", "MAKKA_398E213N_S"],
+        "distance_km": 5501.7,
+        "segments": 18,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      },
+      {
+        "from": "makkah",
+        "from_code": "MAKKA_398E213N_S",
+        "to": "al-ʾiskandariyyah",
+        "to_code": "ISKANDARIYYA_299E311N_S",
+        "path": ["MAKKA_398E213N_S", "FUSTAT_313E300N_S", "ISKANDARIYYA_299E311N_S"],
+        "distance_km": 1300,
+        "segments": 2,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "al-ʾiskandariyyah",
+        "from_code": "ISKANDARIYYA_299E311N_S",
+        "to": "sabtah",
+        "to_code": "SABTA_053W358N_S",
+        "path": ["ISKANDARIYYA_299E311N_S", "BARQA_208E323N_S", "MALITA_145E359N_S", "TUNIS_101E367N_S", "BAJAYA_050E367N_S", "YABISA_014E390N_S", "MARIYYA_025W368N_S", "BAJJANA_024W369N_S", "WADIYASH_031W373N_S", "ROUTPOINT1408_037W373N_O", "ROUTPOINT1407_040W374N_O", "BAYGHU_042W374N_S", "ROUTPOINT1404_049W375N_O", "ISTIJA_051W375N_S", "ROUTPOINT1405_051W375N_O", "QARMUNA_056W374N_S", "ISHBILIYYA_059W374N_S", "SABTA_053W358N_S"],
+        "distance_km": 4401.7,
+        "segments": 17,
+        "sea_crossings": true,
+        "sea_crossing_count": 7
+      },
+      {
+        "from": "sabtah",
+        "from_code": "SABTA_053W358N_S",
+        "to": "ġarnāṭah",
+        "to_code": "GHARNATA_035W372N_S",
+        "path": ["SABTA_053W358N_S", "ISHBILIYYA_059W374N_S", "QARMUNA_056W374N_S", "ROUTPOINT1405_051W375N_O", "ISTIJA_051W375N_S", "ROUTPOINT1404_049W375N_O", "BAYGHU_042W374N_S", "ROUTPOINT1407_040W374N_O", "ROUTPOINT1408_037W373N_O", "LIBIRA_036W372N_S", "GHARNATA_035W372N_S"],
+        "distance_km": 436.2,
+        "segments": 10,
+        "sea_crossings": true,
+        "sea_crossing_count": 1
+      }
+    ],
+    "total_distance_km": 13466,
+    "uses_sea_routes": true
+  },
+  "ʿabd al-raḥmān b. ʿabd al-maǧīd b. ʾismāʿīl al-ṣafrāwī ʾabū al-qāsim": {
+    "author": "ʿabd al-raḥmān b. ʿabd al-maǧīd b. ʾismāʿīl al-ṣafrāwī ʾabū al-qāsim",
+    "regionality": "maġrib",
+    "death_century": "7.0",
+    "places_original": "al-ʾiskandariyyah;al-ṯaġr;al-manṣūrah",
+    "places_sequence": ["al-ʾiskandariyyah", "al-manṣūrah"],
+    "routes": [
+      {
+        "from": "al-ʾiskandariyyah",
+        "from_code": "ISKANDARIYYA_299E311N_S",
+        "to": "al-manṣūrah",
+        "to_code": "MANSURA_688E258N_S",
+        "path": ["ISKANDARIYYA_299E311N_S", "RASHID_303E314N_S", "NASTARAWA_307E314N_S", "IKHNA_307E315N_S", "BURULLUS_309E315N_S", "DIMYAT_317E314N_S", "TINNIS_322E312N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "RAMLA_348E319N_S", "LUDD_348E319N_S", "NABULUS_352E322N_S", "TAASIR_353E323N_S", "BAYSAN_354E325N_S", "ROUTPOINT0115_355E326N_O", "AQABAFIQ_356E327N_S", "JASIM_360E329N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S", "BADHIBIN_465E321N_S", "SIKR_467E321N_S", "TIB_473E322N_S", "QURQUB_477E321N_S", "BAYRUT_479E320N_S", "BASINNA_483E319N_S", "NAHRTIRA_483E314N_S", "AHWAZ_486E313N_S", "AZAM_490E312N_S", "ABDIN_493E312N_S", "RAMHURMUZ_496E312N_S", "HAWMAZUTT_497E310N_S", "KHABARAN_498E309N_S", "DAHLIZAN_499E307N_S", "SANBIL_501E307N_S", "ARRAJAN_502E306N_S", "ZAYTUN_503E305N_S", "ROUTEPOINTS0699_505E304N_O", "JUNBADHMALLAGHAN_508E302N_S", "DAKHWID_512E303N_S", "KHAWADHAN_515E302N_S", "NUBANDAJAN_515E301N_S", "QALAJISS_516E301N_S", "JARKAN_517E300N_S", "KHARRARA_519E300N_S", "KHULLAR_521E299N_S", "JUWAYM_522E298N_S", "SHIRAZ_525E296N_S", "RAKAN_527E297N_S", "RASSIKR_528E297N_S", "ROUTPOINT0609_532E298N_O", "JUBANAN_534E297N_S", "ABADHA_537E297N_S", "QARYAAS_539E296N_S", "SAHIH_543E297N_S", "SARMAQAN_548E296N_S", "RIBATBUSHTKHAMM_552E295N_S", "SIRJAN_557E294N_S", "ROUTPOINT0605_565E298N_O", "KHANNAB_567E298N_S", "GHUBAYRA_569E297N_S", "KUGHUN_570E296N_S", "RAIN_574E296N_S", "SARWISTAN_578E292N_S", "DARJIN_581E292N_S", "BAMM_583E291N_S", "NARMASIR_586E289N_S", "SARAYSHAHR_597E281N_S", "KHAWASH_618E277N_S", "JALQ_626E276N_S", "MASHKA_639E274N_S", "ROUTPOINT1911_653E276N_O", "QUSDAR_665E277N_S", "ROUTPOINT1912_667E277N_O", "SADUSAN_678E264N_S", "MANSURA_688E258N_S"],
+        "distance_km": 4448.5,
+        "segments": 95,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 4448.5,
+    "uses_sea_routes": false
+  },
+  "ʿabd al-wahhāb b. muḥammad b. ʿabd al-wahhāb al-qurṭubī ʾabū al-qāsim": {
+    "author": "ʿabd al-wahhāb b. muḥammad b. ʿabd al-wahhāb al-qurṭubī ʾabū al-qāsim",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "5.0",
+    "places_original": "qurṭubah;makkah;dimašq;ḥarrān;miṣr;mayyāfāriqīn;al-mašriq",
+    "places_sequence": ["qurṭubah", "makkah", "dimašq", "ḥarrān", "mayyāfāriqīn"],
+    "routes": [
+      {
+        "from": "qurṭubah",
+        "from_code": "QURTUBA_047W379N_S",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["QURTUBA_047W379N_S", "ROUTPOINT1410_047W378N_O", "ROUTPOINT1409_047W378N_O", "ROUTPOINT1406_044W377N_O", "ROUTPOINT1407_040W374N_O", "ROUTPOINT1408_037W373N_O", "WADIYASH_031W373N_S", "BAJJANA_024W369N_S", "MARIYYA_025W368N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "FUSTAT_313E300N_S", "MAKKA_398E213N_S"],
+        "distance_km": 5410,
+        "segments": 16,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      },
+      {
+        "from": "makkah",
+        "from_code": "MAKKA_398E213N_S",
+        "to": "dimašq",
+        "to_code": "DIMASHQ_363E335N_S",
+        "path": ["MAKKA_398E213N_S", "JUDDA_394E215N_S", "AYLA_349E295N_S", "GHARANDAL_351E300N_S", "ROUTPOINT0902_353E303N_O", "ROUTPOINT0101_354E308N_O", "SUGHAR_354E310N_S", "MUTA_356E310N_S", "MAAB_357E312N_S", "AMMAN_359E319N_S", "ZARQA_360E320N_S", "ADHRIAT_360E326N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S"],
+        "distance_km": 1645.3,
+        "segments": 14,
+        "sea_crossings": true,
+        "sea_crossing_count": 1
+      },
+      {
+        "from": "dimašq",
+        "from_code": "DIMASHQ_363E335N_S",
+        "to": "ḥarrān",
+        "to_code": "HARRAN_390E368N_S",
+        "path": ["DIMASHQ_363E335N_S", "QUTAYYIFA_366E337N_S", "JARUD_367E338N_S", "QARYATAN_372E342N_S", "NIHYA_373E344N_S", "RUSAFA_387E356N_S", "RAQQA_390E359N_S", "ROUTPOINT0204_390E361N_O", "HISNMASLAMA_390E363N_S", "TALLMAHRA_391E366N_S", "HARRAN_390E368N_S"],
+        "distance_km": 487.2,
+        "segments": 10,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ḥarrān",
+        "from_code": "HARRAN_390E368N_S",
+        "to": "mayyāfāriqīn",
+        "to_code": "MAYYAFARIQIN_410E381N_S",
+        "path": ["HARRAN_390E368N_S", "AMID_402E379N_S", "MAYYAFARIQIN_410E381N_S"],
+        "distance_km": 229.8,
+        "segments": 2,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 7772.3,
+    "uses_sea_routes": true
+  },
+  "ʿabd al-wahhāb b. ʾaḥmad b. wahbān al-ḥārithī al-dimašqī ʾamīn al-dīn": {
+    "author": "ʿabd al-wahhāb b. ʾaḥmad b. wahbān al-ḥārithī al-dimašqī ʾamīn al-dīn",
+    "regionality": "mašriq",
+    "death_century": "8.0",
+    "places_original": "dimašq;ḥamāh",
+    "places_sequence": ["dimašq", "ḥamāh"],
+    "routes": [
+      {
+        "from": "dimašq",
+        "from_code": "DIMASHQ_363E335N_S",
+        "to": "ḥamāh",
+        "to_code": "HAMA_367E351N_S",
+        "path": ["DIMASHQ_363E335N_S", "QUTAYYIFA_366E337N_S", "NABK_367E340N_S", "SHAMSIN_367E345N_S", "HIMS_367E347N_S", "RASTAN_367E349N_S", "HAMA_367E351N_S"],
+        "distance_km": 197.8,
+        "segments": 6,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 197.8,
+    "uses_sea_routes": false
+  },
+  "ʿabd allāh b. al-ḥusayn b. ḥasnūn ʾabū ʾaḥmad": {
+    "author": "ʿabd allāh b. al-ḥusayn b. ḥasnūn ʾabū ʾaḥmad",
+    "regionality": "mašriq visits maġrib",
+    "death_century": "4.0",
+    "places_original": "sāmarrāʾ;baġdād;miṣr;makkah;al-raqqah",
+    "places_sequence": ["sāmarrāʾ", "baġdād", "makkah", "al-raqqah"],
+    "routes": [
+      {
+        "from": "sāmarrāʾ",
+        "from_code": "SAMARRA_438E342N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["SAMARRA_438E342N_S", "QADISIYYA_439E340N_S", "ALTH_440E340N_S", "HARBA_441E339N_S", "UKBARA_442E338N_S", "BARADAN_443E335N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 113.6,
+        "segments": 6,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["BAGHDAD_443E333N_S", "KARKH_443E333N_S", "SARSAR_443E331N_S", "NAHRMALIK_443E330N_S", "JISRKUTHA_443E328N_S", "QASRIBNHUBAYRA_443E327N_S", "JISRSURA_443E326N_S", "HAMMAMIBNUMAR_443E323N_S", "SHAHI_443E322N_S", "KUFA_443E320N_S", "HIRA_443E320N_S", "NAJAF_443E319N_S", "QADISIYYA_441E316N_S", "UDHAYB_441E314N_S", "MUGHITHA_440E311N_S", "QARA_438E308N_S", "WAQISA_437E305N_S", "AQABA_436E300N_S", "QA_436E297N_S", "ZUBALA_435E294N_S", "SHUQUQ_434E290N_S", "BITAN_432E287N_S", "THALABIYYA_431E282N_S", "KHUZAYMIYYA_431E279N_S", "AJFUR_429E274N_S", "FAYD_425E270N_S", "TUZ_422E267N_S", "SAMIRA_420E264N_S", "HAJIR_417E259N_S", "MADINNAQIRA_415E255N_S", "MUGHITHAMAWAN_414E250N_S", "RABADHA_413E246N_S", "SALILA_412E243N_S", "UMAQ_409E240N_S", "MADINBANUSULAYM_408E235N_O", "UFAYIYYA_407E230N_S", "MISLAH_407E224N_S", "GHAMRA_408E218N_S", "AWTAS_406E217N_S", "DHATIRQ_404E216N_S", "MAKKA_398E213N_S"],
+        "distance_km": 1493.7,
+        "segments": 40,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "makkah",
+        "from_code": "MAKKA_398E213N_S",
+        "to": "al-raqqah",
+        "to_code": "RAQQA_390E359N_S",
+        "path": ["MAKKA_398E213N_S", "JUDDA_394E215N_S", "AYLA_349E295N_S", "GHARANDAL_351E300N_S", "ROUTPOINT0902_353E303N_O", "ROUTPOINT0101_354E308N_O", "SUGHAR_354E310N_S", "MUTA_356E310N_S", "MAAB_357E312N_S", "AMMAN_359E319N_S", "ZARQA_360E320N_S", "ADHRIAT_360E326N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S", "QUTAYYIFA_366E337N_S", "JARUD_367E338N_S", "QARYATAN_372E342N_S", "NIHYA_373E344N_S", "RUSAFA_387E356N_S", "RAQQA_390E359N_S"],
+        "distance_km": 2026,
+        "segments": 20,
+        "sea_crossings": true,
+        "sea_crossing_count": 1
+      }
+    ],
+    "total_distance_km": 3633.2,
+    "uses_sea_routes": true
+  },
+  "ʿabd allāh b. ʿabd al-muʾmin b. waǧīh al-wāsiṭī": {
+    "author": "ʿabd allāh b. ʿabd al-muʾmin b. waǧīh al-wāsiṭī",
+    "regionality": "mašriq visits maġrib",
+    "death_century": "8.0",
+    "places_original": "wāsiṭ;dimašq;miṣr",
+    "places_sequence": ["wāsiṭ", "dimašq"],
+    "routes": [
+      {
+        "from": "wāsiṭ",
+        "from_code": "WASIT_463E321N_S",
+        "to": "dimašq",
+        "to_code": "DIMASHQ_363E335N_S",
+        "path": ["WASIT_463E321N_S", "FAMSILH_461E324N_S", "NAHRSABUS_459E324N_S", "ROUTPOINT0301_457E325N_O", "JABBUL_457E325N_S", "NUMANIYYA_454E325N_S", "JARJARAYA_453E327N_S", "DAYRAQUL_449E329N_S", "SIB_448E329N_S", "MADAIN_445E330N_S", "BAGHDAD_443E333N_S", "SAYLAHIN_440E334N_S", "ANBAR_437E333N_S", "RABB_432E334N_S", "HIT_428E336N_S", "SUWA_378E337N_S", "DIMASHQ_363E335N_S"],
+        "distance_km": 1028.5,
+        "segments": 16,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1028.5,
+    "uses_sea_routes": false
+  },
+  "ʿalī b. ǧaʿfar b. saʿīd al-saʿīdī al-ḥaḏḏāʾ ʾabū al-ḥasan": {
+    "author": "ʿalī b. ǧaʿfar b. saʿīd al-saʿīdī al-ḥaḏḏāʾ ʾabū al-ḥasan",
+    "regionality": "mašriq",
+    "death_century": "5.0",
+    "places_original": "al-rayy;šīrāz",
+    "places_sequence": ["al-rayy", "šīrāz"],
+    "routes": [
+      {
+        "from": "al-rayy",
+        "from_code": "RAYY_515E356N_S",
+        "to": "šīrāz",
+        "to_code": "SHIRAZ_525E296N_S",
+        "path": ["RAYY_515E356N_S", "DIZA_516E353N_O", "ROUTPOINT0512_516E352N_O", "DAYRJISS_516E350N_S", "KAJ_513E349N_S", "BADH_520E335N_S", "TARQ_518E333N_S", "RIBATWAZZ_517E330N_S", "ROUTPOINT0506_517E327N_O", "ISBAHAN_516E326N_S", "ROUTPOINT0508_516E326N_O", "KHANLANJAN_515E324N_S", "KARU_516E317N_S", "ROUTPOINT0603_517E316N_O", "MAS_519E314N_O", "KHANRUSHAN_520E312N_S", "QASRAIN_524E308N_S", "KHUSIKAN_524E305N_S", "MAIN_526E301N_S", "HAZAR_524E299N_S", "SHIRAZ_525E296N_S"],
+        "distance_km": 757,
+        "segments": 20,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 757,
+    "uses_sea_routes": false
+  },
+  "ʿalī b. ʿabd al-ṣamad ʿalam al-dīn al-saḫāwī ʾabū al-ḥasan": {
+    "author": "ʿalī b. ʿabd al-ṣamad ʿalam al-dīn al-saḫāwī ʾabū al-ḥasan",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "7.0",
+    "places_original": "saḫā;al-iskandariyyah;al-qāhirah;dimašq;",
+    "places_sequence": ["saḫā", "al-iskandariyyah", "al-qāhirah", "dimašq"],
+    "routes": [
+      {
+        "from": "saḫā",
+        "from_code": "SAKHA_309E310N_S",
+        "to": "al-iskandariyyah",
+        "to_code": "ISKANDARIYYA_299E311N_S",
+        "path": ["SAKHA_309E310N_S", "ROUTPOINT1002_308E310N_O", "DAYYAY_307E310N_S", "MAHALLAABUKHURASHA_306E310N_S", "QARTASA_304E310N_S", "BARSIQ_302E310N_S", "KARYUN_301E311N_S", "ISKANDARIYYA_299E311N_S"],
+        "distance_km": 106.6,
+        "segments": 7,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "al-iskandariyyah",
+        "from_code": "ISKANDARIYYA_299E311N_S",
+        "to": "al-qāhirah",
+        "to_code": "QAHIRA_312E300N_S",
+        "path": ["ISKANDARIYYA_299E311N_S", "KARYUN_301E311N_S", "BARSIQ_302E310N_S", "QARTASA_304E310N_S", "MAHALLAABUKHURASHA_306E310N_S", "DAYYAY_307E310N_S", "ROUTPOINT1002_308E310N_O", "MAHALLASURAD_308E309N_S", "MAHALLAMAHRUM_309E307N_S", "FISHAIBNSULAYM_309E307N_S", "BUNDARIYYA_309E307N_S", "TUWWA_309E306N_S", "MANUF_309E304N_S", "SUBKABID_310E304N_S", "SHATNUF_310E302N_S", "SARDUS_311E301N_S", "SHABRUWA_312E301N_S", "QAHIRA_312E300N_S"],
+        "distance_km": 225.2,
+        "segments": 17,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "al-qāhirah",
+        "from_code": "QAHIRA_312E300N_S",
+        "to": "dimašq",
+        "to_code": "DIMASHQ_363E335N_S",
+        "path": ["QAHIRA_312E300N_S", "FUSTAT_312E300N_S", "GHAYFA_315E303N_S", "BILBAYS_315E304N_S", "ABBASIYYA_317E305N_S", "FAQUS_317E307N_S", "ROUTPOINT1003_319E307N_O", "JURJIR_321E309N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "RAMLA_348E319N_S", "LUDD_348E319N_S", "NABULUS_352E322N_S", "TAASIR_353E323N_S", "BAYSAN_354E325N_S", "ROUTPOINT0115_355E326N_O", "AQABAFIQ_356E327N_S", "JASIM_360E329N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S"],
+        "distance_km": 677.5,
+        "segments": 24,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 1009.3,
+    "uses_sea_routes": false
+  },
+  "ʿīsā b. ʿabd al-ʿazīz al-laḫmī al-ʾiskandarī ʾabū al-qāsim": {
+    "author": "ʿīsā b. ʿabd al-ʿazīz al-laḫmī al-ʾiskandarī ʾabū al-qāsim",
+    "regionality": "maġrib",
+    "death_century": "7.0",
+    "places_original": "šarīš;al-ʾiskandariyyah",
+    "places_sequence": ["šarīš", "al-ʾiskandariyyah"],
+    "routes": [
+      {
+        "from": "šarīš",
+        "from_code": "SHARISH_061W366N_S",
+        "to": "al-ʾiskandariyyah",
+        "to_code": "ISKANDARIYYA_299E311N_S",
+        "path": ["QADIS_061W365N_S", "SHADHUNA_059W364N_S", "ROUTPOINT1401_053W362N_O", "MALIQA_044W367N_S", "ROUTPOINT1411_030W367N_O", "MARIYYA_025W368N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S"],
+        "distance_km": 4212.6,
+        "segments": 11,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      }
+    ],
+    "total_distance_km": 4212.6,
+    "uses_sea_routes": true
+  },
+  "ʿubayd allāh b. ʿumar/ʿamr b. hišām al-ḥaḍramī al-ʾišbīlī ʾabū marwān": {
+    "author": "ʿubayd allāh b. ʿumar/ʿamr b. hišām al-ḥaḍramī al-ʾišbīlī ʾabū marwān",
+    "regionality": "maġrib",
+    "death_century": "6.0",
+    "places_original": "qurṭubah;ʾišbīliyyah;marrākuš;miknāsah;tilimsān;al-mariyyah;mursiyyah",
+    "places_sequence": ["qurṭubah", "ʾišbīliyyah", "miknāsah", "tilimsān", "al-mariyyah", "mursiyyah"],
+    "routes": [
+      {
+        "from": "qurṭubah",
+        "from_code": "QURTUBA_047W379N_S",
+        "to": "ʾišbīliyyah",
+        "to_code": "ISHBILIYYA_059W374N_R",
+        "path": ["QURTUBA_047W379N_S", "ROUTPOINT1403_057W376N_O", "ISHBILIYYA_059W374N_S"],
+        "distance_km": 123.4,
+        "segments": 2,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "ʾišbīliyyah",
+        "from_code": "ISHBILIYYA_059W374N_R",
+        "to": "miknāsah",
+        "to_code": "MIKNASA_055W339N_S",
+        "path": ["ISHBILIYYA_059W374N_S", "SABTA_053W358N_S", "TANJA_058W357N_S", "AZILA_059W355N_S", "TUSHUMMUS_059W350N_S", "BASRA_058W348N_S", "KURT_058W345N_S", "ROUTPOINT1211_053W341N_O", "WALILA_056W340N_S"],
+        "distance_km": 502,
+        "segments": 8,
+        "sea_crossings": true,
+        "sea_crossing_count": 2
+      },
+      {
+        "from": "miknāsah",
+        "from_code": "MIKNASA_055W339N_S",
+        "to": "tilimsān",
+        "to_code": "TILIMSAN_013W348N_S",
+        "path": ["WALILA_056W340N_S", "ROUTPOINT1211_053W341N_O", "FAS_050W340N_S", "TILIMSAN_013W348N_S"],
+        "distance_km": 407.3,
+        "segments": 3,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "tilimsān",
+        "from_code": "TILIMSAN_013W348N_S",
+        "to": "al-mariyyah",
+        "to_code": "MARIYYA_025W368N_S",
+        "path": ["TILIMSAN_013W348N_S", "BAJAYA_050E367N_S", "YABISA_014E390N_S", "MARIYYA_025W368N_S"],
+        "distance_km": 1365.1,
+        "segments": 3,
+        "sea_crossings": true,
+        "sea_crossing_count": 2
+      },
+      {
+        "from": "al-mariyyah",
+        "from_code": "MARIYYA_025W368N_S",
+        "to": "mursiyyah",
+        "to_code": "MURSIYA_011W379N_S",
+        "path": ["MARIYYA_025W368N_S", "BAJJANA_024W369N_S", "LURQA_017W376N_S", "MURSIYA_011W379N_S"],
+        "distance_km": 191.1,
+        "segments": 3,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 2589,
+    "uses_sea_routes": true
+  },
+  "ʿuṯmān b. saʿīd b. ʿuṯmān al-ʾumawī al-dānī ʾabū ʿamr": {
+    "author": "ʿuṯmān b. saʿīd b. ʿuṯmān al-ʾumawī al-dānī ʾabū ʿamr",
+    "regionality": "maġrib visits mašriq",
+    "death_century": "5.0",
+    "places_original": "qurṭubah;dāniyah;al-mašriq;qayrawān;miṣr;al-ṯaġr;saraqusṭah;ʾāstaǧah;biǧānah;makkah;dāniyyah;al-mariyyah;al-baṣrah;baġdād;al-šām;mayyūrqah",
+    "places_sequence": ["qurṭubah", "qayrawān", "biǧānah", "makkah", "al-mariyyah", "al-baṣrah", "baġdād", "mayyūrqah"],
+    "routes": [
+      {
+        "from": "qurṭubah",
+        "from_code": "QURTUBA_047W379N_S",
+        "to": "qayrawān",
+        "to_code": "QAYRAWAN_101E357N_S",
+        "path": ["QURTUBA_047W379N_S", "ROUTPOINT1410_047W378N_O", "ROUTPOINT1409_047W378N_O", "ROUTPOINT1406_044W377N_O", "ROUTPOINT1407_040W374N_O", "ROUTPOINT1408_037W373N_O", "WADIYASH_031W373N_S", "BAJJANA_024W369N_S", "MARIYYA_025W368N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "QAYRAWAN_101E357N_S"],
+        "distance_km": 1730,
+        "segments": 11,
+        "sea_crossings": true,
+        "sea_crossing_count": 3
+      },
+      {
+        "from": "qayrawān",
+        "from_code": "QAYRAWAN_101E357N_S",
+        "to": "biǧānah",
+        "to_code": "BAJJANA_024W369N_R",
+        "path": ["QAYRAWAN_101E357N_S", "BAJAYA_050E367N_S", "YABISA_014E390N_S", "MARIYYA_025W368N_S", "BAJJANA_024W369N_S"],
+        "distance_km": 1478,
+        "segments": 4,
+        "sea_crossings": true,
+        "sea_crossing_count": 3
+      },
+      {
+        "from": "biǧānah",
+        "from_code": "BAJJANA_024W369N_R",
+        "to": "makkah",
+        "to_code": "MAKKA_398E213N_S",
+        "path": ["BAJJANA_024W369N_S", "MARIYYA_025W368N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "FUSTAT_313E300N_S", "MAKKA_398E213N_S"],
+        "distance_km": 5158,
+        "segments": 9,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      },
+      {
+        "from": "makkah",
+        "from_code": "MAKKA_398E213N_S",
+        "to": "al-mariyyah",
+        "to_code": "MARIYYA_025W368N_S",
+        "path": ["MAKKA_398E213N_S", "FUSTAT_313E300N_S", "ISKANDARIYYA_299E311N_S", "BARQA_208E323N_S", "MALITA_145E359N_S", "TUNIS_101E367N_S", "BAJAYA_050E367N_S", "YABISA_014E390N_S", "MARIYYA_025W368N_S"],
+        "distance_km": 5145.1,
+        "segments": 8,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      },
+      {
+        "from": "al-mariyyah",
+        "from_code": "MARIYYA_025W368N_S",
+        "to": "al-baṣrah",
+        "to_code": "BASRA_477E304N_S",
+        "path": ["MARIYYA_025W368N_S", "YABISA_014E390N_S", "BAJAYA_050E367N_S", "TUNIS_101E367N_S", "MALITA_145E359N_S", "BARQA_208E323N_S", "ISKANDARIYYA_299E311N_S", "RASHID_303E314N_S", "NASTARAWA_307E314N_S", "IKHNA_307E315N_S", "BURULLUS_309E315N_S", "DIMYAT_317E314N_S", "TINNIS_322E312N_S", "FARAMA_325E310N_S", "BAQQARA_331E310N_S", "WARRADA_335E310N_S", "ARISH_338E311N_S", "RAFH_342E313N_S", "ROUTPOINT0109_345E315N_O", "RAMLA_348E319N_S", "LUDD_348E319N_S", "NABULUS_352E322N_S", "TAASIR_353E323N_S", "BAYSAN_354E325N_S", "ROUTPOINT0115_355E326N_O", "AQABAFIQ_356E327N_S", "JASIM_360E329N_S", "ROUTPOINT0121_362E333N_O", "KUSWA_362E333N_S", "DIMASHQ_363E335N_S", "SUWA_378E337N_S", "HIT_428E336N_S", "RABB_432E334N_S", "ANBAR_437E333N_S", "SAYLAHIN_440E334N_S", "BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S", "FARUTH_465E318N_S", "QATR_466E317N_O", "ROUTPOINT0302_474E309N_O", "BASRA_477E304N_S"],
+        "distance_km": 5905.7,
+        "segments": 49,
+        "sea_crossings": true,
+        "sea_crossing_count": 6
+      },
+      {
+        "from": "al-baṣrah",
+        "from_code": "BASRA_477E304N_S",
+        "to": "baġdād",
+        "to_code": "BAGHDAD_443E333N_S",
+        "path": ["BASRA_477E304N_S", "ROUTPOINT0302_474E309N_O", "QATR_466E317N_O", "FARUTH_465E318N_S", "WASIT_463E321N_S", "FAMSILH_461E324N_S", "NAHRSABUS_459E324N_S", "ROUTPOINT0301_457E325N_O", "JABBUL_457E325N_S", "NUMANIYYA_454E325N_S", "JARJARAYA_453E327N_S", "DAYRAQUL_449E329N_S", "SIB_448E329N_S", "MADAIN_445E330N_S", "BAGHDAD_443E333N_S"],
+        "distance_km": 499.2,
+        "segments": 14,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      },
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "mayyūrqah",
+        "to_code": "MAYYAFARIQIN_410E381N_S",
+        "path": ["BAGHDAD_443E333N_S", "BARADAN_443E335N_S", "UKBARA_442E338N_S", "HARBA_441E339N_S", "ALTH_440E340N_S", "QADISIYYA_439E340N_S", "SAMARRA_438E342N_S", "KARKH_438E342N_S", "DUR_438E344N_S", "JABILTA_437E346N_S", "SUDAQANIYYA_436E348N_S", "BARIMMA_435E350N_S", "SINN_434E352N_S", "BAQIA_433E356N_S", "HADITHA_433E360N_S", "MARJJUHAYNA_432E361N_S", "MAWSIL_431E363N_S", "NINAWA_431E363N_S", "MAZARII_430E366N_S", "MALATHAYA_429E368N_S", "HASANIYYA_427E371N_S", "THAMANIN_426E373N_S", "JAZIRAIBNUMAR_421E372N_S", "TALLFAFAN_417E377N_S", "ARZAN_416E379N_S", "MAYYAFARIQIN_410E381N_S"],
+        "distance_km": 706.5,
+        "segments": 25,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 20622.5,
+    "uses_sea_routes": true
+  },
+  "ʿalī b. ʿabd al-raḥmān b. hārūn b. al-ǧarrāḥ al-baġdādī abū al-ḫaṭṭāb": {
+    "author": "ʿalī b. ʿabd al-raḥmān b. hārūn b. al-ǧarrāḥ al-baġdādī abū al-ḫaṭṭāb",
+    "regionality": "mašriq",
+    "death_century": "5.0",
+    "places_original": "baġdād;wāsiṭ",
+    "places_sequence": ["baġdād", "wāsiṭ"],
+    "routes": [
+      {
+        "from": "baġdād",
+        "from_code": "BAGHDAD_443E333N_S",
+        "to": "wāsiṭ",
+        "to_code": "WASIT_463E321N_S",
+        "path": ["BAGHDAD_443E333N_S", "MADAIN_445E330N_S", "SIB_448E329N_S", "DAYRAQUL_449E329N_S", "JARJARAYA_453E327N_S", "NUMANIYYA_454E325N_S", "JABBUL_457E325N_S", "ROUTPOINT0301_457E325N_O", "NAHRSABUS_459E324N_S", "FAMSILH_461E324N_S", "WASIT_463E321N_S"],
+        "distance_km": 252.2,
+        "segments": 10,
+        "sea_crossings": false,
+        "sea_crossing_count": 0
+      }
+    ],
+    "total_distance_km": 252.2,
+    "uses_sea_routes": false
+  }
+}
