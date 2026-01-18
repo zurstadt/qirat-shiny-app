@@ -3377,6 +3377,15 @@
     },
     "routes/sea_routes_gis.json": {
       "checksum": "9f6bb53f87e2b68b030b26835887840b"
+    },
+    "www/images/erc_logo.png": {
+      "checksum": "80533ad78459d908f8f3bb921a68b1f9"
+    },
+    "www/images/leiden_logo.png": {
+      "checksum": "a566a4d48cffa6f3fc6e475582964188"
+    },
+    "www/images/qurxan_logo.png": {
+      "checksum": "fb4069e9db9ca7757075c7416bd074cf"
     }
   },
   "users": null
