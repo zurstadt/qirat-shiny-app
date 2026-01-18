@@ -1776,49 +1776,11 @@ ui <- fluidPage(
                   placeholder = "Shatibi, شاطبي, or šāṭibī..."),
                 tags$small(class = "text-muted", style = "display: block; margin-top: -10px;",
                   "Arabic, digraphs (dh, gh, sh), or transliteration")),
-              column(3, uiOutput("geo_author_match")),
-              column(3,
-                checkboxInput("geo_show_validation", "Validation Mode", value = FALSE),
-                style = "margin-top: 25px;")
+              column(3, uiOutput("geo_author_match"))
             ),
 
-            # Normal view: summary table
-            conditionalPanel(
-              condition = "input.geo_show_validation == false",
-              DTOutput("geo_author_mobility_table")
-            ),
-
-            # Validation Mode: focused on regional mappings
-            conditionalPanel(
-              condition = "input.geo_show_validation == true",
-              div(class = "card", style = "border: 2px solid #17a2b8; margin-top: 10px;",
-                div(class = "card-header", style = "background: #17a2b8; color: white;",
-                  icon("map-marked-alt"), " Regional Mapping Validation - verify place regions match author origin"),
-                div(class = "card-body",
-
-                  # Validation table with places info
-                  DTOutput("geo_validation_table"),
-
-                  hr(),
-
-                  # Bulk actions - regionality only
-                  fluidRow(
-                    column(6,
-                      selectInput("geo_bulk_regionality", "Set Origin for Selected:",
-                        choices = c("— select —" = "", "mašriq", "maġrib",
-                                    "mašriq visits maġrib", "maġrib visits mašriq"))),
-                    column(3,
-                      actionButton("geo_bulk_apply", "Apply to Selected",
-                                   icon = icon("check"), class = "btn-success",
-                                   style = "margin-top: 25px;")),
-                    column(3,
-                      actionButton("geo_refresh_data", "Refresh",
-                                   icon = icon("sync"), class = "btn-secondary",
-                                   style = "margin-top: 25px;"))
-                  )
-                )
-              )
-            )
+            # Author mobility table
+            DTOutput("geo_author_mobility_table")
           )
         )
       ),
@@ -1962,7 +1924,6 @@ server <- function(input, output, session) {
     analysis_results_visited = FALSE,
     # New: Geographic data
     geo_data = NULL,
-    geo_data_refresh = NULL,  # Trigger for validation updates
     # New: Bayesian card navigation
     bayes_current_card = 1,
     bayesian_analysis_visited = if (!is.null(PRECOMPUTED)) TRUE else FALSE,
@@ -2401,10 +2362,8 @@ server <- function(input, output, session) {
     map
   })
 
-  # Load mobility data from database (refreshes when geo_data_refresh changes)
+  # Load mobility data from database
   geo_mobility_data <- reactive({
-    # Depend on refresh trigger for validation updates
-    rv$geo_data_refresh
 
     tryCatch({
       con <- dbConnect(SQLite(), DB_PATH)
@@ -3123,141 +3082,8 @@ server <- function(input, output, session) {
     updateTextInput(session, "geo_author_search", value = "")
   })
 
-  # ========== Geographic Batch Validation Panel ==========
-
-  # Reactive value for validation status messages
-  rv$geo_validation_msg <- NULL
-  rv$geo_data_refresh <- NULL
-
-  # Validation table - focused on regional mappings only
-  output$geo_validation_table <- renderDT({
-    # Trigger refresh when data changes
-    rv$geo_data_refresh
-
-    authors <- geo_filtered_authors()
-    if (is.null(authors) || nrow(authors) == 0) {
-      return(datatable(data.frame(Message = "No authors match current filters"),
-                       options = list(dom = 't')))
-    }
-
-    # Get places for each author to display
-    con <- dbConnect(SQLite(), DB_PATH)
-    on.exit(dbDisconnect(con))
-
-    # Build places summary for each author (place name + sub-region)
-    places_summary <- sapply(authors$author_id, function(aid) {
-      places <- dbGetQuery(con, "
-        SELECT p.place_name_latin, p.subregion, p.region
-        FROM author_places ap
-        JOIN places p ON ap.place_id = p.place_id
-        WHERE ap.author_id = ?
-        ORDER BY ap.sequence_order
-      ", params = list(aid))
-
-      if (nrow(places) > 0) {
-        paste(sapply(1:nrow(places), function(i) {
-          subregion <- places$subregion[i]
-          region <- places$region[i]
-          # Show subregion if available, otherwise region, otherwise "?"
-          loc <- if (!is.na(subregion) && subregion != "" && subregion != "NA") {
-            subregion
-          } else if (!is.na(region) && region != "") {
-            region
-          } else {
-            "?"
-          }
-          paste0(places$place_name_latin[i], " (", loc, ")")
-        }), collapse = " → ")
-      } else {
-        "—"
-      }
-    })
-
-    # Create display dataframe - focused on regional mappings
-    display_df <- data.frame(
-      ID = authors$author_id,
-      Author = sapply(authors$author_name, function(n) format_camel_case(n, "author")),
-      # Capitalize Origin
-      Origin = sapply(authors$regionality, function(r) {
-        if (is.na(r) || r == "") return("—")
-        words <- strsplit(r, " ")[[1]]
-        paste(sapply(words, function(w) {
-          paste0(toupper(substr(w, 1, 1)), substr(w, 2, nchar(w)))
-        }), collapse = " ")
-      }),
-      Places = places_summary,
-      stringsAsFactors = FALSE
-    )
-
-    datatable(
-      display_df,
-      selection = list(mode = 'multiple', target = 'row'),
-      escape = FALSE,
-      rownames = FALSE,
-      options = list(
-        pageLength = 20,
-        scrollX = TRUE,
-        dom = 'frtip',
-        columnDefs = list(
-          list(width = '40px', targets = 0),   # ID
-          list(width = '200px', targets = 1),  # Author
-          list(width = '140px', targets = 2),  # Origin
-          list(width = '500px', targets = 3)   # Places
-        )
-      )
-    )
-  })
-
-  # Bulk apply regionality changes to selected rows
-  observeEvent(input$geo_bulk_apply, {
-    selected_rows <- input$geo_validation_table_rows_selected
-    if (is.null(selected_rows) || length(selected_rows) == 0) {
-      showNotification("Please select rows to update", type = "warning")
-      return()
-    }
-
-    authors <- geo_filtered_authors()
-    if (is.null(authors)) return()
-
-    selected_ids <- authors$author_id[selected_rows]
-    new_regionality <- input$geo_bulk_regionality
-
-    if (new_regionality == "") {
-      showNotification("Please select an origin value", type = "warning")
-      return()
-    }
-
-    con <- dbConnect(SQLite(), DB_PATH)
-    on.exit(dbDisconnect(con))
-
-    # Update regionality and auto-set inter_regional flag based on "visits"
-    is_inter <- if (grepl("visits", new_regionality)) 1 else 0
-    mobility <- if (grepl("visits", new_regionality)) "inter-regional" else NULL
-
-    for (aid in selected_ids) {
-      if (!is.null(mobility)) {
-        dbExecute(con, "
-          UPDATE authors SET regionality = ?, inter_regional = ?, mobility_category = ?
-          WHERE author_id = ?
-        ", params = list(new_regionality, is_inter, mobility, aid))
-      } else {
-        dbExecute(con, "
-          UPDATE authors SET regionality = ?, inter_regional = ?
-          WHERE author_id = ?
-        ", params = list(new_regionality, is_inter, aid))
-      }
-    }
-
-    showNotification(paste("Updated origin for", length(selected_ids), "authors"), type = "message")
-    rv$geo_data_refresh <- Sys.time()
-    updateSelectInput(session, "geo_bulk_regionality", selected = "")
-  })
-
-  # Refresh data button
-  observeEvent(input$geo_refresh_data, {
-    rv$geo_data_refresh <- Sys.time()
-    showNotification("Data refreshed", type = "message")
-  })
+  # NOTE: Geographic Batch Validation Panel removed for cloud deployment
+  # Validation features are available in the local development version only
 
   # Filter summary showing count of matching scholars
   output$geo_filter_summary <- renderUI({
