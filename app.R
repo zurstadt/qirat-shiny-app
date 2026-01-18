@@ -2021,7 +2021,7 @@ server <- function(input, output, session) {
   # ============================================================================
   output$home_animation <- renderImage({
     list(
-      src = normalizePath("../output/animations/islamic_bibliography_map_ALL.gif"),
+      src = normalizePath("output/animations/islamic_bibliography_map_ALL.gif"),
       contentType = "image/gif",
       width = "100%",
       alt = "Islamic Bibliography Geographic Animation"
@@ -3941,6 +3941,8 @@ server <- function(input, output, session) {
     df_plot$Century <- factor(df_plot$Century, levels = paste0(centuries, "th c."))
     # Display Mašriq first (left), then Maġrib
     df_plot$Region <- factor(df_plot$Region, levels = c("Mašriq", "Maġrib"))
+    # Ensure correct category ordering (not alphabetical)
+    df_plot$Category <- factor(df_plot$Category, levels = c("7", "7+1", "10+"))
 
     # Create hover text
     df_plot$hover_text <- sprintf(
