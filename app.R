@@ -3793,7 +3793,13 @@ server <- function(input, output, session) {
             panel.spacing = unit(1, "lines"))
 
     ggplotly(p, tooltip = "text") %>%
-      layout(hoverlabel = list(bgcolor = "white", font = list(size = 12)))
+      layout(
+        hoverlabel = list(bgcolor = "white", font = list(size = 12)),
+        xaxis = list(categoryorder = "array", categoryarray = c("7", "7+1", "10+")),
+        xaxis2 = list(categoryorder = "array", categoryarray = c("7", "7+1", "10+")),
+        xaxis3 = list(categoryorder = "array", categoryarray = c("7", "7+1", "10+")),
+        xaxis4 = list(categoryorder = "array", categoryarray = c("7", "7+1", "10+"))
+      )
   })
 
   # Tab navigation observer for automatic computation ====
@@ -5248,12 +5254,16 @@ server <- function(input, output, session) {
     p <- ggplot(counts, aes(x = outcome, y = n, fill = outcome, text = hover_text)) +
       geom_col(color = NA, alpha = 0.85, width = 0.7) +
       scale_fill_manual(values = COLORS$system, guide = "none") +
+      scale_x_discrete(limits = c("7", "7+1", "10+")) +
       theme_tufte_custom(base_size = 11) +
       labs(title = "Reading Systems", x = NULL, y = "Count") +
       theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
             legend.position = "none")
     ggplotly(p, tooltip = "text") %>%
-      layout(hoverlabel = list(bgcolor = "white"))
+      layout(
+        hoverlabel = list(bgcolor = "white"),
+        xaxis = list(categoryorder = "array", categoryarray = c("7", "7+1", "10+"))
+      )
   })
 
   output$data_dist_geo <- renderPlotly({
