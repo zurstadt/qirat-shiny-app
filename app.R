@@ -96,11 +96,11 @@ theme_tufte_custom <- function(base_size = 11) {
 # Okabe-Ito colorblind-friendly palette for academic publication
 # These colors are used consistently throughout the project
 COLORS <- list(
-  # Reading systems (sets)
+  # Reading systems (sets) - colors for debugging ordering
   system = c(
-    "7"   = "#0072B2",   # Blue
-    "7+1" = "#D55E00",   # Vermillion
-    "10+" = "#009E73"    # Bluish Green
+    "7"   = "#E69F00",   # Orange
+    "7+1" = "#009E73",   # Green
+    "10+" = "#0072B2"    # Blue
   ),
   # Regions
   region = c(
@@ -476,9 +476,9 @@ create_color_badge <- function(value, type = "system") {
 
   colors <- switch(type,
     "system" = c(
-      "7"   = "#0072B2",
-      "7+1" = "#D55E00",
-      "10+" = "#009E73"
+      "7"   = "#E69F00",   # Orange
+      "7+1" = "#009E73",   # Green
+      "10+" = "#0072B2"    # Blue
     ),
     "region" = c(
       "maġrib" = "#56B4E9",
@@ -5093,11 +5093,11 @@ server <- function(input, output, session) {
       ppc_plot_data$SimQ025, ppc_plot_data$SimQ975
     )
 
-    # Map categories to colors
+    # Map categories to colors (orange=7, green=7+1, blue=10+)
     category_colors <- COLORS$system[lvl]
     if (any(is.na(category_colors))) {
       category_colors <- setNames(
-        c("#0072B2", "#D55E00", "#009E73")[1:length(lvl)],
+        c("#E69F00", "#009E73", "#0072B2")[1:length(lvl)],
         lvl
       )
     }
@@ -5203,12 +5203,12 @@ server <- function(input, output, session) {
     results$Category <- factor(results$Category, levels = lvl)
     spaghetti$Category <- factor(spaghetti$Category, levels = lvl)
 
-    # Okabe-Ito colorblind-friendly palette for categories (reading systems)
+    # Colors for categories (orange=7, green=7+1, blue=10+)
     category_colors <- COLORS$system[lvl]
     # If some categories don't match, use default colors
     if (any(is.na(category_colors))) {
       category_colors <- setNames(
-        c("#0072B2", "#D55E00", "#009E73")[1:K],
+        c("#E69F00", "#009E73", "#0072B2")[1:K],
         lvl
       )
     }
