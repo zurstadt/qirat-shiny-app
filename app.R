@@ -1831,11 +1831,11 @@ ui <- fluidPage(
           div(class = "card-body",
             h4("Funding"),
             p("This research is supported by the European Research Council (ERC) under the European Union's ",
-              "Horizon 2020 research and innovation programme."),
+              "Horizon 2020 research and innovation programme (Grant number 101054849)."),
             br(),
             h4("Institutional Support"),
-            p("This project is hosted at Leiden University, Faculty of Humanities, ",
-              "Leiden University Centre for the Study of Islam and Society (LUCIS)."),
+            p("This project is based at the Leiden University Centre for Linguistics (LUCL), ",
+              "Leiden University, Faculty of Humanities."),
             br(),
             h4("Data Sources"),
             p("Geographic coordinate data is derived from the Thurayya Gazetteer project. ",
@@ -1897,7 +1897,7 @@ ui <- fluidPage(
       ),
       p(
         style = "margin-top: 15px; font-size: 0.85em; color: #666;",
-        "Funded by the European Research Council (ERC) under the European Union's Horizon 2020 programme"
+        "Funded by the European Research Council (ERC) under the European Union's Horizon 2020 programme (Grant 101054849)"
       )
     )
   )
