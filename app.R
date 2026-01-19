@@ -4058,6 +4058,7 @@ server <- function(input, output, session) {
     }
     df_plot <- do.call(rbind, plot_data_list)
     df_plot$Century <- factor(df_plot$Century, levels = paste0(centuries, "th c."))
+    df_plot$Category <- factor(df_plot$Category, levels = c("7", "7+1", "10+"))
 
     ggplot(df_plot, aes(x = Category, y = mean, fill = Region)) +
       # Minimal bars - no outline
