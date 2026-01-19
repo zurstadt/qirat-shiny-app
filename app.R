@@ -1264,7 +1264,7 @@ process_bib_data <- function(df, outcome_col, geo_col, century_col = NULL) {
     geo_filtered <- geo_fac[valid_idx][century_valid]
 
     result <- data.frame(
-      outcome = factor(outcome_filtered),  # Create factor from filtered values only
+      outcome = factor(outcome_filtered, levels = c("7", "7+1", "10+")),  # Correct ordering: 7, 7+1, 10+
       geo = droplevels(geo_filtered),
       century = century_numeric[century_valid],
       stringsAsFactors = FALSE
@@ -1274,7 +1274,7 @@ process_bib_data <- function(df, outcome_col, geo_col, century_col = NULL) {
 
   # Create factor from filtered data only
   data.frame(
-    outcome = factor(outcome_chr[valid_idx]),
+    outcome = factor(outcome_chr[valid_idx], levels = c("7", "7+1", "10+")),  # Correct ordering: 7, 7+1, 10+
     geo = droplevels(geo_fac[valid_idx]),
     stringsAsFactors = FALSE
   )
@@ -3783,6 +3783,7 @@ server <- function(input, output, session) {
                     position = position_dodge(0.8), width = 0.15, linewidth = 0.4, color = "gray30") +
       facet_wrap(~ Century, ncol = 2) +
       scale_fill_manual(values = c("Maġrib" = "#56B4E9", "Mašriq" = "#E69F00")) +
+      scale_x_discrete(limits = c("7", "7+1", "10+")) +
       scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25),
                         labels = scales::percent_format(accuracy = 1)) +
       theme_tufte_custom(base_size = 11) +
@@ -4072,6 +4073,7 @@ server <- function(input, output, session) {
       # Grayscale with subtle distinction
       scale_fill_manual(values = COLORS$region,
                         labels = c("Maġrib", "Mašriq")) +
+      scale_x_discrete(limits = c("7", "7+1", "10+")) +
       scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25),
                         labels = scales::percent_format(accuracy = 1)) +
       theme_tufte_custom(base_size = 11) +
