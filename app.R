@@ -1804,16 +1804,6 @@ ui <- fluidPage(
         # Card content container
         uiOutput("bayes_current_card"),
 
-        # Hidden inputs for model fitting (keeping existing functionality)
-        div(style = "display: none;",
-          numericInput("prior_alpha_sd", "Intercept Prior SD", value = 5, min = 0.1, step = 0.5),
-          numericInput("prior_beta_sd", "Slope Prior SD", value = 2, min = 0.1, step = 0.5),
-          numericInput("chains", "MCMC Chains", value = 4, min = 1, max = 8, step = 1),
-          numericInput("iter", "Iterations/Chain", value = 2000, min = 500, step = 500),
-          fileInput("load_rds", "Load Pre-fitted Model"),
-          selectInput("selected_system", "Select Reading Set:", choices = c("7", "7+1", "10+"), selected = "7")
-        ),
-
         # Download button for saving model (conditionally shown)
         conditionalPanel(
           condition = "output.model_fitted",
@@ -3945,25 +3935,6 @@ server <- function(input, output, session) {
     )
   }
 
-  # Load pre-fitted model
-  observeEvent(input$load_rds, {
-    req(input$load_rds)
-    fit <- tryCatch(
-      readRDS(input$load_rds$datapath),
-      error = function(e) {
-        showNotification(paste("Error:", e$message), type = "error")
-        NULL
-      }
-    )
-
-    if (!is.null(fit)) {
-      rv$fit_obj <- fit
-      rv$fit_info <- list(source = "loaded")
-      rv$fit_counter <- rv$fit_counter + 1
-      showNotification("Model loaded", type = "message")
-    }
-  })
-
   # Save model
   output$save_model <- downloadHandler(
     filename = function() {
@@ -4129,17 +4100,17 @@ server <- function(input, output, session) {
 
   # Contrast display (dynamic based on selected system)
   output$contrast_display <- renderUI({
-    req(rv$contrasts_computed, input$selected_system)
+    req(rv$contrasts_computed, input$selected_system_card4)
 
-    contrast <- rv$contrast_results[[input$selected_system]]
+    contrast <- rv$contrast_results[[input$selected_system_card4]]
     req(contrast)
 
     # Get system-specific explanation
-    explanation <- get_system_explanation(input$selected_system)
+    explanation <- get_system_explanation(input$selected_system_card4)
 
     div(class = "card",
       div(class = "card-header", style = "background-color: #17a2b8; color: white;",
-        h4(style = "margin: 0;", paste("System:", input$selected_system))
+        h4(style = "margin: 0;", paste("System:", input$selected_system_card4))
       ),
       div(class = "card-body",
         # Explanatory text
@@ -4165,7 +4136,7 @@ server <- function(input, output, session) {
         ),
 
         # Histogram
-        plotOutput(paste0("contrast_plot_", gsub("\\+", "plus", input$selected_system)),
+        plotOutput(paste0("contrast_plot_", gsub("\\+", "plus", input$selected_system_card4)),
                   height = "350px"),
         p(class = "text-muted", style = "font-size: 0.85em;",
           "The histogram shows the posterior distribution of the difference in probabilities. The dark vertical line marks the mean difference, while the gray line at zero represents no regional effect. The subtle gray shaded region indicates the 95% credible interval. When the distribution is clearly shifted away from zero, this provides evidence of systematic regional preference for this reading system.")
