@@ -1580,7 +1580,12 @@ ui <- fluidPage(
           )
         ),
 
-        # Animation section removed (see geographic_alpha.R)
+        # Animation section
+        div(class = "home-section",
+          h3("Scholar Mobility Visualization"),
+          p("The animated map below shows the geographic distribution and mobility patterns of scholars in the corpus across centuries."),
+          imageOutput("home_animation", height = "auto")
+        )
       ),
 
       # ========== Tab 2: Corpus Explorer ==========
@@ -1850,7 +1855,15 @@ server <- function(input, output, session) {
     )
   })
 
-  # HOME TAB - Animation removed (see geographic_alpha.R)
+  # HOME TAB - Animation
+  output$home_animation <- renderImage({
+    list(
+      src = normalizePath("output/animations/islamic_bibliography_map_ALL.gif"),
+      contentType = "image/gif",
+      width = "100%",
+      alt = "Islamic Bibliography Geographic Animation"
+    )
+  }, deleteFile = FALSE)
 
   # Dynamic works count for Home Page
   output$home_works_count <- renderText({
