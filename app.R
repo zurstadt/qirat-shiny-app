@@ -12,9 +12,9 @@ library(shinyjs)
 library(shinyFeedback)
 library(posterior)
 library(plotly)
-library(leaflet)
 library(jsonlite)
-library(sf)  # For region polygons
+# library(leaflet)  # Removed with Geographic Explorer (see geographic_alpha.R)
+# library(sf)  # Removed with Geographic Explorer (see geographic_alpha.R)
 
 # Note: cmdstanr not required - using pre-computed Bayesian results for cloud deployment
 # library(cmdstanr)  # Disabled for Posit Connect Cloud
@@ -30,23 +30,17 @@ PRECOMPUTED <- if (file.exists(PRECOMPUTED_PATH)) {
   NULL
 }
 
-# Scholar routes JSON path (used by Geographic Explorer)
-SCHOLAR_ROUTES_PATH <- "routes/all_scholar_routes.json"
+# Scholar routes JSON path (used by Geographic Explorer - see geographic_alpha.R)
+# SCHOLAR_ROUTES_PATH <- "routes/all_scholar_routes.json"
 
 # GIS sea route geometries (coastal-following paths)
-SEA_ROUTES_GIS_PATH <- "routes/sea_routes_gis.json"
-SEA_ROUTE_GEOMETRIES_PATH <- "routes/sea_route_geometries.json"  # Thurayya code keyed lookup
+# SEA_ROUTES_GIS_PATH <- "routes/sea_routes_gis.json"  # Removed with Geographic Explorer
+# SEA_ROUTE_GEOMETRIES_PATH <- "routes/sea_route_geometries.json"  # Removed with Geographic Explorer
 
-# Mediterranean ports for sea route visualization
-MEDITERRANEAN_PORTS_PATH <- "routes/mediterranean_ports.json"
+# Mediterranean ports for sea route visualization (removed with Geographic Explorer)
+# MEDITERRANEAN_PORTS_PATH <- "routes/mediterranean_ports.json"
 
-# Sea route category colors (Okabe-Ito palette)
-SEA_ROUTE_COLORS <- list(
-  western_mediterranean = "#0072B2",    # Blue - Iberia to Ifriqiya
-  north_african_coastal = "#009E73",    # Green - Along North African coast
-  long_distance = "#D55E00",            # Vermillion - Tunis to Alexandria
-  strait = "#56B4E9"                    # Sky Blue - Short strait crossings
-)
+# Sea route category colors removed with Geographic Explorer (see geographic_alpha.R)
 
 # Tufte-inspired theme for all visualizations
 theme_tufte_custom <- function(base_size = 11) {
@@ -629,13 +623,8 @@ elastic_match_vec <- function(query, target_latin_vec, target_arabic_vec = NULL)
   })
 }
 
-# Helper: Load geographic data from database
-# ============================================================================
-# GEOGRAPHIC EXPLORER HELPER FUNCTIONS (from app_geographic_map.R)
-# ============================================================================
-
-# Load scholar routes from JSON
-# Load scholar routes from database (using normalized schema with aliases)
+# GEOGRAPHIC EXPLORER HELPER FUNCTIONS - Removed (see deploy/geographic_alpha.R)
+if (FALSE) {
 load_scholar_routes_from_db <- function(db_path = DB_PATH) {
   tryCatch({
     con <- dbConnect(SQLite(), db_path)
@@ -1154,6 +1143,7 @@ load_geographic_data <- function() {
     mediterranean_ports = load_mediterranean_ports()
   )
 }
+} # end if (FALSE) - Geographic Explorer helpers
 
 # Helper: Load data from database
 load_from_database <- function(db_path = DB_PATH) {
@@ -1522,27 +1512,7 @@ ui <- fluidPage(
         max-width: 100%;
       }
 
-      /* Geographic Explorer styles */
-      .geo-stat-card {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 8px;
-        padding: 20px;
-        text-align: center;
-        border: 1px solid #dee2e6;
-      }
-
-      .geo-stat-number {
-        font-size: 32px;
-        font-weight: bold;
-        color: #001158;
-      }
-
-      .geo-stat-label {
-        font-size: 12px;
-        color: #666;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
+      /* Geographic Explorer styles removed (see geographic_alpha.R) */
 
       /* Bold Section Headers */
       .section-header-bold {
@@ -1604,20 +1574,13 @@ ui <- fluidPage(
             "variation in pedagogical approaches to the transmission of Qurʾanic Reading Traditions. ",
             "Use the navigation tabs above to explore the ",
             tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'corpus_explorer', {priority: 'event'});", "corpus of works"),
-            " on 7, 7+1, or 10+ Reading Traditions, visualize the authors' ",
-            tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'geo_explorer', {priority: 'event'});", "travel networks"),
-            ", and examine the ",
+            " on 7, 7+1, or 10+ Reading Traditions and examine the ",
             tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'bayesian', {priority: 'event'});", "statistical analysis"),
             " of the relationship between regionality and canonicity within this corpus."
           )
         ),
 
-        # Animation section
-        div(class = "home-section",
-          h3("Scholar Mobility Visualization"),
-          p("The animated map below shows the geographic distribution and mobility patterns of scholars in the corpus across centuries."),
-          imageOutput("home_animation", height = "auto")
-        )
+        # Animation section removed (see geographic_alpha.R)
       ),
 
       # ========== Tab 2: Corpus Explorer ==========
@@ -1708,85 +1671,7 @@ ui <- fluidPage(
         )
       ),
 
-      # ========== Tab 3: Geographic Explorer ==========
-      tabPanel(
-        title = tagList(icon("map"), "Geographic Explorer"),
-        value = "geographic_explorer",
-        br(),
-
-        div(class = "card",
-          div(class = "card-header", icon("route"), " Scholar Mobility Patterns"),
-          div(class = "card-body",
-
-            # Map at top (primary element)
-            h4(class = "section-header-bold", "Regional Map"),
-            p(style = "font-size: 0.9em; color: #666;",
-              "Scholar travel routes displayed on load. Click subregions for statistics. Dotted line = Mašriq/Maġrib boundary."),
-            leafletOutput("geo_travel_map", height = "550px"),
-
-            hr(),
-
-            # Search/Filter controls
-            h4(class = "section-header-bold", "Filters"),
-            fluidRow(
-              column(2, selectInput("geo_mobility_filter", "Mobility:",
-                choices = c("All" = "all",
-                           "Sedentary" = "sedentary",
-                           "Local Traveler" = "local-traveler",
-                           "Extensive Local" = "extensive-local",
-                           "Inter-Regional" = "inter-regional"))),
-              column(2, selectInput("geo_meta_region", "Region:",
-                choices = c("All" = "all",
-                           "Mašriq (East)" = "mašriq",
-                           "Maġrib (West)" = "maġrib",
-                           "Inter-Regional" = "inter"))),
-              column(2, selectInput("geo_home_subregion", "Home Subregion:",
-                choices = c("All" = "all", "al-ʿirāq", "al-šām", "al-ʾandalus", "egypt",
-                           "ǧibāl-ṭabaristān", "ʾifrīqiyyah", "fārs", "ḫurāsān", "ḥiǧāz"))),
-              column(2, sliderInput("geo_century_filter", "Century (AH):", min = 4, max = 7, value = c(4, 7), step = 1)),
-              column(2, sliderInput("geo_subregions_filter", "Subregions:", min = 1, max = 7, value = c(1, 7), step = 1)),
-              column(2, actionButton("geo_reset", "Reset", icon = icon("redo"), class = "btn-secondary", style = "margin-top: 25px;"))
-            ),
-
-            hr(),
-
-            # Mobility Statistics Summary (reactive to filters)
-            h4(class = "section-header-bold", "Mobility Statistics"),
-            p(style = "font-size: 0.85em; color: #666;", uiOutput("geo_filter_summary_inline")),
-            fluidRow(
-              column(3, uiOutput("geo_stat_sedentary")),
-              column(3, uiOutput("geo_stat_local")),
-              column(3, uiOutput("geo_stat_extensive")),
-              column(3, uiOutput("geo_stat_interregional"))
-            ),
-
-            hr(),
-
-            # Key Questions Answered
-            h4(class = "section-header-bold", "Key Findings"),
-            uiOutput("geo_key_findings"),
-
-            hr(),
-
-            # Author mobility table with search
-            h4(class = "section-header-bold", "Author Mobility Database"),
-            fluidRow(
-              column(6,
-                textInput("geo_author_search", "Search Author:",
-                  placeholder = "Shatibi, شاطبي, or šāṭibī..."),
-                tags$small(class = "text-muted", style = "display: block; margin-top: -10px;",
-                  "Arabic, digraphs (dh, gh, sh), or transliteration")),
-              column(3, uiOutput("geo_author_match"))
-            ),
-
-            # Author mobility table
-            DTOutput("geo_author_mobility_table")
-          )
-        )
-      ),
-
-      # NOTE: Sea Routes tab removed per user request - sea route visualization
-      # has been integrated into Geographic Explorer tab
+      # ========== Tab 3: Geographic Explorer (REMOVED - see geographic_alpha.R) ==========
 
       # ========== Tab 4: Bayesian Analysis (4 cards) ==========
       tabPanel(
@@ -1912,8 +1797,7 @@ server <- function(input, output, session) {
     from_database = TRUE,
     model_summary_visited = FALSE,
     analysis_results_visited = FALSE,
-    # New: Geographic data
-    geo_data = NULL,
+    # Geographic data removed (see geographic_alpha.R)
     # New: Bayesian card navigation
     bayes_current_card = 1,
     bayesian_analysis_visited = if (!is.null(PRECOMPUTED)) TRUE else FALSE,
@@ -1921,8 +1805,7 @@ server <- function(input, output, session) {
     selected_posterior_param = NULL
   )
 
-  # Load geographic data on startup
-  rv$geo_data <- load_geographic_data()
+  # Geographic data loading removed (see geographic_alpha.R)
 
   # Show initialization notification (using init_data, not rv)
   if (init_data$initialized) {
@@ -1967,17 +1850,7 @@ server <- function(input, output, session) {
     )
   })
 
-  # ============================================================================
-  # HOME TAB - Animation
-  # ============================================================================
-  output$home_animation <- renderImage({
-    list(
-      src = normalizePath("output/animations/islamic_bibliography_map_ALL.gif"),
-      contentType = "image/gif",
-      width = "100%",
-      alt = "Islamic Bibliography Geographic Animation"
-    )
-  }, deleteFile = FALSE)
+  # HOME TAB - Animation removed (see geographic_alpha.R)
 
   # Dynamic works count for Home Page
   output$home_works_count <- renderText({
@@ -2275,17 +2148,9 @@ server <- function(input, output, session) {
   )
 
   # ============================================================================
-  # GEOGRAPHIC EXPLORER (using app_geographic_map.R approach)
+  # GEOGRAPHIC EXPLORER - Removed (see deploy/geographic_alpha.R)
   # ============================================================================
-
-  # Old geo_filtered_routes removed - now defined after geo_mobility_data reactive
-
-  # City pairs (edges) reactive
-  geo_city_pairs <- reactive({
-    routes <- geo_filtered_routes()
-    if (length(routes) == 0) return(NULL)
-    extract_city_pairs(routes)
-  })
+  if (FALSE) {
 
   # City visits (nodes) reactive
   geo_city_visits <- reactive({
@@ -3149,12 +3014,12 @@ server <- function(input, output, session) {
       NULL
     })
   }
+  } # end if (FALSE) - Geographic Explorer
 
   # ============================================================================
-  # SEA ROUTES VISUALIZATION
+  # SEA ROUTES VISUALIZATION - Removed (was integrated into Geographic Explorer)
   # ============================================================================
-
-  # Reactive: Get all selected routes
+  if (FALSE) {
   sea_routes_selected <- reactive({
     c(input$sea_routes_western,
       input$sea_routes_nafr,
@@ -3437,6 +3302,7 @@ server <- function(input, output, session) {
         h4(longest, style = "margin: 0; color: #56B4E9; font-size: 1em;"),
         p("Longest Selected", style = "margin: 0; font-size: 0.9em;"))
   })
+  } # end if (FALSE) - Sea Routes
 
   # ============================================================================
   # BAYESIAN ANALYSIS - Card Navigation
