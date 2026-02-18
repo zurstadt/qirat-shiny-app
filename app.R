@@ -1159,6 +1159,7 @@ load_from_database <- function(db_path = DB_PATH) {
         w.type,
         w.system,
         w.extant,
+        w.author_id,
         COALESCE(a.author_name_canonical, a.author_name) as author_name,
         a.author_name_arabic,
         a.regionality,
@@ -1202,6 +1203,40 @@ load_from_database <- function(db_path = DB_PATH) {
       df$commentary_titles <- NA
       df$commentary_types <- NA
       df$commentary_authors <- NA
+    }
+
+    # Load citation counts per work and per author
+    citation_counts_work <- tryCatch(
+      dbGetQuery(con, "
+        SELECT work_id, COUNT(*) as citation_count
+        FROM bibliographic_citations
+        WHERE work_id IS NOT NULL
+        GROUP BY work_id
+      "),
+      error = function(e) data.frame(work_id = character(0), citation_count = integer(0))
+    )
+    citation_counts_author <- tryCatch(
+      dbGetQuery(con, "
+        SELECT author_id, COUNT(*) as citation_count
+        FROM bibliographic_citations
+        WHERE author_id IS NOT NULL
+        GROUP BY author_id
+      "),
+      error = function(e) data.frame(author_id = integer(0), citation_count = integer(0))
+    )
+
+    # Merge citation counts
+    if (nrow(citation_counts_work) > 0) {
+      df <- merge(df, citation_counts_work, by = "work_id", all.x = TRUE)
+    } else {
+      df$citation_count <- NA
+    }
+    if (nrow(citation_counts_author) > 0) {
+      author_cit <- citation_counts_author
+      names(author_cit) <- c("author_id", "author_citation_count")
+      df <- merge(df, author_cit, by = "author_id", all.x = TRUE)
+    } else {
+      df$author_citation_count <- NA
     }
 
     # Clean up system values (e.g., "7.0" -> "7", keep "7+1" and "10+" as-is)
@@ -1404,6 +1439,11 @@ ui <- fluidPage(
         visibility: visible;
       }
 
+      /* Citation link styling */
+      .citation-link { color: inherit; text-decoration: none; }
+      .citation-link:hover { text-decoration: underline; color: #007bff; cursor: pointer; }
+      .citation-indicator { font-size: 0.85em; margin-left: 4px; color: #6c757d; cursor: help; }
+
       .status-badge {
         display: inline-block;
         padding: 8px 12px;
@@ -1563,20 +1603,19 @@ ui <- fluidPage(
         div(class = "home-section",
           h3("Introduction"),
           p(class = "home-blurb",
-            "This research analyzes the role that geography played in the development of separate ",
-            "\"pedagogical canons\" relating to the Qurʾanic Reading Traditions (qirāʾāt) between ",
-            "the fourth–seventh centuries AH (tenth–thirteenth centuries AD). Using Bayesian ",
-            "multinomial regression, we examine whether an author's regional affiliation ",
-            "(Maġrib vs. Mašriq) influenced which set of Reading Traditions (7, 7+1, 10+) he ",
-            "chose to document, and how these preferences evolved over time. The corpus comprises ",
+            "This app accompanies a study of geography and pedagogical canonicity in the Qurʾānic Reading ",
+            "Traditions (qirāʾāt), 4th–7th centuries AH. It comprises ",
             textOutput("home_works_count", inline = TRUE),
-            " works by authors with documented travel patterns, revealing systematic regional ",
-            "variation in pedagogical approaches to the transmission of Qurʾanic Reading Traditions. ",
-            "Use the navigation tabs above to explore the ",
-            tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'corpus_explorer', {priority: 'event'});", "corpus of works"),
-            " on 7, 7+1, or 10+ Reading Traditions and examine the ",
-            tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'bayesian', {priority: 'event'});", "statistical analysis"),
-            " of the relationship between regionality and canonicity within this corpus."
+            " works by authors across the Maġrib and Mašriq."),
+          p("Use the tabs above to:",
+            tags$ul(
+              tags$li(tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'corpus_explorer', {priority: 'event'});", "Corpus Explorer"),
+                " — search, filter, and download the full bibliography"),
+              tags$li(tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'bayesian_analysis', {priority: 'event'});", "Bayesian Analysis"),
+                " — interactive results of the multinomial regression model"),
+              tags$li(tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'methodology', {priority: 'event'});", "Methodology"),
+                " — a complete walk-through of the data, model, and interpretation")
+            )
           )
         ),
 
@@ -1597,28 +1636,11 @@ ui <- fluidPage(
         # Status badge
         uiOutput("data_status_badge"),
 
-        # About This Dataset
-        h3("About This Dataset"),
-        p("The analysis is based on a dataset containing ", textOutput("corpus_works_count", inline = TRUE), " works on Qurʾanic Reading Traditions ",
-          "(qirāʾāt) produced between the 4th and 7th centuries AH (10th-13th centuries CE). ",
-          "Each work has been classified according to the following considerations:"),
-        p(tags$strong("Set of Readings:"), " The number of Reading Traditions a given work describes"),
-        tags$ul(
-          tags$li(tags$strong("7"), " = The seven described in Ibn Muǧāhid's (d. 324) ", tags$em("K. al-Sabʿah")),
-          tags$li(tags$strong("7+1"), " = Ibn Muǧāhid's Seven + Yaʿqūb al-Ḥaḍramī (d. 205)"),
-          tags$li(tags$strong("10+"), " = Ibn Muǧāhid's Seven + ", tags$em("at least"), " three additional Readings")
-        ),
-        p(tags$strong("Regional Attribution:"), " The author's geographic origin"),
-        tags$ul(
-          tags$li(tags$strong("Maġrib"), " = Western Islamic world (al-Andalus, North Africa, Egypt)"),
-          tags$li(tags$strong("Mašriq"), " = Eastern Islamic world (al-Šām, al-Ḥiǧāz, al-ʿIrāq, Fārs, Ǧibāl-Ṭabaristān, Ḫurāsān, Mā Warāʾ al-Nahr)")
-        ),
-        p(tags$strong("Temporal Context:"), " The century of the author's death (4th-7th), serving as a proxy for when the work was produced and began circulating."),
-        p("Explore the corpus based on these facets below. Results of queries can be exported as either ",
-          "a .csv or .json file by clicking the buttons below the search results. ",
-          "For a fuller description of the corpus, ",
-          tags$a(href = "#", onclick = "Shiny.setInputValue('show_corpus_details', Math.random());", "click here"),
-          "."),
+        p("Showing ", textOutput("corpus_works_count", inline = TRUE),
+          " works on Qurʾānic Reading Traditions (4th–7th c. AH). ",
+          "For definitions of reading systems, regions, and the statistical model, see the ",
+          tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'methodology', {priority: 'event'});", "Methodology"),
+          " tab."),
         br(),
 
         # Data Distribution
@@ -1669,8 +1691,9 @@ ui <- fluidPage(
             # Download buttons below results
             br(),
             fluidRow(
-              column(6, downloadButton("download_csv", "Download CSV", class = "btn-primary btn-block")),
-              column(6, downloadButton("download_json", "Download JSON", class = "btn-info btn-block"))
+              column(4, downloadButton("download_csv", "Download CSV", class = "btn-primary btn-block")),
+              column(4, downloadButton("download_json", "Download JSON", class = "btn-info btn-block")),
+              column(4, downloadButton("download_ris", "Download RIS (Zotero)", class = "btn-success btn-block"))
             )
           )
         )
@@ -1701,7 +1724,416 @@ ui <- fluidPage(
         )
       ),
 
-      # ========== Tab 5: Acknowledgements ==========
+      # ========== Tab 5: Methodology ==========
+      tabPanel(
+        title = tagList(icon("graduation-cap"), "Methodology"),
+        value = "methodology",
+        br(),
+        div(class = "card",
+          div(class = "card-header", "How the Bayesian Analysis Works"),
+          div(class = "card-body",
+            h4("A Complete Guide for the IQSA Qirāʾāt Bibliography App"),
+            p(em("QurCan ERC Grant (No. 101054849) — Leiden University Centre for Linguistics")),
+            hr(),
+
+            # Overview
+            h3("Overview"),
+            p("This app uses ", strong("Bayesian multinomial logistic regression"),
+              " to estimate the probability that a scholar from a given region wrote about a particular ",
+              "Qurʾānic reading system. The model takes as input a bibliography of works on the qirāʾāt, ",
+              "each classified by reading system (7, 7+1, or 10+) and by the author's regional affiliation ",
+              "(Mašriq or Maġrib), and produces probability estimates with full uncertainty quantification."),
+            p("This page walks through every step of the analysis, from raw data to the final probability statements."),
+            hr(),
+
+            # 1. The Data
+            h3("1. The Data"),
+            p("The corpus consists of ", strong("172 bibliographic works"),
+              " on Qurʾānic reading traditions composed between the 4th and 7th centuries AH ",
+              "(10th–13th centuries CE). Each work is classified by:"),
+            tags$ul(
+              tags$li(strong("Reading system"), " — which pedagogical canon the work describes:",
+                tags$ul(
+                  tags$li(strong("7 readings"), ": the system canonized by Ibn Muǧāhid (d. 324/936), encompassing seven readers"),
+                  tags$li(strong("7+1 readings"), ": the seven plus Yaʿqūb al-Ḥaḍramī, an eighth reader widely recognized in Baṣra"),
+                  tags$li(strong("10+ readings"), ": ten or more reading traditions, typically the systems of Ibn al-Ǧazarī (d. 833/1429) and his predecessors")
+                )),
+              tags$li(strong("Region"), " — the author's primary scholarly affiliation:",
+                tags$ul(
+                  tags$li(strong("Maġrib"), ": the western Islamic world (al-Andalus, Ifrīqiyyah, Egypt)"),
+                  tags$li(strong("Mašriq"), ": the eastern Islamic world (al-Šām, Iraq, Fārs, Ǧibāl-Ṭabaristān, Ḫurāsān)")
+                )),
+              tags$li(strong("Century"), " — the author's death century (AH), used as a proxy for the period of the work's circulation")
+            ),
+
+            h4("Observed Counts"),
+            tags$table(class = "table table-bordered table-sm", style = "max-width: 500px;",
+              tags$thead(tags$tr(
+                tags$th("System"), tags$th("Maġrib"), tags$th("Mašriq"), tags$th("Total")
+              )),
+              tags$tbody(
+                tags$tr(tags$td("7"), tags$td("48"), tags$td("38"), tags$td("86")),
+                tags$tr(tags$td("7+1"), tags$td("10"), tags$td("17"), tags$td("27")),
+                tags$tr(tags$td("10+"), tags$td("4"), tags$td("55"), tags$td("59")),
+                tags$tr(tags$td(strong("Total")), tags$td(strong("62")), tags$td(strong("110")), tags$td(strong("172")))
+              )
+            ),
+            p("Even at a glance, these raw numbers suggest a strong pattern: the 10+ system is overwhelmingly ",
+              "Mašriqī (55 of 59 works), while the 7-reading system is more evenly distributed with a Maġribī lean. ",
+              "But raw counts do not account for the overall imbalance between regions (110 Mašriqī vs. 62 Maġribī works) ",
+              "or quantify our uncertainty. The Bayesian model addresses both problems."),
+            hr(),
+
+            # 2. The Question
+            h3("2. The Question"),
+            p("We want to answer: ", strong("Given a scholar's regional affiliation (and, optionally, century), ",
+              "what is the probability that they wrote about each reading system?")),
+            p("Formally, we want to estimate P(system = k | region, century) for each system ",
+              em("k"), " ∈ {7, 7+1, 10+}, and to know how confident we can be in those estimates."),
+            hr(),
+
+            # 3. Why Bayesian Methods?
+            h3("3. Why Bayesian Methods?"),
+            p("A standard chi-square test could tell us whether system and region are statistically associated ",
+              "(they are: ", em("p"), " < 0.001), but it cannot tell us ", em("how much"),
+              " more likely a Mašriqī scholar is to write about the 10+ system. Bayesian inference directly computes the ",
+              strong("probability distribution"), " over plausible parameter values given the data, enabling statements like ",
+              "\"there is a 99.8% probability that P(10+ | Mašriq) > P(10+ | Maġrib)\" and ",
+              "\"the most likely value of P(10+ | Mašriq) is 0.48, with a 95% credible interval of [0.39, 0.57].\" ",
+              "These are direct answers to the research question — not statements about hypothetical repeated experiments."),
+            p("All of Bayesian inference rests on a single formula:"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "posterior = (likelihood × prior) / normalizing constant"),
+            p("The ", strong("prior"), " encodes what we believe before seeing data; the ", strong("likelihood"),
+              " measures how probable the data are for each parameter value; the ", strong("posterior"),
+              " is what we believe after combining the two. Every probability statement, credible interval, ",
+              "and regional comparison in this app is extracted from the posterior."),
+            hr(),
+
+            # 4. The Model
+            h3("4. The Model"),
+            h4("Why Multinomial Logistic Regression?"),
+            p("Our outcome has three unordered categories (7, 7+1, 10+). This rules out binary logistic regression ",
+              "(two outcomes only) and ordinal regression (requires a natural ordering). Multinomial logistic regression ",
+              "estimates the probability of each category simultaneously, respecting the constraint that ",
+              "P(7) + P(7+1) + P(10+) = 1."),
+
+            h4("The Reference Category"),
+            p("With three categories summing to one, we only need to model two freely — the third is determined. ",
+              "The model uses the ", strong("10+ system"), " as the reference (baseline) and models the other two ",
+              "relative to it. This choice is arbitrary and does not affect the final probability estimates."),
+
+            h4("The Linear Predictor"),
+            p("For each non-reference category ", em("k"), " ∈ {7, 7+1}, the model computes a ",
+              strong("log-odds ratio"), " relative to the 10+ baseline:"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "η_k = α_k + β_k × region + γ_k × (century − mean_century)"),
+            p("where:"),
+            tags$ul(
+              tags$li(strong("α_k"), " (intercept) = baseline log-odds of system ", em("k"), " vs. 10+, for a Maġribī scholar in the average century"),
+              tags$li(strong("β_k"), " (regional effect) = how the log-odds change when moving from Maġrib to Mašriq"),
+              tags$li(strong("γ_k"), " (century effect) = how the log-odds change per century (century model only)")
+            ),
+            p("For the reference category (10+): η₃ = 0 by definition."),
+            p(strong("What are log-odds?"), " The log-odds (or logit) is log(p / (1−p)). It maps probabilities from the bounded range [0, 1] ",
+              "onto the entire real line (−∞, +∞), which is necessary because the linear predictor can take any value. ",
+              "A log-odds of 0 corresponds to probability 0.5; positive values mean probability > 0.5; negative values mean < 0.5."),
+
+            h4("The Parameters: What the Model Learns"),
+            p("The abstract subscript ", em("k"), " maps onto the two non-reference reading systems:"),
+            p(strong("For the 7-reading system"), " (k = 1, comparing 7 vs. 10+):"),
+            tags$ul(
+              tags$li(strong("α₁"), " = baseline log-odds of 7 vs. 10+ for a Maġribī scholar at the average century. ",
+                "A positive α₁ means the 7-reading system starts out more probable than 10+ in the Maġrib."),
+              tags$li(strong("β₁"), " = regional effect on the 7 vs. 10+ log-odds. ",
+                "A negative β₁ means moving from Maġrib to Mašriq makes the 7-reading system ", em("less"), " probable relative to 10+."),
+              tags$li(strong("γ₁"), " = century effect on the 7 vs. 10+ log-odds (century model only). ",
+                "A negative γ₁ means the 7-reading system becomes less probable relative to 10+ in later centuries.")
+            ),
+            p(strong("For the 7+1 reading system"), " (k = 2, comparing 7+1 vs. 10+):"),
+            tags$ul(
+              tags$li(strong("α₂"), " = baseline log-odds of 7+1 vs. 10+ for a Maġribī scholar at the average century."),
+              tags$li(strong("β₂"), " = regional effect on the 7+1 vs. 10+ log-odds."),
+              tags$li(strong("γ₂"), " = century effect on the 7+1 vs. 10+ log-odds (century model only).")
+            ),
+            p(strong("The 10+ system"), " has no parameters of its own — it is the baseline against which the other two are measured."),
+            p("This gives us ", strong("4 parameters"), " in the simple (region-only) model: α₁, α₂, β₁, β₂. ",
+              "In the century model, we add γ₁ and γ₂ for ", strong("6 parameters"), " total. ",
+              "We refer to the complete set as ", strong("θ"), " (theta). The entire goal of the Bayesian analysis is to ",
+              "estimate the posterior distribution over θ — to determine which combinations of these values are consistent with the observed data."),
+
+            h4("The Softmax Transformation"),
+            p("The softmax converts the log-odds values back into probabilities that automatically sum to one:"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "P(system = k) = exp(η_k) / [exp(η₁) + exp(η₂) + exp(η₃)]\n\nSince η₃ = 0, exp(η₃) = 1, so:\n\nP(7)   = exp(η₁) / [exp(η₁) + exp(η₂) + 1]\nP(7+1) = exp(η₂) / [exp(η₁) + exp(η₂) + 1]\nP(10+) = 1 / [exp(η₁) + exp(η₂) + 1]"),
+
+            h4("A Worked Example"),
+            p("Suppose for a Mašriqī scholar in the 5th century, the model estimates η₁ (7 vs. 10+) = −1.2 and η₂ (7+1 vs. 10+) = −2.0. Then:"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "P(7)   = exp(−1.2) / (exp(−1.2) + exp(−2.0) + 1) = 0.301 / 1.436 = 0.210\nP(7+1) = exp(−2.0) / 1.436 = 0.094\nP(10+) = 1 / 1.436 = 0.696"),
+            p("This scholar has an estimated 70% probability of writing about the 10+ system, 21% for the 7-reading system, ",
+              "and 9% for 7+1. The negative log-odds for both non-reference categories reflect that, for this Mašriqī scholar, ",
+              "the 10+ system is more probable than either alternative."),
+            hr(),
+
+            # 5. Prior Distributions
+            h3("5. Prior Distributions"),
+            p("Before seeing any data, we specify what we believe about the parameters — the ", strong("prior distributions"), ":"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "α₁, α₂ ~ Normal(0, 5)    intercepts (7 vs. 10+ and 7+1 vs. 10+)\nβ₁, β₂ ~ Normal(0, 2)    regional effects\nγ₁, γ₂ ~ Normal(0, 2)    century effects (century model only)"),
+            p(strong("Intercepts, Normal(0, 5):"), " Centered at zero (no prior expectation that the 7 or 7+1 system is more or less common ",
+              "than 10+), with a standard deviation of 5 on the log-odds scale. A log-odds of ±5 corresponds to probabilities ",
+              "near 0.007 or 0.993 — this is a very wide prior allowing any baseline probability."),
+            p(strong("Effects, Normal(0, 2):"), " Centered at zero (no prior expectation about the direction of effects), ",
+              "with a standard deviation of 2. A log-odds shift of ±2 can move a probability from 0.50 to about 0.88 or 0.12 — a substantial effect."),
+            p("These are ", strong("weakly informative priors"), ": they gently regularize the estimates without imposing strong beliefs. ",
+              "With 172 observations, the data overwhelm the prior for most parameters. The prior matters most for sparse cells ",
+              "(e.g., Maġrib × 10+ with only 4 works), where it prevents absurdly confident claims from minimal evidence."),
+            hr(),
+
+            # 6. The Likelihood
+            h3("6. The Likelihood"),
+            p("The likelihood measures how probable the observed data are for each possible set of parameter values — ",
+              "it is the bridge between the abstract model and the concrete data. For work ", em("i"),
+              ", observed to describe system ", em("y_i"), ", the likelihood is the predicted probability of the system actually observed:"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "L_i(θ) = P(y_i | θ, region_i, century_i)"),
+            p("If work ", em("i"), " describes the 10+ system and the model predicts P(10+) = 0.70, then L_i = 0.70. ",
+              "If instead the model predicted P(10+) = 0.10 for this work, L_i would be only 0.10 — the model would be penalized ",
+              "for assigning low probability to what was actually observed. Assuming independence across works, the total likelihood is the product over all 172 observations:"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "L(θ) = ∏ᵢ P(y_i | θ, region_i, century_i)"),
+            p("In practice, we work with the ", strong("log-likelihood"), " (sum of log-probabilities) to avoid numerical underflow. ",
+              "The likelihood concentrates the posterior around parameter values that are consistent with the observed data."),
+            hr(),
+
+            # 7. The Posterior Distribution
+            h3("7. The Posterior Distribution"),
+            p("Combining the prior and likelihood via Bayes' theorem yields the ", strong("posterior"),
+              " — a probability distribution over all plausible parameter values given our data:"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "P(θ | data) ∝ L(θ) × P(θ)"),
+            p("The ∝ (\"proportional to\") means we can ignore the normalizing constant P(data), which is the same for all parameter values. ",
+              "Values of θ that were plausible a priori (high prior probability) ", em("and"), " that make the observed data probable ",
+              "(high likelihood) receive the most posterior weight. The posterior thus represents a compromise between what we expected and what we observed."),
+            p("For our model, the posterior is a continuous distribution over the 4-dimensional (or 6-dimensional) parameter space of θ. ",
+              "It has no closed-form expression — we cannot write it as a simple formula. Instead, we ", strong("sample"), " from it numerically."),
+            hr(),
+
+            # 8. HMC
+            h3("8. Hamiltonian Monte Carlo: How We Sample the Posterior"),
+            h4("The Core Idea of MCMC"),
+            p("Markov Chain Monte Carlo (MCMC) generates a sequence of parameter values — a \"chain\" — constructed so that the frequency ",
+              "with which it visits any region of parameter space is proportional to the posterior probability there. ",
+              "Collect enough samples, and you have an empirical approximation to the posterior."),
+            p("A key property: MCMC only needs ", strong("ratios"), " of posterior densities. When comparing two parameter values, ",
+              "the intractable normalizing constant P(data) appears in both the numerator and denominator and cancels out. ",
+              "This is what makes Bayesian inference computationally feasible for complex models — we never need to evaluate the integral ",
+              "that would be required to compute P(data) directly."),
+
+            h4("The Problem with Simple Approaches"),
+            p("The simplest MCMC method (the Metropolis algorithm, 1953) proposes new parameter values by adding random noise to the ",
+              "current position. It then computes the ratio of posterior density at the proposed point to the current point: if the new point is ",
+              "more probable, always accept; if less probable, accept with probability equal to the ratio (so a point half as probable is ",
+              "accepted 50% of the time). Run long enough, this produces exact posterior samples. But for models with more than a few parameters, ",
+              "it faces a fundamental tension: small random steps are almost always accepted but barely explore the posterior, while large ",
+              "random steps would cover ground but almost always land in low-probability regions and get rejected. In high dimensions, the volume ",
+              "of \"wrong\" landing spots grows exponentially relative to \"right\" ones."),
+
+            h4("How HMC Breaks the Impasse"),
+            p("Hamiltonian Monte Carlo (HMC), named after the physicist William Rowan Hamilton (1805–1865), replaces random jumps with ",
+              strong("gradient-guided trajectories"), ". It treats the model parameters as the position of a particle in a physical system ",
+              "where the negative log-posterior is \"potential energy\" — high-probability regions are valleys, low-probability regions are peaks. ",
+              "At each step, the particle receives a random momentum (a random \"flick\"), then its trajectory is simulated using Hamilton's equations of motion."),
+            p("The crucial insight is ", strong("energy conservation"), ": Hamilton's equations guarantee that total energy (kinetic + potential) ",
+              "is conserved along the trajectory. If the particle starts in a high-probability valley with some kinetic energy, it will end up ",
+              "in another high-probability valley regardless of how far it travels — trading potential for kinetic energy and back, like a ball ",
+              "rolling between hills. Because the trajectory also follows the ", strong("gradient"), " of the log-posterior, the particle naturally ",
+              "curves along the contours of the posterior rather than shooting off into probability desert. The result: proposals that are both far ",
+              "from the current position and in high-probability regions, breaking the tension that cripples random-walk methods."),
+            p("The version used by Stan is the ", strong("No-U-Turn Sampler (NUTS)"), ", which automatically determines trajectory length by ",
+              "stopping when the particle begins to double back. The step size is tuned during warmup. A Metropolis accept/reject check at the end ",
+              "of each trajectory corrects for small numerical errors in the discrete-time simulation, guaranteeing that the samples come from ",
+              "exactly the right distribution."),
+            p("Computing the gradient at every step along the trajectory requires ", strong("automatic differentiation"),
+              " — Stan compiles the model to C++ code that evaluates both the log-posterior and its gradient simultaneously. ",
+              "This compilation step (the brief delay when fitting the model) is the price paid for HMC's efficiency gains over random-walk methods."),
+            hr(),
+
+            # 9. Sampling Configuration
+            h3("9. Sampling Configuration"),
+            tags$ul(
+              tags$li(strong("Chains"), ": 4 independent chains, each starting from a different random position"),
+              tags$li(strong("Iterations per chain"), ": 2,000 total (1,000 warmup + 1,000 sampling)"),
+              tags$li(strong("Total posterior samples"), ": 4,000 (1,000 per chain × 4 chains)")
+            ),
+            p("The ", strong("warmup phase"), " adapts the sampler's internal tuning parameters — the step size and the \"mass matrix\" ",
+              "that scales the momentum to match the posterior's shape. These warmup samples are discarded; they do not represent the posterior. ",
+              "Running ", strong("4 chains"), " from different starting points enables convergence diagnostics:"),
+            tags$ul(
+              tags$li(strong("R̂ (R-hat)"), ": compares within-chain to between-chain variance. R̂ < 1.01 indicates convergence; R̂ > 1.05 means results should not be trusted."),
+              tags$li(strong("Effective sample size (ESS)"), ": how many independent samples the chain is worth after accounting for autocorrelation. Values above 400 are adequate."),
+              tags$li(strong("Divergent transitions"), ": Stan-specific warning that the posterior surface was too steep to navigate safely, suggesting potential bias.")
+            ),
+            hr(),
+
+            # 10. From Posterior Samples to Results
+            h3("10. From Posterior Samples to Results"),
+            p("Once we have 4,000 samples, each is a complete set of values for all parameters in θ. We transform these into quantities of interest."),
+
+            h4("Predicted Probabilities"),
+            p("For each posterior sample ", em("s"), " and each region–century combination:"),
+            tags$ol(
+              tags$li("Plug the sampled parameters into the linear predictor: η_k", tags$sup("(s)"), " = α_k", tags$sup("(s)"), " + β_k", tags$sup("(s)"), " × region + γ_k", tags$sup("(s)"), " × century"),
+              tags$li("Apply the softmax to get P", tags$sup("(s)"), "(7), P", tags$sup("(s)"), "(7+1), P", tags$sup("(s)"), "(10+)")
+            ),
+            p("This gives 4,000 predicted probability vectors per region–century combination, summarized as:"),
+            tags$ul(
+              tags$li(strong("Posterior mean"), ": average across all samples — our best single estimate"),
+              tags$li(strong("95% credible interval"), ": the 2.5th and 97.5th percentiles — the range containing 95% of plausible values")
+            ),
+
+            h4("Posterior Contrasts (Regional Comparisons)"),
+            p("To compare regions, we compute the difference in predicted probability for each posterior sample:"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "Δ(s) = P(s)(k | Mašriq) − P(s)(k | Maġrib)"),
+            p("From these 4,000 differences we report: ", strong("P(Δ > 0)"),
+              " (the fraction of samples favoring Mašriq — a direct probability statement), the ", strong("mean difference"),
+              ", and the ", strong("95% credible interval of the difference"),
+              ". For example, if 3,992 of 4,000 samples have P(10+ | Mašriq) > P(10+ | Maġrib), ",
+              "we report a 99.8% posterior probability of Mašriqī dominance in 10+ production."),
+
+            h4("Posterior Predictive Checks"),
+            p("To assess model adequacy, we simulate fake datasets: for each posterior sample, we use each work's actual region (and century) ",
+              "to predict a probability vector, randomly draw a system from it, and count the totals. If the observed counts fall within the ",
+              "95% range of simulated counts, the model is capturing the data-generating process adequately."),
+            hr(),
+
+            # 11. Interpreting the Results
+            h3("11. Interpreting the Results"),
+            h4("Credible Intervals"),
+            p("A ", strong("95% credible interval"), " of [0.39, 0.57] for P(10+ | Mašriq) means: given the data and the model, there is a ",
+              "95% probability the true value lies in that range. This is a direct probability statement about the parameter — ",
+              "unlike a frequentist confidence interval, which has a more complex interpretation involving hypothetical repeated experiments. ",
+              "When credible intervals for a regional comparison exclude zero, we have strong evidence of a genuine difference."),
+
+            h4("Posterior Probabilities"),
+            p("When the app reports ", strong("\"P(Mašriq > Maġrib for 10+) = 0.998,\""),
+              " this means 99.8% of posterior parameter values produce a higher 10+ probability in the Mašriq than in the Maġrib. ",
+              "In other words, given what we have observed, we can be 99.8% confident in the direction of this regional difference."),
+
+            h4("Varying Certainty"),
+            p("Not all differences are equally certain. The 10+ system (55 vs. 4 works) yields narrow posterior uncertainty. ",
+              "The 7-reading system (38 vs. 48) yields wider uncertainty, and the 7+1 system (27 total works) the widest. ",
+              "The Bayesian framework quantifies this automatically — more data means tighter intervals."),
+
+            h4("Regularization"),
+            p("For sparse cells (like Maġrib × 10+ with only 4 works), the prior gently pulls extreme estimates toward the overall average. ",
+              "This ", strong("regularization"), " produces more conservative and reliable results than raw proportions, which can be misleadingly ",
+              "precise when based on few observations."),
+            hr(),
+
+            # 12. The Century Model
+            h3("12. The Century Model"),
+            p("When \"Include Century Effect\" is enabled, the model adds γ₁ and γ₂ parameters capturing temporal trends in how reading ",
+              "system preferences changed over time. The century variable is ", strong("mean-centered"),
+              " (each value minus the average century across all works) so that the intercept α_k represents log-odds at the average century ",
+              "rather than at century zero, which has no meaningful interpretation."),
+            p("The century effect γ_k captures temporal dynamics: a negative γ₁ would indicate that the 7-reading system became less dominant ",
+              "over time relative to 10+. Combined with the regional effect, this allows the model to detect patterns like the dramatic historical ",
+              "shift in which the 10+ system expanded in the Mašriq while the Maġrib remained focused on the 7-reading tradition — a divergence ",
+              "that intensified century by century across the period under study."),
+            hr(),
+
+            # 13. Technical Implementation
+            h3("13. Technical Implementation"),
+            p("The model specification, prior choices, and overall analytical workflow follow closely the approach developed by Richard McElreath in ",
+              em("Statistical Rethinking: A Bayesian Course with Examples in R and Stan"),
+              " (2nd ed., 2020), particularly his treatment of multinomial categorical models in Chapter 11 (\"God Spiked the Integers\") ",
+              "and his framework for generative modeling and posterior predictive checking throughout the book. ",
+              "McElreath's companion R package ", code("rethinking"), " — and especially his ", code("ulam()"),
+              " function, which translates R model formulae into Stan code — was instrumental in developing the initial version of this app. ",
+              "The current version uses ", strong("cmdstanr"), " (the R interface to CmdStan) directly for greater deployment flexibility, ",
+              "but the underlying Stan model preserves the structure and parameterization from the ", code("rethinking"), "-based prototype. ",
+              "McElreath's code repository (", tags$a(href = "https://github.com/rmcelreath/rethinking", target = "_blank", "github.com/rmcelreath/rethinking"),
+              ") and the accompanying lecture series were essential references throughout."),
+            p("Stan's ", code("categorical_logit"), " function handles the softmax transformation internally with numerical stability. ",
+              "Below is the Stan model for the century version (the simple model omits ", code("beta_cent"), " and the ", code("century"), " data):"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 0.95em; overflow-x: auto;",
+"data {
+  int<lower=1> N;                          // number of works (172)
+  int<lower=2> K;                          // number of categories (3)
+  array[N] int<lower=1,upper=K> y;         // observed system for each work
+  array[N] int<lower=0,upper=1> geo;       // region: 0 = Maġrib, 1 = Mašriq
+  array[N] real century;                   // mean-centered death century
+}
+parameters {
+  vector[K-1] alpha;                       // intercepts (2 free parameters)
+  vector[K-1] beta_geo;                    // regional effects
+  vector[K-1] beta_cent;                   // century effects
+}
+model {
+  alpha ~ normal(0, 5);                    // weakly informative priors
+  beta_geo ~ normal(0, 2);
+  beta_cent ~ normal(0, 2);
+
+  for (i in 1:N) {
+    vector[K] p;
+    p[K] = 0;                             // reference category (10+ readings)
+    for (k in 1:(K-1)) {
+      p[k] = alpha[k] + beta_geo[k] * geo[i] + beta_cent[k] * century[i];
+    }
+    y[i] ~ categorical_logit(p);          // softmax applied internally
+  }
+}"),
+            hr(),
+
+            # 14. Summary of the Pipeline
+            h3("14. Summary of the Pipeline"),
+            tags$table(class = "table table-bordered table-sm",
+              tags$thead(tags$tr(
+                tags$th("Step"), tags$th("What Happens"), tags$th("Mathematical Object")
+              )),
+              tags$tbody(
+                tags$tr(tags$td("1. Data"), tags$td("172 works classified by system, region, century"), tags$td("Observed counts")),
+                tags$tr(tags$td("2. Model"), tags$td("Multinomial logistic regression with softmax"), tags$td("P(system) = softmax(α + β×region + γ×century)")),
+                tags$tr(tags$td("3. Priors"), tags$td("Weakly informative Normal distributions"), tags$td("α ~ N(0,5), β ~ N(0,2), γ ~ N(0,2)")),
+                tags$tr(tags$td("4. Likelihood"), tags$td("Probability of observed data given parameters"), tags$td("∏ᵢ P(yᵢ | θ, regionᵢ, centuryᵢ)")),
+                tags$tr(tags$td("5. Posterior"), tags$td("Bayes' theorem combines prior and likelihood"), tags$td("P(θ | data) ∝ L(θ) × P(θ)")),
+                tags$tr(tags$td("6. Sampling"), tags$td("HMC/NUTS generates 4,000 posterior draws"), tags$td("4 chains × 1,000 post-warmup samples")),
+                tags$tr(tags$td("7. Predictions"), tags$td("Softmax applied to each posterior draw"), tags$td("4,000 probability vectors per region–century")),
+                tags$tr(tags$td("8. Contrasts"), tags$td("Differences computed sample-by-sample"), tags$td("P(system | Mašriq) − P(system | Maġrib)")),
+                tags$tr(tags$td("9. Checks"), tags$td("Simulated data compared to observed"), tags$td("Posterior predictive distributions"))
+              )
+            ),
+            hr(),
+
+            # References
+            h3("References"),
+            h4("Primary Methodological Source"),
+            tags$ul(
+              tags$li("McElreath, R. (2020). ", em("Statistical Rethinking: A Bayesian Course with Examples in R and Stan"),
+                " (2nd ed.). CRC Press. Companion R package and code: ",
+                tags$a(href = "https://github.com/rmcelreath/rethinking", target = "_blank", "github.com/rmcelreath/rethinking"),
+                ". Lecture series: ",
+                tags$a(href = "https://www.youtube.com/playlist?list=PLDcUM9US4XdMROZ57-OIRtIK0aOynbgZN", target = "_blank", "YouTube playlist"), ".")
+            ),
+            h4("Additional Bayesian References"),
+            tags$ul(
+              tags$li("Gelman, A., et al. (2013). ", em("Bayesian Data Analysis"), " (3rd ed.). CRC Press."),
+              tags$li("Kruschke, J. K. (2014). ", em("Doing Bayesian Data Analysis"), " (2nd ed.). Academic Press.")
+            ),
+            h4("Computational Methods"),
+            tags$ul(
+              tags$li("Betancourt, M. (2017). \"A Conceptual Introduction to Hamiltonian Monte Carlo.\" ", em("arXiv:1701.02434"), "."),
+              tags$li("Carpenter, B., et al. (2017). \"Stan: A Probabilistic Programming Language.\" ", em("Journal of Statistical Software"), ", 76(1)."),
+              tags$li("Hoffman, M. D., & Gelman, A. (2014). \"The No-U-Turn Sampler.\" ", em("JMLR"), ", 15(1), 1593–1623.")
+            )
+          )
+        )
+      ),
+
+      # ========== Tab 6: Acknowledgements ==========
       tabPanel(
         title = "Acknowledgements",
         value = "acknowledgements",
@@ -2064,13 +2496,40 @@ server <- function(input, output, session) {
         # Create text reuse symbol
         reuse_symbol = create_text_reuse_symbol(text_reuse, reused_title, reused_author,
                                                 commentary_titles, commentary_types, commentary_authors),
-        # Apply camel case formatting to titles (type="title" for sentence case)
-        Title = paste0(format_camel_case(title, "title"), reuse_symbol)
+        # Citation indicator for works
+        cite_indicator = if (!is.null(citation_count) && !is.na(citation_count) && citation_count > 0) {
+          sprintf('<span class="citation-indicator" title="%d citation(s)">&#x1F4D6;</span>', citation_count)
+        } else {
+          ""
+        },
+        # Clickable title with citation indicator (escaped for XSS safety)
+        Title = paste0(
+          '<a href="#" class="citation-link" onclick="Shiny.setInputValue(\'clicked_work\', \'',
+          htmltools::htmlEscape(work_id),
+          '\', {priority: \'event\'}); return false;">',
+          htmltools::htmlEscape(format_camel_case(title, "title")),
+          '</a>',
+          reuse_symbol,
+          cite_indicator
+        )
       ) %>%
       ungroup() %>%
       mutate(
-        # Apply camel case to authors (type="author" for name capitalization)
-        Author = sapply(author_name, function(x) format_camel_case(x, "author")),
+        # Citation indicator for authors
+        author_cite_indicator = ifelse(
+          !is.na(author_citation_count) & !is.null(author_citation_count) & author_citation_count > 0,
+          sprintf('<span class="citation-indicator" title="%d citation(s)">&#x1F4D6;</span>', author_citation_count),
+          ""
+        ),
+        # Clickable author name with citation indicator (escaped for XSS safety)
+        Author = paste0(
+          '<a href="#" class="citation-link" onclick="Shiny.setInputValue(\'clicked_author\', ',
+          as.integer(author_id),
+          ', {priority: \'event\'}); return false;">',
+          sapply(author_name, function(x) htmltools::htmlEscape(format_camel_case(x, "author"))),
+          '</a>',
+          author_cite_indicator
+        ),
         # Color badges
         Set = sapply(system, function(x) create_color_badge(x, "system")),
         # Handle multi-type works (separated by semicolon or comma)
@@ -5206,6 +5665,155 @@ server <- function(input, output, session) {
   # - ref_auto_suggestions, ref_search_results (search/matching)
   # - ref_prev/next/skip, ref_save_match, ref_no_match (actions)
   # - ref_all_table, ref_export_csv, ref_export_sql (table/export)
+
+  # ========== Citation Modal Observers ==========
+
+  # Work citation modal
+  observeEvent(input$clicked_work, {
+    work_id <- input$clicked_work
+    tryCatch({
+      con <- dbConnect(SQLite(), DB_PATH)
+      on.exit(dbDisconnect(con))
+
+      citations <- dbGetQuery(con, "
+        SELECT * FROM bibliographic_citations
+        WHERE work_id = ?
+        ORDER BY created_at DESC
+      ", params = list(work_id))
+
+      # Get work title for modal header
+      work_info <- dbGetQuery(con, "SELECT title FROM works WHERE work_id = ?",
+                              params = list(work_id))
+      work_title <- if (nrow(work_info) > 0) work_info$title[1] else work_id
+
+      if (nrow(citations) == 0) {
+        modal_content <- p(em("No citations have been added for this work yet."),
+                          br(), br(),
+                          "Use the Citation Annotation app to add citations.")
+      } else {
+        citation_cards <- lapply(seq_len(nrow(citations)), function(i) {
+          cit <- citations[i, ]
+          link_badge <- switch(cit$link_type %||% "reference",
+            "reference" = span(style = "background:#007bff;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "reference"),
+            "edition" = span(style = "background:#17a2b8;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "edition"),
+            "study" = span(style = "background:#6f42c1;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "study"),
+            "encyclopedia" = span(style = "background:#fd7e14;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "encyclopedia"),
+            span(style = "background:#6c757d;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", cit$link_type)
+          )
+          form_badge <- if (cit$citation_form == "long") {
+            span(style = "background:#28a745;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "long")
+          } else {
+            span(style = "background:#ffc107;color:black;padding:2px 8px;border-radius:10px;font-size:0.8em;", "short")
+          }
+          div(style = "background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid #007bff;",
+            div(form_badge, " ", link_badge),
+            p(style = "margin-top:8px;", htmltools::htmlEscape(cit$original_text)),
+            if (!is.na(cit$volume_cited) || !is.na(cit$page_cited)) {
+              p(style = "color:#666;font-size:0.9em;",
+                if (!is.na(cit$volume_cited)) paste0("Vol. ", htmltools::htmlEscape(cit$volume_cited)) else "",
+                if (!is.na(cit$page_cited)) paste0(", pp. ", htmltools::htmlEscape(cit$page_cited)) else ""
+              )
+            }
+          )
+        })
+        modal_content <- tagList(
+          p(strong(nrow(citations)), " citation(s)"),
+          do.call(tagList, citation_cards)
+        )
+      }
+
+      showModal(modalDialog(
+        title = htmltools::htmlEscape(paste0("Citations: ", format_camel_case(work_title, "title"))),
+        modal_content,
+        size = "l",
+        easyClose = TRUE,
+        footer = modalButton("Close")
+      ))
+    }, error = function(e) {
+      showNotification(paste("Error loading citations:", e$message), type = "error")
+    })
+  })
+
+  # Author citation modal
+  observeEvent(input$clicked_author, {
+    author_id <- as.integer(input$clicked_author)
+    tryCatch({
+      con <- dbConnect(SQLite(), DB_PATH)
+      on.exit(dbDisconnect(con))
+
+      citations <- dbGetQuery(con, "
+        SELECT * FROM bibliographic_citations
+        WHERE author_id = ?
+        ORDER BY created_at DESC
+      ", params = list(author_id))
+
+      # Get author name for modal header
+      author_info <- dbGetQuery(con, "
+        SELECT COALESCE(author_name_canonical, author_name) as name
+        FROM authors WHERE author_id = ?
+      ", params = list(author_id))
+      author_name_display <- if (nrow(author_info) > 0) author_info$name[1] else paste("Author", author_id)
+
+      if (nrow(citations) == 0) {
+        modal_content <- p(em("No citations have been added for this author yet."),
+                          br(), br(),
+                          "Use the Citation Annotation app to add citations.")
+      } else {
+        citation_cards <- lapply(seq_len(nrow(citations)), function(i) {
+          cit <- citations[i, ]
+          link_badge <- switch(cit$link_type %||% "reference",
+            "reference" = span(style = "background:#007bff;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "reference"),
+            "edition" = span(style = "background:#17a2b8;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "edition"),
+            "study" = span(style = "background:#6f42c1;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "study"),
+            "encyclopedia" = span(style = "background:#fd7e14;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "encyclopedia"),
+            span(style = "background:#6c757d;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", cit$link_type)
+          )
+          div(style = "background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid #6f42c1;",
+            div(link_badge,
+              if (!is.na(cit$work_id)) span(style = "margin-left:8px;color:#666;font-size:0.85em;", paste0("[", htmltools::htmlEscape(cit$work_id), "]"))
+            ),
+            p(style = "margin-top:8px;", htmltools::htmlEscape(cit$original_text)),
+            if (!is.na(cit$volume_cited) || !is.na(cit$page_cited)) {
+              p(style = "color:#666;font-size:0.9em;",
+                if (!is.na(cit$volume_cited)) paste0("Vol. ", htmltools::htmlEscape(cit$volume_cited)) else "",
+                if (!is.na(cit$page_cited)) paste0(", pp. ", htmltools::htmlEscape(cit$page_cited)) else ""
+              )
+            }
+          )
+        })
+        modal_content <- tagList(
+          p(strong(nrow(citations)), " citation(s)"),
+          do.call(tagList, citation_cards)
+        )
+      }
+
+      showModal(modalDialog(
+        title = htmltools::htmlEscape(paste0("Citations: ", format_camel_case(author_name_display, "author"))),
+        modal_content,
+        size = "l",
+        easyClose = TRUE,
+        footer = modalButton("Close")
+      ))
+    }, error = function(e) {
+      showNotification(paste("Error loading citations:", e$message), type = "error")
+    })
+  })
+
+  # ========== RIS Download ==========
+
+  output$download_ris <- downloadHandler(
+    filename = function() {
+      "iqsa_bibliography.ris"
+    },
+    content = function(file) {
+      ris_path <- file.path("data", "iqsa_bibliography.ris")
+      if (file.exists(ris_path)) {
+        file.copy(ris_path, file)
+      } else {
+        writeLines("TY  - GEN\nTI  - No citations exported yet. Use the Citation Annotation app to add citations first.\nER  - \n", file)
+      }
+    }
+  )
 }
 
 # Run app

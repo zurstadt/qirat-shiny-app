@@ -1,0 +1,590 @@
+{
+  "schemas": [
+    {
+      "abbrev": "BA",
+      "full_title": "Biblioteca de al-Andalus",
+      "zotero_type": "encyclopediaArticle",
+      "csl_type": "entry-encyclopedia",
+      "fields": {
+        "volume": true,
+        "page": true,
+        "entry_number": true,
+        "article_title": true,
+        "article_author": true,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": false,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": false,
+        "editors_as_authors": true,
+        "is_reference_work": false,
+        "is_database": false
+      },
+      "edition_pagination": {},
+      "approved_date": "2026-01-27",
+      "notes": "Every entry should have an author, whether it is expressly named or uses the \"Editors\" placeholder."
+    },
+    {
+      "abbrev": "PUA",
+      "full_title": "Prosopografía de los ulemas de al-Andalus",
+      "zotero_type": "webpage",
+      "csl_type": "webpage",
+      "fields": {
+        "volume": false,
+        "page": false,
+        "entry_number": true,
+        "article_title": true,
+        "article_author": false,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": true
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": false,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": false,
+        "editors_as_authors": true,
+        "is_reference_work": false,
+        "is_database": true
+      },
+      "edition_pagination": {},
+      "approved_date": "2026-01-27",
+      "notes": {}
+    },
+    {
+      "abbrev": "TDVİA",
+      "full_title": "Türkiye Diyanet Vakfı İslâm Ansiklopedisi",
+      "zotero_type": "encyclopediaArticle",
+      "csl_type": "entry-encyclopedia",
+      "fields": {
+        "volume": false,
+        "page": false,
+        "entry_number": false,
+        "article_title": true,
+        "article_author": true,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": true
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": false,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": true,
+        "editors_as_authors": false,
+        "is_reference_work": false,
+        "is_database": false
+      },
+      "edition_pagination": {},
+      "approved_date": "2026-01-27",
+      "notes": "I have not provided any URLs in my examples, but all of these are available online and I would eventually like to add these."
+    },
+    {
+      "abbrev": "GAL",
+      "full_title": "Geschichte der arabischen Litteratur",
+      "zotero_type": "book",
+      "csl_type": "book",
+      "fields": {
+        "volume": true,
+        "page": true,
+        "entry_number": true,
+        "article_title": false,
+        "article_author": false,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": true,
+        "multi_edition_pagination": true,
+        "alphanumeric_entries": true,
+        "inherits_author": true,
+        "has_article_authors": false,
+        "editors_as_authors": false,
+        "is_reference_work": true,
+        "is_database": false
+      },
+      "edition_pagination": {
+        "pagination_type": "translation",
+        "editions": [
+          {
+            "key": "german",
+            "label": "2nd German ed. (Brill, 1943-47)",
+            "type": "original"
+          },
+          {
+            "key": "english",
+            "label": "Lameer English tr. (Brill, 2016-19)",
+            "type": "translation"
+          }
+        ]
+      },
+      "approved_date": "2026-01-27",
+      "notes": {}
+    },
+    {
+      "abbrev": "GAS",
+      "full_title": "Geschichte des arabischen Schrifttums, Band 1",
+      "zotero_type": "book",
+      "csl_type": "book",
+      "fields": {
+        "volume": true,
+        "page": true,
+        "entry_number": true,
+        "article_title": false,
+        "article_author": false,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": false,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": false,
+        "editors_as_authors": false,
+        "is_reference_work": true,
+        "is_database": false
+      },
+      "edition_pagination": {},
+      "approved_date": "2026-01-27",
+      "notes": {}
+    },
+    {
+      "abbrev": "GdQ",
+      "full_title": "Geschichte des Qorans",
+      "zotero_type": "book",
+      "csl_type": "book",
+      "fields": {
+        "volume": true,
+        "page": true,
+        "entry_number": false,
+        "article_title": false,
+        "article_author": false,
+        "section": false,
+        "footnote": true,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": true,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": false,
+        "editors_as_authors": false,
+        "is_reference_work": false,
+        "is_database": false
+      },
+      "edition_pagination": {
+        "pagination_type": "translation",
+        "editions": [
+          {
+            "key": "german",
+            "label": "German original",
+            "type": "original"
+          },
+          {
+            "key": "english",
+            "label": "English translation",
+            "type": "translation"
+          }
+        ]
+      },
+      "approved_date": "2026-01-27",
+      "notes": {}
+    },
+    {
+      "abbrev": "Fahrasah",
+      "full_title": "Fahrasat mā rawāhu Ibn Ḫayr al-Išbīlī",
+      "zotero_type": "book",
+      "csl_type": "book",
+      "fields": {
+        "volume": false,
+        "page": true,
+        "entry_number": true,
+        "article_title": false,
+        "article_author": false,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": true,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": false,
+        "editors_as_authors": false,
+        "is_reference_work": false,
+        "is_database": false
+      },
+      "edition_pagination": {
+        "pagination_type": "critical_edition",
+        "editions": [
+          {
+            "key": "codera",
+            "label": "Cordero-Zaídan/Ribera ed. (Cairo, 1997)",
+            "type": "edition_a"
+          },
+          {
+            "key": "maruf",
+            "label": "Maʿrūf ed. (Tunis, 2009)",
+            "type": "edition_b"
+          }
+        ]
+      },
+      "approved_date": "2026-01-27",
+      "notes": "Ensure that they entry_number is associated only with the maruf edition"
+    },
+    {
+      "abbrev": "ǦB",
+      "full_title": "Ǧāmiʿ al-bayān fī al-qirāʾāt al-sabʿ al-mašhūrah",
+      "zotero_type": "book",
+      "csl_type": "book",
+      "fields": {
+        "volume": true,
+        "page": true,
+        "entry_number": false,
+        "article_title": false,
+        "article_author": false,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": true,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": false,
+        "editors_as_authors": false,
+        "is_reference_work": false,
+        "is_database": false
+      },
+      "edition_pagination": {
+        "pagination_type": "critical_edition",
+        "editions": [
+          {
+            "key": "beirut",
+            "label": "al-Ǧazāʾirī ed. (Beirut, 2005)",
+            "type": "edition_a"
+          },
+          {
+            "key": "sharjah",
+            "label": "Ṭaḥḥān et al. ed. (Sharjah, 2007)",
+            "type": "edition_b"
+          }
+        ]
+      },
+      "approved_date": "2026-01-27",
+      "notes": {}
+    },
+    {
+      "abbrev": "ĠN",
+      "full_title": "Ġāyat al-nihāya fī ṭabaqāt al-qurrāʾ",
+      "zotero_type": "book",
+      "csl_type": "book",
+      "fields": {
+        "volume": true,
+        "page": true,
+        "entry_number": true,
+        "article_title": false,
+        "article_author": false,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": false,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": false,
+        "editors_as_authors": false,
+        "is_reference_work": false,
+        "is_database": false
+      },
+      "edition_pagination": {},
+      "approved_date": "2026-01-27",
+      "notes": {}
+    },
+    {
+      "abbrev": "MM",
+      "full_title": "Muʿǧam muṣannafāt ʿulūm al-Qurʾān al-Karīm",
+      "zotero_type": "book",
+      "csl_type": "book",
+      "fields": {
+        "volume": false,
+        "page": true,
+        "entry_number": false,
+        "article_title": false,
+        "article_author": false,
+        "section": false,
+        "footnote": true,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": false,
+        "alphanumeric_entries": false,
+        "inherits_author": true,
+        "has_article_authors": false,
+        "editors_as_authors": false,
+        "is_reference_work": true,
+        "is_database": false
+      },
+      "edition_pagination": {},
+      "approved_date": "2026-01-27",
+      "notes": {}
+    },
+    {
+      "abbrev": "Adab",
+      "full_title": "Adab ʿilm al-qirāʾāt (= Die Fachliteratur der Koranlesungen)",
+      "zotero_type": "book",
+      "csl_type": "book",
+      "fields": {
+        "volume": false,
+        "page": true,
+        "entry_number": true,
+        "article_title": false,
+        "article_author": false,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": false,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": false,
+        "editors_as_authors": false,
+        "is_reference_work": false,
+        "is_database": false
+      },
+      "edition_pagination": {},
+      "approved_date": "2026-01-27",
+      "notes": {}
+    },
+    {
+      "abbrev": "EI1",
+      "full_title": "E.J. Brill's First Encyclopaedia of Islam, 1913–1936",
+      "zotero_type": "encyclopediaArticle",
+      "csl_type": "entry-encyclopedia",
+      "fields": {
+        "volume": true,
+        "page": true,
+        "entry_number": false,
+        "article_title": true,
+        "article_author": true,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": false,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": true,
+        "editors_as_authors": false,
+        "is_reference_work": true,
+        "is_database": false
+      },
+      "edition_pagination": {},
+      "approved_date": "2026-01-27",
+      "notes": {}
+    },
+    {
+      "abbrev": "EI3",
+      "full_title": "Encyclopaedia of Islam, THREE",
+      "zotero_type": "encyclopediaArticle",
+      "csl_type": "entry-encyclopedia",
+      "fields": {
+        "volume": false,
+        "page": false,
+        "entry_number": false,
+        "article_title": true,
+        "article_author": true,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": false,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": true,
+        "editors_as_authors": false,
+        "is_reference_work": true,
+        "is_database": false
+      },
+      "edition_pagination": {},
+      "approved_date": "2026-01-27",
+      "notes": "I have not provided any DOIs in my examples, but all of these are available online and I would eventually like to add these."
+    },
+    {
+      "abbrev": "EI2",
+      "full_title": "Encyclopaedia of Islam, New Edition",
+      "zotero_type": "encyclopediaArticle",
+      "csl_type": "entry-encyclopedia",
+      "fields": {
+        "volume": false,
+        "page": false,
+        "entry_number": false,
+        "article_title": true,
+        "article_author": true,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": false,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": true,
+        "editors_as_authors": false,
+        "is_reference_work": true,
+        "is_database": false
+      },
+      "edition_pagination": {},
+      "approved_date": "2026-01-27",
+      "notes": "I have not provided any DOIs in my examples, but all of these are available online and I would eventually like to add these."
+    },
+    {
+      "abbrev": "EIr",
+      "full_title": "Encyclopædia Iranica",
+      "zotero_type": "encyclopediaArticle",
+      "csl_type": "entry-encyclopedia",
+      "fields": {
+        "volume": false,
+        "page": false,
+        "entry_number": false,
+        "article_title": true,
+        "article_author": true,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": false,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": true,
+        "editors_as_authors": false,
+        "is_reference_work": true,
+        "is_database": true
+      },
+      "edition_pagination": {},
+      "approved_date": "2026-01-27",
+      "notes": "I have not provided any URLs in my examples, but all of these are available online and I would eventually like to add these."
+    },
+    {
+      "abbrev": "DMBI",
+      "full_title": "Dāʾirat-i Maʿārif-i Bozorg-i Islāmī",
+      "zotero_type": "encyclopediaArticle",
+      "csl_type": "entry-encyclopedia",
+      "fields": {
+        "volume": false,
+        "page": false,
+        "entry_number": false,
+        "article_title": true,
+        "article_author": true,
+        "section": false,
+        "footnote": false,
+        "column": false,
+        "paragraph": false,
+        "line": false,
+        "folio": false,
+        "url": false
+      },
+      "properties": {
+        "has_supplements": false,
+        "multi_edition_pagination": false,
+        "alphanumeric_entries": false,
+        "inherits_author": false,
+        "has_article_authors": true,
+        "editors_as_authors": false,
+        "is_reference_work": true,
+        "is_database": true
+      },
+      "edition_pagination": {},
+      "approved_date": "2026-01-27",
+      "notes": "I have not provided any URLs in my examples, but all of these are available online and I would eventually like to add these."
+    }
+  ],
+  "approved_date": {},
+  "last_updated": "2026-01-27"
+}
