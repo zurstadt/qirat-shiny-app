@@ -5668,6 +5668,47 @@ server <- function(input, output, session) {
 
   # ========== Citation Modal Observers ==========
 
+  # Helper: look up digital edition URL from concordance tables
+  lookup_digital_url <- function(con, parsed_title, page_cited, entry_number) {
+    if (is.null(parsed_title) || is.na(parsed_title)) return(NULL)
+    if (is.null(page_cited) || is.na(page_cited)) return(NULL)
+
+    if (parsed_title == "\u0120N") {
+      # ĠN concordance: match on page and/or entry_number
+      if (!is.null(entry_number) && !is.na(entry_number) && nchar(entry_number) > 0) {
+        result <- dbGetQuery(con, "
+          SELECT url FROM gn_url_concordance
+          WHERE page = ? AND entry_number = ?
+          LIMIT 1
+        ", params = list(page_cited, entry_number))
+      } else {
+        result <- dbGetQuery(con, "
+          SELECT url FROM gn_url_concordance
+          WHERE page = ?
+          LIMIT 1
+        ", params = list(page_cited))
+      }
+      if (nrow(result) > 0) return(result$url[1])
+    } else if (parsed_title == "MQK") {
+      # MQK concordance: match on page and/or entry_number
+      if (!is.null(entry_number) && !is.na(entry_number) && nchar(entry_number) > 0) {
+        result <- dbGetQuery(con, "
+          SELECT url FROM mqk_url_concordance
+          WHERE page = ? AND entry_number = ?
+          LIMIT 1
+        ", params = list(page_cited, entry_number))
+      } else {
+        result <- dbGetQuery(con, "
+          SELECT url FROM mqk_url_concordance
+          WHERE page = ?
+          LIMIT 1
+        ", params = list(page_cited))
+      }
+      if (nrow(result) > 0) return(result$url[1])
+    }
+    NULL
+  }
+
   # Work citation modal
   observeEvent(input$clicked_work, {
     work_id <- input$clicked_work
@@ -5705,6 +5746,7 @@ server <- function(input, output, session) {
           } else {
             span(style = "background:#ffc107;color:black;padding:2px 8px;border-radius:10px;font-size:0.8em;", "short")
           }
+          digital_url <- lookup_digital_url(con, cit$parsed_title, cit$page_cited, cit$entry_number)
           div(style = "background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid #007bff;",
             div(form_badge, " ", link_badge),
             p(style = "margin-top:8px;", htmltools::htmlEscape(cit$original_text)),
@@ -5712,6 +5754,12 @@ server <- function(input, output, session) {
               p(style = "color:#666;font-size:0.9em;",
                 if (!is.na(cit$volume_cited)) paste0("Vol. ", htmltools::htmlEscape(cit$volume_cited)) else "",
                 if (!is.na(cit$page_cited)) paste0(", pp. ", htmltools::htmlEscape(cit$page_cited)) else ""
+              )
+            },
+            if (!is.null(digital_url)) {
+              a(href = digital_url, target = "_blank", rel = "noopener noreferrer",
+                style = "display:inline-block;margin-top:4px;font-size:0.85em;color:#17a2b8;text-decoration:none;",
+                "\u2197 View digital edition"
               )
             }
           )
@@ -5768,6 +5816,7 @@ server <- function(input, output, session) {
             "encyclopedia" = span(style = "background:#fd7e14;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "encyclopedia"),
             span(style = "background:#6c757d;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", cit$link_type)
           )
+          digital_url <- lookup_digital_url(con, cit$parsed_title, cit$page_cited, cit$entry_number)
           div(style = "background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid #6f42c1;",
             div(link_badge,
               if (!is.na(cit$work_id)) span(style = "margin-left:8px;color:#666;font-size:0.85em;", paste0("[", htmltools::htmlEscape(cit$work_id), "]"))
@@ -5777,6 +5826,12 @@ server <- function(input, output, session) {
               p(style = "color:#666;font-size:0.9em;",
                 if (!is.na(cit$volume_cited)) paste0("Vol. ", htmltools::htmlEscape(cit$volume_cited)) else "",
                 if (!is.na(cit$page_cited)) paste0(", pp. ", htmltools::htmlEscape(cit$page_cited)) else ""
+              )
+            },
+            if (!is.null(digital_url)) {
+              a(href = digital_url, target = "_blank", rel = "noopener noreferrer",
+                style = "display:inline-block;margin-top:4px;font-size:0.85em;color:#17a2b8;text-decoration:none;",
+                "\u2197 View digital edition"
               )
             }
           )
@@ -5803,10 +5858,10 @@ server <- function(input, output, session) {
 
   output$download_ris <- downloadHandler(
     filename = function() {
-      "iqsa_bibliography.ris"
+      "mashriq-maghrib_bibliography.ris"
     },
     content = function(file) {
-      ris_path <- file.path("data", "iqsa_bibliography.ris")
+      ris_path <- file.path("data", "mashriq-maghrib_bibliography.ris")
       if (file.exists(ris_path)) {
         file.copy(ris_path, file)
       } else {

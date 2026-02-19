@@ -19,7 +19,7 @@ source("../shiny-app/deploy/citation_parsers.R")
 # RIS Export Function
 # ============================================================================
 
-to_ris <- function(parsed) {
+to_ris <- function(parsed, db_row = NULL) {
   csl_to_ris_type <- list(
     "book" = "BOOK",
     "article-journal" = "JOUR",
@@ -50,9 +50,14 @@ to_ris <- function(parsed) {
     }
   }
 
-  # Title
+  # Title (append edition_qualifier if present, e.g. "GAL (Supplement)")
   if (!is.null(csl$title) && !is.na(csl$title)) {
-    lines <- c(lines, paste0("TI  - ", csl$title))
+    title_out <- csl$title
+    eq <- if (!is.null(db_row)) db_row$edition_qualifier else parsed$edition_qualifier
+    if (!is.null(eq) && !is.na(eq) && nchar(trimws(eq)) > 0) {
+      title_out <- paste0(title_out, " (", trimws(eq), ")")
+    }
+    lines <- c(lines, paste0("TI  - ", title_out))
   }
 
   # Container title (journal, encyclopedia)
@@ -90,9 +95,15 @@ to_ris <- function(parsed) {
   # Pages
   if (!is.null(csl$page) && !is.na(csl$page)) {
     pages <- strsplit(as.character(csl$page), "[-–]")[[1]]
-    lines <- c(lines, paste0("SP  - ", trimws(pages[1])))
+    sp <- trimws(pages[1])
+    lines <- c(lines, paste0("SP  - ", sp))
     if (length(pages) > 1) {
-      lines <- c(lines, paste0("EP  - ", trimws(pages[2])))
+      ep <- trimws(pages[2])
+      # Expand abbreviated end page: "539–40" → EP=540, not EP=40
+      if (nchar(ep) < nchar(sp)) {
+        ep <- paste0(substr(sp, 1, nchar(sp) - nchar(ep)), ep)
+      }
+      lines <- c(lines, paste0("EP  - ", ep))
     }
   }
 
@@ -114,18 +125,28 @@ to_ris <- function(parsed) {
     lines <- c(lines, paste0("SN  - ", csl$ISSN))
   }
 
-  # URL
-  if (!is.null(csl$URL) && !is.na(csl$URL)) {
-    lines <- c(lines, paste0("UR  - ", csl$URL))
+  # URL — from CSL or extracted from original_text for PUA entries
+  url_val <- csl$URL
+  if ((is.null(url_val) || is.na(url_val)) && !is.null(db_row)) {
+    url_match <- regmatches(db_row$original_text,
+                            regexpr("https?://[^\\s,]+", db_row$original_text, perl = TRUE))
+    if (length(url_match) > 0 && nchar(url_match) > 0) url_val <- url_match
+  }
+  if (!is.null(url_val) && !is.na(url_val) && nchar(url_val) > 0) {
+    lines <- c(lines, paste0("UR  - ", url_val))
   }
 
-  # Notes: include hijri year, entry number, etc.
+  # Notes: include hijri year, entry number, id_number for PUA, etc.
   notes <- c()
   if (!is.null(parsed$year_hijri) && !is.na(parsed$year_hijri)) {
     notes <- c(notes, paste0("Hijri year: ", parsed$year_hijri))
   }
-  if (!is.null(parsed$entry_number) && !is.na(parsed$entry_number)) {
-    notes <- c(notes, paste0("Entry: №", parsed$entry_number))
+  entry_num <- parsed$entry_number
+  if ((is.null(entry_num) || is.na(entry_num)) && !is.null(db_row)) {
+    entry_num <- db_row$entry_number
+  }
+  if (!is.null(entry_num) && !is.na(entry_num) && nchar(trimws(as.character(entry_num))) > 0) {
+    notes <- c(notes, paste0("Entry: №", entry_num))
   }
   if (!is.null(parsed$section) && !is.na(parsed$section)) {
     notes <- c(notes, paste0("Section: ", parsed$section))
@@ -170,7 +191,16 @@ export_all_ris <- function(db_path, output_path) {
       )
     })
 
-    ris <- tryCatch(to_ris(parsed), error = function(e) NULL)
+    # Override with corrected DB fields (DB values take precedence)
+    if (!is.na(row$parsed_author)) parsed$author <- row$parsed_author
+    if (!is.na(row$parsed_title)) parsed$title <- row$parsed_title
+    if (!is.na(row$parsed_title)) parsed$title_abbrev <- row$parsed_title
+    if (!is.na(row$citation_type)) parsed$type <- row$citation_type
+    if (!is.na(row$volume_cited)) parsed$volume_cited <- row$volume_cited
+    if (!is.na(row$page_cited)) parsed$page_cited <- row$page_cited
+    if (!is.na(row$entry_number)) parsed$entry_number <- row$entry_number
+
+    ris <- tryCatch(to_ris(parsed, db_row = row), error = function(e) NULL)
     if (is.null(ris)) "" else ris
   }, character(1))
 
@@ -202,16 +232,18 @@ get_citation_counts <- function(con) {
 }
 
 save_citation <- function(con, work_id, author_id, original_text, parsed,
-                          citation_form, citation_type, link_type, source_type) {
+                          citation_form, citation_type, link_type, source_type,
+                          comment = NA) {
   dbExecute(con, "
     INSERT INTO bibliographic_citations
     (work_id, author_id, original_text, citation_form, citation_type,
      parsed_author, parsed_title, parsed_editor, parsed_place, parsed_publisher,
      parsed_year, volume_cited, page_cited, entry_number, section, notes,
-     link_type, source, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     link_type, source, created_at, comment,
+     edition_qualifier, page_german, page_english)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   ", params = list(
-    if (is.null(work_id) || work_id == "") NA else work_id,
+    if (is.null(work_id) || is.na(work_id) || work_id == "") NA else work_id,
     if (is.null(author_id) || is.na(author_id)) NA else as.integer(author_id),
     original_text,
     citation_form,
@@ -229,7 +261,11 @@ save_citation <- function(con, work_id, author_id, original_text, parsed,
     parsed$notes %||% NA,
     link_type,
     source_type,
-    format(Sys.time(), "%Y-%m-%dT%H:%M:%S")
+    format(Sys.time(), "%Y-%m-%dT%H:%M:%S"),
+    if (is.null(comment) || is.na(comment) || trimws(comment) == "") NA else trimws(comment),
+    parsed$edition_qualifier %||% NA,
+    parsed$page_german %||% NA,
+    parsed$page_english %||% NA
   ))
 }
 
@@ -411,6 +447,9 @@ ui <- fluidPage(
             column(3, br(), actionButton("parse_text", "Parse", class = "btn btn-info")),
             column(3, br(), actionButton("save_citation", "Save Citation", class = "btn btn-success"))
           ),
+          textAreaInput("citation_comment", "Comment (optional):",
+                        rows = 3, width = "100%",
+                        placeholder = "Scholarly notes, misattributions, cross-references, etc."),
           uiOutput("parse_preview")
         ),
 
@@ -499,7 +538,7 @@ server <- function(input, output, session) {
     entities = NULL,       # current entity list (persons or works)
     filtered_ids = NULL,
     current_index = 1,
-    parsed_citation = NULL,
+    parsed_sequence = NULL,
     bib_entries = NULL,
     ris_entries = NULL,
     citation_refresh = 0   # counter to trigger citation list refresh
@@ -770,85 +809,200 @@ server <- function(input, output, session) {
     showNotification("Citation deleted", type = "warning")
   })
 
-  # Parse plain text
+  # Parse plain text using parse_citation_sequence() as primary entry point
+  # This handles: normalization, prose splitting ("Consult further..."),
+  # semicolon splitting, type detection, and routing to correct parser
   observeEvent(input$parse_text, {
     req(input$plain_text_input)
     text <- trimws(input$plain_text_input)
 
     if (input$force_type != "auto") {
+      # Forced type: bypass sequence parser, parse single citation
       if (grepl("^long", input$force_type)) {
-        rv$parsed_citation <- parse_long_monograph(text)
-        rv$parsed_citation$type <- gsub("long_", "", input$force_type)
+        parsed <- parse_long_monograph(text)
+        parsed$type <- gsub("long_", "", input$force_type)
       } else {
-        rv$parsed_citation <- parse_short_citation(text)
-        rv$parsed_citation$type <- input$force_type
+        parsed <- parse_short_citation(text)
+        parsed$type <- input$force_type
       }
+      rv$parsed_sequence <- list(
+        raw = text,
+        type = "forced_single",
+        n_references = 1,
+        references = list(parsed),
+        related_references = list(),
+        n_related = 0
+      )
     } else {
-      detected <- detect_citation_type(text)
-      if (detected$form == "long") {
-        rv$parsed_citation <- parse_long_monograph(text)
-        rv$parsed_citation$type <- detected$type
-      } else if (detected$form == "short") {
-        rv$parsed_citation <- parse_short_citation(text)
-        rv$parsed_citation$type <- paste0("short_", detected$type)
-      } else {
-        rv$parsed_citation <- list(
-          raw = text,
-          type = "unknown",
-          parse_error = "Could not detect citation type"
-        )
-      }
+      # Auto-detect: use full citation sequence parser
+      rv$parsed_sequence <- parse_citation_sequence(text)
     }
   })
 
-  # Parse preview
+  # Parse preview — show all extracted references
   output$parse_preview <- renderUI({
-    req(rv$parsed_citation)
-    div(class = "parsed-preview",
-      h5("Parsed Citation:"),
-      verbatimTextOutput("parse_json")
-    )
+    req(rv$parsed_sequence)
+    seq <- rv$parsed_sequence
+
+    n_main <- seq$n_references
+    n_related <- seq$n_related
+    n_total <- n_main + n_related
+
+    if (n_total == 0) {
+      return(div(class = "parsed-preview",
+        h5("No citations extracted"),
+        p("The parser could not identify any citations in this text.")
+      ))
+    }
+
+    # Build preview cards for each reference
+    ref_previews <- list()
+
+    if (n_main > 0) {
+      ref_previews <- c(ref_previews, list(h5(paste0(n_main, " main reference(s):"))))
+      for (i in seq_len(n_main)) {
+        ref <- seq$references[[i]]
+        ref_previews <- c(ref_previews, list(
+          div(style = "background:#e8f4e8; padding:10px; border-radius:4px; margin:5px 0; border-left:3px solid #28a745;",
+            strong(paste0("[", i, "] ")),
+            if (!is.null(ref$author) && !is.na(ref$author)) span(htmltools::htmlEscape(ref$author), " — ") else NULL,
+            if (!is.null(ref$title_abbrev) && !is.na(ref$title_abbrev)) {
+              tagList(
+                span(htmltools::htmlEscape(ref$title_abbrev)),
+                if (!is.null(ref$edition_qualifier) && !is.na(ref$edition_qualifier))
+                  span(paste0(" (", ref$edition_qualifier, ")")) else NULL,
+                if (!is.null(ref$article_title) && !is.na(ref$article_title))
+                  span(paste0(', "', htmltools::htmlEscape(ref$article_title), '"')) else NULL
+              )
+            } else if (!is.null(ref$title) && !is.na(ref$title)) {
+              span(em(htmltools::htmlEscape(ref$title)))
+            } else NULL,
+            if (!is.null(ref$volume) && !is.na(ref$volume))
+              span(paste0(", vol. ", ref$volume)) else NULL,
+            if (!is.null(ref$page_german) && !is.na(ref$page_german)) {
+              span(paste0(", p. ", ref$page_german, " (de) / ", ref$page_english %||% "?", " (en)"))
+            } else if (!is.null(ref$page) && !is.na(ref$page)) {
+              span(paste0(", p. ", ref$page))
+            } else NULL,
+            if (!is.null(ref$entry_number) && !is.na(ref$entry_number))
+              span(paste0(" №", ref$entry_number)) else NULL,
+            br(),
+            tags$small(style = "color:#666;",
+              "Type: ", ref$type %||% "unknown",
+              " | Primary: ", if (isTRUE(ref$is_primary)) "yes" else "no"
+            )
+          )
+        ))
+      }
+    }
+
+    if (n_related > 0) {
+      ref_previews <- c(ref_previews, list(
+        hr(),
+        h5(paste0(n_related, " related reference(s) (from \"Consult further\" / \"See also\"):"))
+      ))
+      for (i in seq_len(n_related)) {
+        ref <- seq$related_references[[i]]
+        ref_previews <- c(ref_previews, list(
+          div(style = "background:#fff3cd; padding:10px; border-radius:4px; margin:5px 0; border-left:3px solid #ffc107;",
+            strong(paste0("[R", i, "] ")),
+            if (!is.null(ref$author) && !is.na(ref$author)) span(htmltools::htmlEscape(ref$author), " — ") else NULL,
+            if (!is.null(ref$title_abbrev) && !is.na(ref$title_abbrev)) {
+              tagList(
+                span(htmltools::htmlEscape(ref$title_abbrev)),
+                if (!is.null(ref$edition_qualifier) && !is.na(ref$edition_qualifier))
+                  span(paste0(" (", ref$edition_qualifier, ")")) else NULL,
+                if (!is.null(ref$article_title) && !is.na(ref$article_title))
+                  span(paste0(', "', htmltools::htmlEscape(ref$article_title), '"')) else NULL
+              )
+            } else if (!is.null(ref$title) && !is.na(ref$title)) {
+              span(em(htmltools::htmlEscape(ref$title)))
+            } else NULL,
+            if (!is.null(ref$volume) && !is.na(ref$volume))
+              span(paste0(", vol. ", ref$volume)) else NULL,
+            if (!is.null(ref$page_german) && !is.na(ref$page_german)) {
+              span(paste0(", p. ", ref$page_german, " (de) / ", ref$page_english %||% "?", " (en)"))
+            } else if (!is.null(ref$page) && !is.na(ref$page)) {
+              span(paste0(", p. ", ref$page))
+            } else NULL,
+            if (!is.null(ref$entry_number) && !is.na(ref$entry_number))
+              span(paste0(" №", ref$entry_number)) else NULL,
+            br(),
+            tags$small(style = "color:#666;",
+              "Type: ", ref$type %||% "unknown",
+              " | Primary: ", if (isTRUE(ref$is_primary)) "yes" else "no"
+            )
+          )
+        ))
+      }
+    }
+
+    # Also show raw parse structure for debugging
+    ref_previews <- c(ref_previews, list(
+      hr(),
+      tags$details(
+        tags$summary(style = "cursor:pointer; color:#666;", "Show raw parse output"),
+        verbatimTextOutput("parse_json")
+      )
+    ))
+
+    div(class = "parsed-preview", do.call(tagList, ref_previews))
   })
 
   output$parse_json <- renderPrint({
-    req(rv$parsed_citation)
-    str(rv$parsed_citation)
+    req(rv$parsed_sequence)
+    str(rv$parsed_sequence, max.level = 3)
   })
 
-  # Save plain text citation
+  # Save all parsed citations (main + related) as separate DB records
   observeEvent(input$save_citation, {
     entity <- current_entity()
-    req(entity, rv$parsed_citation)
+    req(entity, rv$parsed_sequence)
 
     work_id <- if (input$mode == "works") entity$work_id else NA
-    author_id <- if (input$mode == "persons") {
-      entity$author_id
-    } else {
-      entity$author_id
+    author_id <- entity$author_id
+
+    seq <- rv$parsed_sequence
+    all_refs <- c(seq$references, seq$related_references)
+
+    if (length(all_refs) == 0) {
+      showNotification("No citations to save", type = "warning")
+      return()
     }
 
-    detected <- detect_citation_type(input$plain_text_input)
+    saved <- 0
+    for (ref in all_refs) {
+      # Determine form from ref type
+      citation_form <- if (grepl("^short|^secondary|^serial", ref$type %||% "")) {
+        "short"
+      } else {
+        "long"
+      }
 
-    tryCatch({
-      save_citation(
-        db_con,
-        work_id = work_id,
-        author_id = author_id,
-        original_text = trimws(input$plain_text_input),
-        parsed = rv$parsed_citation,
-        citation_form = detected$form,
-        citation_type = rv$parsed_citation$type %||% detected$type,
-        link_type = input$link_type,
-        source_type = "plain_text"
-      )
+      tryCatch({
+        save_citation(
+          db_con,
+          work_id = work_id,
+          author_id = author_id,
+          original_text = ref$raw %||% trimws(input$plain_text_input),
+          parsed = ref,
+          citation_form = citation_form,
+          citation_type = ref$type %||% "unknown",
+          link_type = input$link_type,
+          source_type = "plain_text",
+          comment = input$citation_comment
+        )
+        saved <- saved + 1
+      }, error = function(e) {
+        showNotification(paste("Error saving ref:", e$message), type = "error")
+      })
+    }
 
-      rv$citation_refresh <- rv$citation_refresh + 1
-      updateTextAreaInput(session, "plain_text_input", value = "")
-      rv$parsed_citation <- NULL
-      showNotification("Citation saved", type = "message")
-    }, error = function(e) {
-      showNotification(paste("Error saving:", e$message), type = "error")
-    })
+    rv$citation_refresh <- rv$citation_refresh + 1
+    updateTextAreaInput(session, "plain_text_input", value = "")
+    updateTextAreaInput(session, "citation_comment", value = "")
+    rv$parsed_sequence <- NULL
+    showNotification(paste(saved, "citation(s) saved"), type = "message")
   })
 
   # BibTeX import
@@ -1038,7 +1192,7 @@ server <- function(input, output, session) {
 
   # Export RIS
   observeEvent(input$export_ris, {
-    output_path <- file.path("data", "iqsa_bibliography.ris")
+    output_path <- file.path("data", "mashriq-maghrib_bibliography.ris")
     tryCatch({
       export_all_ris(DB_PATH, output_path)
       showNotification(
