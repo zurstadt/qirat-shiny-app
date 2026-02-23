@@ -5959,39 +5959,131 @@ server <- function(input, output, session) {
         modal_content <- p(em("No citations have been added for this author yet."),
                           br(), br(),
                           "Use the Citation Annotation app to add citations.")
+        modal_footer <- modalButton("Close")
       } else {
-        citation_cards <- lapply(seq_len(nrow(citations)), function(i) {
-          cit <- citations[i, ]
-          link_badge <- switch(cit$link_type %||% "reference",
-            "reference" = span(style = "background:#007bff;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "reference"),
-            "edition" = span(style = "background:#17a2b8;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "edition"),
-            "study" = span(style = "background:#6f42c1;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "study"),
-            "encyclopedia" = span(style = "background:#fd7e14;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "encyclopedia"),
-            span(style = "background:#6c757d;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", cit$link_type)
-          )
-          digital_url <- lookup_digital_url(con, cit$parsed_title, cit$page_cited, cit$entry_number)
-          div(style = "background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid #6f42c1;",
-            div(link_badge,
-              if (!is.na(cit$work_id)) span(style = "margin-left:8px;color:#666;font-size:0.85em;", paste0("[", htmltools::htmlEscape(cit$work_id), "]"))
-            ),
-            p(style = "margin-top:8px;", htmltools::htmlEscape(cit$original_text)),
-            if (!is.na(cit$volume_cited) || !is.na(cit$page_cited)) {
-              p(style = "color:#666;font-size:0.9em;",
-                if (!is.na(cit$volume_cited)) paste0("Vol. ", htmltools::htmlEscape(cit$volume_cited)) else "",
-                if (!is.na(cit$page_cited)) paste0(", pp. ", htmltools::htmlEscape(cit$page_cited)) else ""
-              )
-            },
+        # Store for export
+        rv$modal_citations <- citations
+
+        # Classify primary/secondary
+        is_primary <- vapply(citations$parsed_title, function(pt) {
+          if (is.null(pt) || is.na(pt)) return(FALSE)
+          pt %in% PRIMARY_ABBREVS
+        }, logical(1))
+
+        # Group citations by parsed_title
+        titles <- unique(citations$parsed_title[!is.na(citations$parsed_title)])
+        primary_titles <- titles[titles %in% PRIMARY_ABBREVS]
+        secondary_titles <- titles[!titles %in% PRIMARY_ABBREVS]
+
+        # Build a grouped card for one title
+        build_title_group <- function(title, rows, border_color) {
+          # Author name (from first row)
+          author <- rows$parsed_author[1]
+          author_label <- if (!is.na(author) && nchar(author) > 0) paste0(htmltools::htmlEscape(author), ", ") else ""
+
+          # Build page reference lines
+          page_lines <- lapply(seq_len(nrow(rows)), function(j) {
+            row <- rows[j, ]
+            parts <- c()
+            if (!is.na(row$volume_cited) && nchar(row$volume_cited) > 0) parts <- c(parts, paste0(row$volume_cited, ":"))
+            if (!is.na(row$page_cited) && nchar(row$page_cited) > 0) parts <- c(parts, htmltools::htmlEscape(row$page_cited))
+            ref <- paste0(parts, collapse = "")
+            if (!is.na(row$entry_number) && nchar(row$entry_number) > 0) ref <- paste0(ref, " \u2116", htmltools::htmlEscape(row$entry_number))
+            if (!is.na(row$section) && nchar(row$section) > 0) ref <- paste0(ref, " (", htmltools::htmlEscape(row$section), ")")
+
+            # Digital link
+            digital_url <- lookup_digital_url(con, row$parsed_title, row$page_cited, row$entry_number)
             if (!is.null(digital_url)) {
-              a(href = digital_url, target = "_blank", rel = "noopener noreferrer",
-                style = "display:inline-block;margin-top:4px;font-size:0.85em;color:#17a2b8;text-decoration:none;",
-                "\u2197 View digital edition"
+              tagList(
+                span(style = "margin-right:6px;", HTML(ref)),
+                a(href = digital_url, target = "_blank", rel = "noopener noreferrer",
+                  style = "font-size:0.85em;color:#17a2b8;text-decoration:none;",
+                  "\u2197")
               )
+            } else {
+              span(HTML(ref))
             }
+          })
+
+          # Combine into comma-separated list or bullet list depending on count
+          if (length(page_lines) == 1) {
+            ref_display <- div(style = "margin-top:4px;color:#444;", page_lines[[1]])
+          } else {
+            ref_display <- tags$ul(style = "margin-top:4px;margin-bottom:0;padding-left:20px;color:#444;",
+              lapply(page_lines, function(pl) tags$li(style = "margin-bottom:2px;", pl))
+            )
+          }
+
+          div(style = paste0("background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid ", border_color, ";"),
+            div(
+              span(style = "font-weight:600;font-size:1.05em;", HTML(paste0(author_label, htmltools::htmlEscape(title)))),
+              if (!is.na(rows$work_id[1])) span(style = "margin-left:8px;color:#999;font-size:0.8em;", paste0("[", htmltools::htmlEscape(rows$work_id[1]), "]"))
+            ),
+            ref_display
           )
-        })
+        }
+
+        # Build sections
+        sections <- tagList()
+
+        if (length(primary_titles) > 0) {
+          primary_cards <- lapply(primary_titles, function(tt) {
+            rows <- citations[!is.na(citations$parsed_title) & citations$parsed_title == tt, , drop = FALSE]
+            build_title_group(tt, rows, "#0072B2")
+          })
+          sections <- tagList(sections,
+            h5(style = "color:#0072B2;margin-top:8px;", icon("book"), " Primary Sources",
+               span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
+                    paste0("(", sum(is_primary), " citations in ", length(primary_titles), " works)"))),
+            do.call(tagList, primary_cards)
+          )
+        }
+
+        if (length(secondary_titles) > 0) {
+          secondary_cards <- lapply(secondary_titles, function(tt) {
+            rows <- citations[!is.na(citations$parsed_title) & citations$parsed_title == tt, , drop = FALSE]
+            build_title_group(tt, rows, "#E69F00")
+          })
+          sections <- tagList(sections,
+            h5(style = "color:#E69F00;margin-top:16px;", icon("flask"), " Secondary Sources",
+               span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
+                    paste0("(", sum(!is_primary), " citations in ", length(secondary_titles), " works)"))),
+            do.call(tagList, secondary_cards)
+          )
+        }
+
+        # Handle citations with no parsed_title
+        no_title_idx <- which(is.na(citations$parsed_title))
+        if (length(no_title_idx) > 0) {
+          other_cards <- lapply(no_title_idx, function(i) {
+            cit <- citations[i, ]
+            div(style = "background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid #6c757d;",
+              p(style = "margin:0;", htmltools::htmlEscape(cit$original_text))
+            )
+          })
+          sections <- tagList(sections,
+            h5(style = "color:#6c757d;margin-top:16px;", icon("question-circle"), " Unclassified"),
+            do.call(tagList, other_cards)
+          )
+        }
+
         modal_content <- tagList(
-          p(strong(nrow(citations)), " citation(s)"),
-          do.call(tagList, citation_cards)
+          p(strong(nrow(citations)), " citation(s) across ", strong(length(titles)), " works"),
+          sections
+        )
+
+        # Export footer
+        modal_footer <- tagList(
+          downloadButton("modal_export_ris", "Export RIS", class = "btn-info btn-sm"),
+          downloadButton("modal_export_bibtex", "Export BibTeX", class = "btn-info btn-sm"),
+          actionButton("modal_copy_all", "Copy All", class = "btn-outline-secondary btn-sm",
+                       onclick = paste0(
+                         "var texts = ", jsonlite::toJSON(citations$original_text, auto_unbox = FALSE), ";",
+                         "navigator.clipboard.writeText(texts.join('\\n\\n')).then(function(){",
+                         "Shiny.setInputValue('copy_notify', Math.random());",
+                         "});"
+                       )),
+          modalButton("Close")
         )
       }
 
@@ -6000,7 +6092,7 @@ server <- function(input, output, session) {
         modal_content,
         size = "l",
         easyClose = TRUE,
-        footer = modalButton("Close")
+        footer = modal_footer
       ))
     }, error = function(e) {
       showNotification(paste("Error loading citations:", e$message), type = "error")
