@@ -5767,9 +5767,13 @@ server <- function(input, output, session) {
         rv$modal_citations <- citations
 
         # Classify each citation as primary or secondary
+        # Schema abbreviations are primary; unrecognized full titles (long names, likely editions) also primary
+        all_schema_abbrevs <- if (!is.null(WORK_SCHEMAS)) WORK_SCHEMAS$abbrev else PRIMARY_ABBREVS
         is_primary <- vapply(citations$parsed_title, function(pt) {
           if (is.null(pt) || is.na(pt)) return(FALSE)
-          pt %in% PRIMARY_ABBREVS
+          if (pt %in% PRIMARY_ABBREVS) return(TRUE)
+          if (!pt %in% all_schema_abbrevs && nchar(pt) > 20) return(TRUE)
+          FALSE
         }, logical(1))
 
         # Build citation card with color-coded border
@@ -5965,21 +5969,48 @@ server <- function(input, output, session) {
         rv$modal_citations <- citations
 
         # Classify primary/secondary
+        # Schema abbreviations are primary; unrecognized full titles (long names, likely editions) also primary
+        all_schema_abbrevs <- if (!is.null(WORK_SCHEMAS)) WORK_SCHEMAS$abbrev else PRIMARY_ABBREVS
         is_primary <- vapply(citations$parsed_title, function(pt) {
           if (is.null(pt) || is.na(pt)) return(FALSE)
-          pt %in% PRIMARY_ABBREVS
+          if (pt %in% PRIMARY_ABBREVS) return(TRUE)
+          # Fallback: if not in schema at all and title is long (likely a real work title), treat as primary
+          if (!pt %in% all_schema_abbrevs && nchar(pt) > 20) return(TRUE)
+          FALSE
         }, logical(1))
 
         # Group citations by parsed_title
         titles <- unique(citations$parsed_title[!is.na(citations$parsed_title)])
-        primary_titles <- titles[titles %in% PRIMARY_ABBREVS]
-        secondary_titles <- titles[!titles %in% PRIMARY_ABBREVS]
+        primary_titles <- titles[vapply(titles, function(tt) {
+          any(is_primary[!is.na(citations$parsed_title) & citations$parsed_title == tt])
+        }, logical(1))]
+        secondary_titles <- setdiff(titles, primary_titles)
 
         # Build a grouped card for one title
         build_title_group <- function(title, rows, border_color) {
           # Author name (from first row)
           author <- rows$parsed_author[1]
           author_label <- if (!is.na(author) && nchar(author) > 0) paste0(htmltools::htmlEscape(author), ", ") else ""
+
+          # Deduplicate: merge rows with identical volume_cited + page_cited, keeping the one with more detail
+          dedup_key <- paste0(
+            ifelse(is.na(rows$volume_cited), "", rows$volume_cited), "|",
+            ifelse(is.na(rows$page_cited), "", rows$page_cited)
+          )
+          keep_idx <- !duplicated(dedup_key)
+          # For duplicates, prefer the row with an entry_number or section
+          for (dk in unique(dedup_key[duplicated(dedup_key)])) {
+            dup_rows <- which(dedup_key == dk)
+            has_detail <- vapply(dup_rows, function(r) {
+              (!is.na(rows$entry_number[r]) && nchar(rows$entry_number[r]) > 0) +
+              (!is.na(rows$section[r]) && nchar(rows$section[r]) > 0) +
+              (!is.na(rows$notes[r]) && nchar(rows$notes[r]) > 0)
+            }, integer(1))
+            best <- dup_rows[which.max(has_detail)]
+            keep_idx[dup_rows] <- FALSE
+            keep_idx[best] <- TRUE
+          }
+          rows <- rows[keep_idx, , drop = FALSE]
 
           # Build page reference lines
           page_lines <- lapply(seq_len(nrow(rows)), function(j) {
@@ -5991,22 +6022,50 @@ server <- function(input, output, session) {
             if (!is.na(row$entry_number) && nchar(row$entry_number) > 0) ref <- paste0(ref, " \u2116", htmltools::htmlEscape(row$entry_number))
             if (!is.na(row$section) && nchar(row$section) > 0) ref <- paste0(ref, " (", htmltools::htmlEscape(row$section), ")")
 
+            # GdQ / GAL edition pages: show German/English when available
+            edition_note <- NULL
+            if (!is.na(row$page_german) && nchar(row$page_german) > 0 &&
+                !is.na(row$page_english) && nchar(row$page_english) > 0) {
+              edition_note <- span(style = "color:#888;font-size:0.85em;margin-left:6px;",
+                paste0("[Ger. p. ", htmltools::htmlEscape(row$page_german),
+                       " / Eng. p. ", htmltools::htmlEscape(row$page_english), "]"))
+            } else if (!is.na(row$page_german) && nchar(row$page_german) > 0) {
+              edition_note <- span(style = "color:#888;font-size:0.85em;margin-left:6px;",
+                paste0("[Ger. p. ", htmltools::htmlEscape(row$page_german), "]"))
+            } else if (!is.na(row$page_english) && nchar(row$page_english) > 0) {
+              edition_note <- span(style = "color:#888;font-size:0.85em;margin-left:6px;",
+                paste0("[Eng. p. ", htmltools::htmlEscape(row$page_english), "]"))
+            }
+
+            # Notes (e.g., "mentioned 3 times")
+            notes_span <- if (!is.na(row$notes) && nchar(row$notes) > 0) {
+              span(style = "color:#888;font-size:0.85em;font-style:italic;margin-left:6px;",
+                   paste0("(", htmltools::htmlEscape(row$notes), ")"))
+            }
+
             # Digital link
             digital_url <- lookup_digital_url(con, row$parsed_title, row$page_cited, row$entry_number)
-            if (!is.null(digital_url)) {
-              tagList(
-                span(style = "margin-right:6px;", HTML(ref)),
-                a(href = digital_url, target = "_blank", rel = "noopener noreferrer",
-                  style = "font-size:0.85em;color:#17a2b8;text-decoration:none;",
-                  "\u2197")
-              )
-            } else {
-              span(HTML(ref))
+            link_span <- if (!is.null(digital_url)) {
+              a(href = digital_url, target = "_blank", rel = "noopener noreferrer",
+                style = "font-size:0.85em;color:#17a2b8;text-decoration:none;margin-left:4px;",
+                "\u2197")
             }
+
+            tagList(span(HTML(ref)), edition_note, notes_span, link_span)
           })
 
-          # Combine into comma-separated list or bullet list depending on count
-          if (length(page_lines) == 1) {
+          # For cards with no page refs (e.g., edition citations), show original_text of first row
+          has_any_ref <- any(vapply(seq_len(nrow(rows)), function(j) {
+            !is.na(rows$page_cited[j]) && nchar(rows$page_cited[j]) > 0
+          }, logical(1)))
+
+          if (!has_any_ref && nrow(rows) > 0) {
+            ref_display <- div(style = "margin-top:4px;color:#444;font-size:0.9em;",
+              p(style = "margin:0;", htmltools::htmlEscape(
+                substr(rows$original_text[1], 1, 200)
+              ), if (nchar(rows$original_text[1]) > 200) "...")
+            )
+          } else if (length(page_lines) == 1) {
             ref_display <- div(style = "margin-top:4px;color:#444;", page_lines[[1]])
           } else {
             ref_display <- tags$ul(style = "margin-top:4px;margin-bottom:0;padding-left:20px;color:#444;",
@@ -6015,10 +6074,7 @@ server <- function(input, output, session) {
           }
 
           div(style = paste0("background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid ", border_color, ";"),
-            div(
-              span(style = "font-weight:600;font-size:1.05em;", HTML(paste0(author_label, htmltools::htmlEscape(title)))),
-              if (!is.na(rows$work_id[1])) span(style = "margin-left:8px;color:#999;font-size:0.8em;", paste0("[", htmltools::htmlEscape(rows$work_id[1]), "]"))
-            ),
+            div(span(style = "font-weight:600;font-size:1.05em;", HTML(paste0(author_label, htmltools::htmlEscape(title))))),
             ref_display
           )
         }
@@ -6034,7 +6090,7 @@ server <- function(input, output, session) {
           sections <- tagList(sections,
             h5(style = "color:#0072B2;margin-top:8px;", icon("book"), " Primary Sources",
                span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
-                    paste0("(", sum(is_primary), " citations in ", length(primary_titles), " works)"))),
+                    paste0("(", length(primary_titles), " works)"))),
             do.call(tagList, primary_cards)
           )
         }
@@ -6047,7 +6103,7 @@ server <- function(input, output, session) {
           sections <- tagList(sections,
             h5(style = "color:#E69F00;margin-top:16px;", icon("flask"), " Secondary Sources",
                span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
-                    paste0("(", sum(!is_primary), " citations in ", length(secondary_titles), " works)"))),
+                    paste0("(", length(secondary_titles), " works)"))),
             do.call(tagList, secondary_cards)
           )
         }
