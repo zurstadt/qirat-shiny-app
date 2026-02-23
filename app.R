@@ -30,6 +30,18 @@ PRECOMPUTED <- if (file.exists(PRECOMPUTED_PATH)) {
   NULL
 }
 
+# Primary/secondary citation classification from parser-work-schemas.json
+WORK_SCHEMAS <- tryCatch({
+  raw <- jsonlite::fromJSON("data/parser-work-schemas.json")$schemas
+  raw
+}, error = function(e) NULL)
+PRIMARY_ABBREVS <- if (!is.null(WORK_SCHEMAS)) {
+  WORK_SCHEMAS$abbrev[WORK_SCHEMAS$is_primary == TRUE]
+} else {
+  c("\u0120N", "Fahrasah", "\u01F0B", "TMD", "\u1E62ilah", "al-\u1E0Eayl wa-l-takmilah",
+    "Sullam", "al-\u1E62ilat al-\u1E2Balaf", "Ma\u0161ya\u1E2Bah", "MQK", "Na\u0161r", "Fihrist", "SAN")
+}
+
 # Scholar routes JSON path (used by Geographic Explorer - see geographic_alpha.R)
 # SCHOLAR_ROUTES_PATH <- "routes/all_scholar_routes.json"
 
@@ -1394,16 +1406,16 @@ ui <- fluidPage(
         padding: 20px;
       }
 
-      /* Fast hover tooltip for text reuse symbols */
+      /* Fast hover tooltip for text reuse symbols — fixed positioning to escape overflow */
       .text-reuse-tooltip {
         position: relative;
       }
       .text-reuse-tooltip::after {
         content: attr(data-tooltip);
-        position: absolute;
-        bottom: 125%;
-        left: 50%;
-        transform: translateX(-50%);
+        position: fixed;
+        left: var(--tt-left, 0);
+        top: var(--tt-top, 0);
+        transform: translateX(-50%) translateY(-100%);
         background-color: #333;
         color: white;
         padding: 14px 18px;
@@ -1412,7 +1424,7 @@ ui <- fluidPage(
         white-space: pre-line;
         max-width: 550px;
         min-width: 300px;
-        z-index: 9999;
+        z-index: 99999;
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.1s ease-in-out;
@@ -1423,12 +1435,14 @@ ui <- fluidPage(
       }
       .text-reuse-tooltip::before {
         content: '';
-        position: absolute;
-        bottom: 115%;
-        left: 50%;
-        transform: translateX(-50%);
+        position: fixed;
+        left: var(--tt-left, 0);
+        top: var(--tt-top, 0);
+        transform: translateX(-50%) translateY(-100%);
+        margin-top: -2px;
         border: 6px solid transparent;
         border-top-color: #333;
+        z-index: 99999;
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.1s ease-in-out;
@@ -1578,6 +1592,20 @@ ui <- fluidPage(
         padding: 10px;
         background: white;
       }
+    ")),
+    tags$script(HTML("
+      // Position tooltips in viewport coordinates to escape overflow containers
+      document.addEventListener('mouseover', function(e) {
+        if (e.target.classList.contains('text-reuse-tooltip')) {
+          var rect = e.target.getBoundingClientRect();
+          var left = rect.left + rect.width / 2;
+          var top = rect.top - 10;
+          // Clamp to viewport
+          left = Math.max(180, Math.min(left, window.innerWidth - 180));
+          e.target.style.setProperty('--tt-left', left + 'px');
+          e.target.style.setProperty('--tt-top', top + 'px');
+        }
+      });
     "))
   ),
 
@@ -1611,10 +1639,10 @@ ui <- fluidPage(
             tags$ul(
               tags$li(tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'corpus_explorer', {priority: 'event'});", "Corpus Explorer"),
                 " — search, filter, and download the full bibliography"),
-              tags$li(tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'bayesian_analysis', {priority: 'event'});", "Bayesian Analysis"),
-                " — interactive results of the multinomial regression model"),
               tags$li(tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'methodology', {priority: 'event'});", "Methodology"),
-                " — a complete walk-through of the data, model, and interpretation")
+                " — a complete walk-through of the data, model, and interpretation"),
+              tags$li(tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'bayesian_analysis', {priority: 'event'});", "Bayesian Analysis"),
+                " — interactive results of the multinomial regression model")
             )
           )
         ),
@@ -1701,30 +1729,7 @@ ui <- fluidPage(
 
       # ========== Tab 3: Geographic Explorer (REMOVED - see geographic_alpha.R) ==========
 
-      # ========== Tab 4: Bayesian Analysis (4 cards) ==========
-      tabPanel(
-        title = tagList(icon("chart-line"), "Bayesian Analysis"),
-        value = "bayesian_analysis",
-        br(),
-
-        # Card Navigation
-        div(class = "card-navigation",
-          actionButton("bayes_prev", icon("arrow-left"), class = "btn-secondary"),
-          uiOutput("bayes_card_indicator"),
-          actionButton("bayes_next", icon("arrow-right"), class = "btn-secondary")
-        ),
-
-        # Card content container
-        uiOutput("bayes_current_card"),
-
-        # Download button for saving model (conditionally shown)
-        conditionalPanel(
-          condition = "output.model_fitted",
-          downloadButton("save_model", "Save Current Model", class = "btn-success", style = "margin-top: 10px;")
-        )
-      ),
-
-      # ========== Tab 5: Methodology ==========
+      # ========== Tab 4: Methodology ==========
       tabPanel(
         title = tagList(icon("graduation-cap"), "Methodology"),
         value = "methodology",
@@ -2133,6 +2138,29 @@ model {
         )
       ),
 
+      # ========== Tab 5: Bayesian Analysis (4 cards) ==========
+      tabPanel(
+        title = tagList(icon("chart-line"), "Bayesian Analysis"),
+        value = "bayesian_analysis",
+        br(),
+
+        # Card Navigation
+        div(class = "card-navigation",
+          actionButton("bayes_prev", icon("arrow-left"), class = "btn-secondary"),
+          uiOutput("bayes_card_indicator"),
+          actionButton("bayes_next", icon("arrow-right"), class = "btn-secondary")
+        ),
+
+        # Card content container
+        uiOutput("bayes_current_card"),
+
+        # Download button for saving model (conditionally shown)
+        conditionalPanel(
+          condition = "output.model_fitted",
+          downloadButton("save_model", "Save Current Model", class = "btn-success", style = "margin-top: 10px;")
+        )
+      ),
+
       # ========== Tab 6: Acknowledgements ==========
       tabPanel(
         title = "Acknowledgements",
@@ -2239,7 +2267,9 @@ server <- function(input, output, session) {
     bayes_current_card = 1,
     bayesian_analysis_visited = if (!is.null(PRECOMPUTED)) TRUE else FALSE,
     # Posterior distribution modal
-    selected_posterior_param = NULL
+    selected_posterior_param = NULL,
+    # Citation modal export data
+    modal_citations = NULL
   )
 
   # Geographic data loading removed (see geographic_alpha.R)
@@ -5731,9 +5761,19 @@ server <- function(input, output, session) {
         modal_content <- p(em("No citations have been added for this work yet."),
                           br(), br(),
                           "Use the Citation Annotation app to add citations.")
+        modal_footer <- modalButton("Close")
       } else {
-        citation_cards <- lapply(seq_len(nrow(citations)), function(i) {
-          cit <- citations[i, ]
+        # Store citations for export
+        rv$modal_citations <- citations
+
+        # Classify each citation as primary or secondary
+        is_primary <- vapply(citations$parsed_title, function(pt) {
+          if (is.null(pt) || is.na(pt)) return(FALSE)
+          pt %in% PRIMARY_ABBREVS
+        }, logical(1))
+
+        # Build citation card with color-coded border
+        build_citation_card <- function(cit, border_color) {
           link_badge <- switch(cit$link_type %||% "reference",
             "reference" = span(style = "background:#007bff;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "reference"),
             "edition" = span(style = "background:#17a2b8;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "edition"),
@@ -5747,7 +5787,7 @@ server <- function(input, output, session) {
             span(style = "background:#ffc107;color:black;padding:2px 8px;border-radius:10px;font-size:0.8em;", "short")
           }
           digital_url <- lookup_digital_url(con, cit$parsed_title, cit$page_cited, cit$entry_number)
-          div(style = "background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid #007bff;",
+          div(style = paste0("background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid ", border_color, ";"),
             div(form_badge, " ", link_badge),
             p(style = "margin-top:8px;", htmltools::htmlEscape(cit$original_text)),
             if (!is.na(cit$volume_cited) || !is.na(cit$page_cited)) {
@@ -5763,10 +5803,49 @@ server <- function(input, output, session) {
               )
             }
           )
-        })
+        }
+
+        # Build primary and secondary sections
+        primary_idx <- which(is_primary)
+        secondary_idx <- which(!is_primary)
+
+        sections <- tagList()
+        if (length(primary_idx) > 0) {
+          primary_cards <- lapply(primary_idx, function(i) build_citation_card(citations[i, ], "#0072B2"))
+          sections <- tagList(sections,
+            h5(style = "color:#0072B2;margin-top:8px;", icon("book"), " Primary Sources",
+               span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
+                    paste0("(", length(primary_idx), ")"))),
+            do.call(tagList, primary_cards)
+          )
+        }
+        if (length(secondary_idx) > 0) {
+          secondary_cards <- lapply(secondary_idx, function(i) build_citation_card(citations[i, ], "#E69F00"))
+          sections <- tagList(sections,
+            h5(style = "color:#E69F00;margin-top:16px;", icon("flask"), " Secondary Sources",
+               span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
+                    paste0("(", length(secondary_idx), ")"))),
+            do.call(tagList, secondary_cards)
+          )
+        }
+
         modal_content <- tagList(
           p(strong(nrow(citations)), " citation(s)"),
-          do.call(tagList, citation_cards)
+          sections
+        )
+
+        # Build export footer with download buttons
+        modal_footer <- tagList(
+          downloadButton("modal_export_ris", "Export RIS", class = "btn-info btn-sm"),
+          downloadButton("modal_export_bibtex", "Export BibTeX", class = "btn-info btn-sm"),
+          actionButton("modal_copy_all", "Copy All", class = "btn-outline-secondary btn-sm",
+                       onclick = paste0(
+                         "var texts = ", jsonlite::toJSON(citations$original_text, auto_unbox = FALSE), ";",
+                         "navigator.clipboard.writeText(texts.join('\\n\\n')).then(function(){",
+                         "Shiny.setInputValue('copy_notify', Math.random());",
+                         "});"
+                       )),
+          modalButton("Close")
         )
       }
 
@@ -5775,12 +5854,86 @@ server <- function(input, output, session) {
         modal_content,
         size = "l",
         easyClose = TRUE,
-        footer = modalButton("Close")
+        footer = modal_footer
       ))
     }, error = function(e) {
       showNotification(paste("Error loading citations:", e$message), type = "error")
     })
   })
+
+  # Copy notification
+  observeEvent(input$copy_notify, {
+    showNotification("Citations copied to clipboard", type = "message", duration = 3)
+  })
+
+  # RIS export from citation modal
+  output$modal_export_ris <- downloadHandler(
+    filename = function() {
+      paste0("citations_", format(Sys.time(), "%Y%m%d"), ".ris")
+    },
+    content = function(file) {
+      cits <- rv$modal_citations
+      if (is.null(cits) || nrow(cits) == 0) {
+        writeLines("TY  - GEN\nTI  - No citations available\nER  - \n", file)
+        return()
+      }
+      ris_records <- vapply(seq_len(nrow(cits)), function(i) {
+        row <- cits[i, ]
+        lines <- c("TY  - GEN")
+        if (!is.na(row$parsed_author) && nchar(row$parsed_author) > 0) lines <- c(lines, paste0("AU  - ", row$parsed_author))
+        if (!is.na(row$parsed_title) && nchar(row$parsed_title) > 0) lines <- c(lines, paste0("TI  - ", row$parsed_title))
+        if (!is.na(row$parsed_editor) && nchar(row$parsed_editor) > 0) lines <- c(lines, paste0("A2  - ", row$parsed_editor))
+        if (!is.na(row$parsed_year) && nchar(row$parsed_year) > 0) lines <- c(lines, paste0("PY  - ", row$parsed_year))
+        if (!is.na(row$volume_cited) && nchar(row$volume_cited) > 0) lines <- c(lines, paste0("VL  - ", row$volume_cited))
+        if (!is.na(row$page_cited) && nchar(row$page_cited) > 0) {
+          pages <- strsplit(as.character(row$page_cited), "[\u2013-]")[[1]]
+          lines <- c(lines, paste0("SP  - ", trimws(pages[1])))
+          if (length(pages) > 1) lines <- c(lines, paste0("EP  - ", trimws(pages[2])))
+        }
+        if (!is.na(row$parsed_publisher) && nchar(row$parsed_publisher) > 0) lines <- c(lines, paste0("PB  - ", row$parsed_publisher))
+        if (!is.na(row$parsed_place) && nchar(row$parsed_place) > 0) lines <- c(lines, paste0("CY  - ", row$parsed_place))
+        if (!is.na(row$entry_number) && nchar(row$entry_number) > 0) lines <- c(lines, paste0("N1  - Entry: \u2116", row$entry_number))
+        lines <- c(lines, "ER  - ")
+        paste(lines, collapse = "\n")
+      }, character(1))
+      writeLines(paste(ris_records, collapse = "\n\n"), file)
+    }
+  )
+
+  # BibTeX export from citation modal
+  output$modal_export_bibtex <- downloadHandler(
+    filename = function() {
+      paste0("citations_", format(Sys.time(), "%Y%m%d"), ".bib")
+    },
+    content = function(file) {
+      cits <- rv$modal_citations
+      if (is.null(cits) || nrow(cits) == 0) {
+        writeLines("% No citations available", file)
+        return()
+      }
+      bib_records <- vapply(seq_len(nrow(cits)), function(i) {
+        row <- cits[i, ]
+        # Generate a cite key from title abbreviation + year
+        key_title <- gsub("[^A-Za-z0-9]", "", substr(row$parsed_title %||% "unknown", 1, 15))
+        key_year <- if (!is.na(row$parsed_year)) row$parsed_year else "nd"
+        cite_key <- paste0(key_title, key_year, "_", i)
+        fields <- c()
+        if (!is.na(row$parsed_author) && nchar(row$parsed_author) > 0) fields <- c(fields, paste0("  author = {", row$parsed_author, "}"))
+        if (!is.na(row$parsed_title) && nchar(row$parsed_title) > 0) fields <- c(fields, paste0("  title = {", row$parsed_title, "}"))
+        if (!is.na(row$parsed_editor) && nchar(row$parsed_editor) > 0) fields <- c(fields, paste0("  editor = {", row$parsed_editor, "}"))
+        if (!is.na(row$parsed_year) && nchar(row$parsed_year) > 0) fields <- c(fields, paste0("  year = {", row$parsed_year, "}"))
+        if (!is.na(row$volume_cited) && nchar(row$volume_cited) > 0) fields <- c(fields, paste0("  volume = {", row$volume_cited, "}"))
+        if (!is.na(row$page_cited) && nchar(row$page_cited) > 0) {
+          pages <- gsub("\u2013", "--", row$page_cited)
+          fields <- c(fields, paste0("  pages = {", pages, "}"))
+        }
+        if (!is.na(row$parsed_publisher) && nchar(row$parsed_publisher) > 0) fields <- c(fields, paste0("  publisher = {", row$parsed_publisher, "}"))
+        if (!is.na(row$parsed_place) && nchar(row$parsed_place) > 0) fields <- c(fields, paste0("  address = {", row$parsed_place, "}"))
+        paste0("@book{", cite_key, ",\n", paste(fields, collapse = ",\n"), "\n}")
+      }, character(1))
+      writeLines(paste(bib_records, collapse = "\n\n"), file)
+    }
+  )
 
   # Author citation modal
   observeEvent(input$clicked_author, {

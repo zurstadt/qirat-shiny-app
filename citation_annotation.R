@@ -309,7 +309,6 @@ ui <- fluidPage(
         margin-bottom: 20px;
         border-left: 4px solid #007bff;
       }
-      .entity-card.person-mode { border-left-color: #6f42c1; }
       .entity-card.work-mode { border-left-color: #007bff; }
       .citation-card {
         background: #e8f4e8;
@@ -393,17 +392,20 @@ ui <- fluidPage(
     # Stats bar
     uiOutput("stats_bar"),
 
-    # Mode selector + filters
+    # Filters
     fluidRow(
-      column(3, selectInput("mode", "Mode:",
-                            choices = c("Persons" = "persons", "Works" = "works"),
-                            selected = "persons")),
-      column(5, selectizeInput("entity_select", "Jump to:",
+      column(4, selectizeInput("entity_select", "Jump to:",
                                choices = NULL, width = "100%")),
       column(2, selectInput("filter_citations", "Filter:",
                             choices = c("All" = "all",
                                         "With Citations" = "with",
                                         "Without Citations" = "without"),
+                            selected = "all")),
+      column(2, selectInput("filter_readings", "Readings:",
+                            choices = c("All" = "all",
+                                        "7" = "7",
+                                        "7+1" = "7+1",
+                                        "10+" = "10+"),
                             selected = "all")),
       column(2, br(), actionButton("export_ris", "Export RIS",
                                    class = "btn btn-info", icon = icon("download")))
@@ -533,9 +535,8 @@ server <- function(input, output, session) {
   onStop(function() { dbDisconnect(db_con) })
 
   rv <- reactiveValues(
-    authors = NULL,
     works = NULL,
-    entities = NULL,       # current entity list (persons or works)
+    entities = NULL,       # works entity list
     filtered_ids = NULL,
     current_index = 1,
     parsed_sequence = NULL,
@@ -544,20 +545,8 @@ server <- function(input, output, session) {
     citation_refresh = 0   # counter to trigger citation list refresh
   )
 
-  # Load authors and works on startup
+  # Load works on startup
   observe({
-    rv$authors <- dbGetQuery(db_con, "
-      SELECT a.author_id, a.author_name,
-             COALESCE(a.author_name_canonical, a.author_name) as display_name,
-             a.author_name_arabic, a.death_hijri, a.regionality,
-             COUNT(w.work_id) as work_count
-      FROM authors a
-      LEFT JOIN works w ON a.author_id = w.author_id
-      WHERE a.in_range = 'T'
-      GROUP BY a.author_id
-      ORDER BY a.death_hijri
-    ")
-
     rv$works <- dbGetQuery(db_con, "
       SELECT w.work_id, w.title, w.title_arabic, w.type, w.system,
              w.author_id,
@@ -567,66 +556,58 @@ server <- function(input, output, session) {
       FROM works w
       LEFT JOIN authors a ON w.author_id = a.author_id
       WHERE a.in_range = 'T'
-      ORDER BY a.death_hijri, w.work_id
+        AND w.system IS NOT NULL AND w.system != 'NA'
+      ORDER BY CASE WHEN a.death_hijri IS NULL THEN 1 ELSE 0 END,
+               CAST(a.death_hijri AS INTEGER), w.work_id
     ")
   })
 
-  # Build entity list based on mode
+  # Build entity list from works
   observe({
-    req(rv$authors, rv$works)
+    req(rv$works)
 
     counts <- get_citation_counts(db_con)
 
-    if (input$mode == "persons") {
-      entities <- rv$authors
-      entities$has_citations <- entities$author_id %in% counts$authors$author_id
-      entities$citation_count <- sapply(entities$author_id, function(aid) {
-        row <- counts$authors[counts$authors$author_id == aid, ]
-        if (nrow(row) > 0) row$n[1] else 0L
-      })
-      entities$entity_id <- entities$author_id
-      entities$entity_label <- paste0(
-        entities$display_name,
-        " (d. ", entities$death_hijri, ")"
-      )
-    } else {
-      entities <- rv$works
-      entities$has_citations <- entities$work_id %in% counts$works$work_id
-      entities$citation_count <- sapply(entities$work_id, function(wid) {
-        row <- counts$works[counts$works$work_id == wid, ]
-        if (nrow(row) > 0) row$n[1] else 0L
-      })
-      entities$entity_id <- entities$work_id
-      entities$entity_label <- paste0(
-        entities$work_id, " - ",
-        substr(entities$title, 1, 50),
-        " (", entities$author_name, ", d. ", entities$death_hijri, ")"
-      )
-    }
+    entities <- rv$works
+    entities$has_citations <- entities$work_id %in% counts$works$work_id
+    entities$citation_count <- sapply(entities$work_id, function(wid) {
+      row <- counts$works[counts$works$work_id == wid, ]
+      if (nrow(row) > 0) row$n[1] else 0L
+    })
+    entities$entity_id <- entities$work_id
+    entities$entity_label <- paste0(
+      entities$work_id, " - ",
+      substr(entities$title, 1, 50),
+      " (", entities$author_name, ", d. ", entities$death_hijri, ")"
+    )
 
     rv$entities <- entities
-    rv$filtered_ids <- seq_len(nrow(entities))
-    rv$current_index <- 1
 
-    choices <- setNames(rv$filtered_ids, entities$entity_label)
+    choices <- setNames(seq_len(nrow(entities)), entities$entity_label)
     updateSelectizeInput(session, "entity_select", choices = choices, server = TRUE)
   })
 
-  # Filter by citation status
+  # Filter by citation status and readings
   observe({
     req(rv$entities)
+    filter_citations <- input$filter_citations
+    filter_readings <- input$filter_readings
 
-    if (input$filter_citations == "with") {
-      rv$filtered_ids <- which(rv$entities$has_citations)
-    } else if (input$filter_citations == "without") {
-      rv$filtered_ids <- which(!rv$entities$has_citations)
-    } else {
-      rv$filtered_ids <- seq_len(nrow(rv$entities))
+    ids <- seq_len(nrow(rv$entities))
+
+    if (filter_citations == "with") {
+      ids <- which(rv$entities$has_citations)
+    } else if (filter_citations == "without") {
+      ids <- which(!rv$entities$has_citations)
     }
 
-    if (length(rv$filtered_ids) > 0) {
-      rv$current_index <- 1
+    if (!is.null(filter_readings) && filter_readings != "all") {
+      reading_match <- which(rv$entities$system == filter_readings)
+      ids <- intersect(ids, reading_match)
     }
+
+    rv$filtered_ids <- ids
+    rv$current_index <- 1
   })
 
   # Current entity
@@ -694,46 +675,26 @@ server <- function(input, output, session) {
     entity <- current_entity()
     req(entity)
 
-    if (input$mode == "persons") {
-      div(class = "entity-card person-mode",
-        h4(entity$display_name),
-        if (!is.na(entity$author_name_arabic) && entity$author_name_arabic != "") {
-          div(class = "field-row",
-            div(class = "field-label", "Arabic"),
-            div(class = "field-value arabic-text", entity$author_name_arabic))
-        },
+    div(class = "entity-card work-mode",
+      h4(entity$work_id),
+      div(class = "field-row",
+        div(class = "field-label", "Title"),
+        div(class = "field-value", entity$title %||% "—")),
+      if (!is.na(entity$title_arabic) && entity$title_arabic != "") {
         div(class = "field-row",
-          div(class = "field-label", "Death"),
-          div(class = "field-value", paste0(entity$death_hijri, " AH"))),
-        div(class = "field-row",
-          div(class = "field-label", "Region"),
-          div(class = "field-value", entity$regionality %||% "—")),
-        div(class = "field-row",
-          div(class = "field-label", "Works"),
-          div(class = "field-value", entity$work_count))
-      )
-    } else {
-      div(class = "entity-card work-mode",
-        h4(entity$work_id),
-        div(class = "field-row",
-          div(class = "field-label", "Title"),
-          div(class = "field-value", entity$title %||% "—")),
-        if (!is.na(entity$title_arabic) && entity$title_arabic != "") {
-          div(class = "field-row",
-            div(class = "field-label", "Arabic"),
-            div(class = "field-value arabic-text", entity$title_arabic))
-        },
-        div(class = "field-row",
-          div(class = "field-label", "Author"),
-          div(class = "field-value", entity$author_name %||% "—")),
-        div(class = "field-row",
-          div(class = "field-label", "Type"),
-          div(class = "field-value", entity$type %||% "—")),
-        div(class = "field-row",
-          div(class = "field-label", "System"),
-          div(class = "field-value", entity$system %||% "—"))
-      )
-    }
+          div(class = "field-label", "Arabic"),
+          div(class = "field-value arabic-text", entity$title_arabic))
+      },
+      div(class = "field-row",
+        div(class = "field-label", "Author"),
+        div(class = "field-value", entity$author_name %||% "—")),
+      div(class = "field-row",
+        div(class = "field-label", "Type"),
+        div(class = "field-value", entity$type %||% "—")),
+      div(class = "field-row",
+        div(class = "field-label", "System"),
+        div(class = "field-value", entity$system %||% "—"))
+    )
   })
 
   # Existing citations display
@@ -742,15 +703,9 @@ server <- function(input, output, session) {
     req(entity)
     rv$citation_refresh  # depend on refresh counter
 
-    if (input$mode == "persons") {
-      citations <- dbGetQuery(db_con,
-        "SELECT * FROM bibliographic_citations WHERE author_id = ? ORDER BY created_at DESC",
-        params = list(as.integer(entity$author_id)))
-    } else {
-      citations <- dbGetQuery(db_con,
-        "SELECT * FROM bibliographic_citations WHERE work_id = ? ORDER BY created_at DESC",
-        params = list(entity$work_id))
-    }
+    citations <- dbGetQuery(db_con,
+      "SELECT * FROM bibliographic_citations WHERE work_id = ? ORDER BY created_at DESC",
+      params = list(entity$work_id))
 
     if (nrow(citations) == 0) {
       return(p(em("No citations added yet for this entity.")))
@@ -959,7 +914,7 @@ server <- function(input, output, session) {
     entity <- current_entity()
     req(entity, rv$parsed_sequence)
 
-    work_id <- if (input$mode == "works") entity$work_id else NA
+    work_id <- entity$work_id
     author_id <- entity$author_id
 
     seq <- rv$parsed_sequence
@@ -972,6 +927,33 @@ server <- function(input, output, session) {
 
     saved <- 0
     for (ref in all_refs) {
+      # Expand monograph_equality editions into separate saves
+      if (!is.null(ref$editions) && length(ref$editions) > 1) {
+        for (ed in ref$editions) {
+          ed$author <- ed$author %||% ref$author
+          ed$title <- ed$title %||% ref$title
+          ed$raw <- ref$raw
+          tryCatch({
+            save_citation(
+              db_con,
+              work_id = work_id,
+              author_id = author_id,
+              original_text = ref$raw %||% trimws(input$plain_text_input),
+              parsed = ed,
+              citation_form = "long",
+              citation_type = "edition",
+              link_type = input$link_type,
+              source_type = "plain_text",
+              comment = input$citation_comment
+            )
+            saved <- saved + 1
+          }, error = function(e) {
+            showNotification(paste("Error saving edition:", e$message), type = "error")
+          })
+        }
+        next
+      }
+
       # Determine form from ref type
       citation_form <- if (grepl("^short|^secondary|^serial", ref$type %||% "")) {
         "short"
@@ -1048,8 +1030,8 @@ server <- function(input, output, session) {
   observeEvent(input$add_bib_refs, {
     entity <- current_entity()
     req(entity, rv$bib_entries)
-    work_id <- if (input$mode == "works") entity$work_id else NA
-    author_id <- if (input$mode == "persons") entity$author_id else entity$author_id
+    work_id <- entity$work_id
+    author_id <- entity$author_id
 
     added <- 0
     for (i in seq_along(rv$bib_entries)) {
@@ -1130,8 +1112,8 @@ server <- function(input, output, session) {
   observeEvent(input$add_ris_refs, {
     entity <- current_entity()
     req(entity, rv$ris_entries)
-    work_id <- if (input$mode == "works") entity$work_id else NA
-    author_id <- if (input$mode == "persons") entity$author_id else entity$author_id
+    work_id <- entity$work_id
+    author_id <- entity$author_id
 
     added <- 0
     for (i in seq_along(rv$ris_entries)) {
@@ -1161,8 +1143,8 @@ server <- function(input, output, session) {
   observeEvent(input$add_manual_ref, {
     entity <- current_entity()
     req(entity)
-    work_id <- if (input$mode == "works") entity$work_id else NA
-    author_id <- if (input$mode == "persons") entity$author_id else entity$author_id
+    work_id <- entity$work_id
+    author_id <- entity$author_id
 
     raw_text <- paste(
       input$manual_author, input$manual_title,
