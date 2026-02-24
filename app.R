@@ -1456,6 +1456,20 @@ ui <- fluidPage(
       /* Citation link styling */
       .citation-link { color: inherit; text-decoration: none; }
       .citation-link:hover { text-decoration: underline; color: #007bff; cursor: pointer; }
+
+      /* Copy buttons in citation modals */
+      .copy-btn {
+        background: none; border: 1px solid #ccc; border-radius: 4px;
+        padding: 1px 6px; cursor: pointer; font-size: 0.8em; color: #666;
+        margin-left: 6px; vertical-align: middle; transition: all 0.2s;
+      }
+      .copy-btn:hover { background: #e9ecef; border-color: #999; color: #333; }
+      .copy-section-btn {
+        background: none; border: 1px solid #ccc; border-radius: 4px;
+        padding: 2px 10px; cursor: pointer; font-size: 0.75em; color: #666;
+        margin-left: 10px; vertical-align: middle; transition: all 0.2s;
+      }
+      .copy-section-btn:hover { background: #e9ecef; border-color: #999; color: #333; }
       .citation-indicator { font-size: 0.85em; margin-left: 4px; color: #6c757d; cursor: help; }
 
       .status-badge {
@@ -1600,12 +1614,21 @@ ui <- fluidPage(
           var rect = e.target.getBoundingClientRect();
           var left = rect.left + rect.width / 2;
           var top = rect.top - 10;
-          // Clamp to viewport
           left = Math.max(180, Math.min(left, window.innerWidth - 180));
           e.target.style.setProperty('--tt-left', left + 'px');
           e.target.style.setProperty('--tt-top', top + 'px');
         }
       });
+
+      // Clipboard helper for citation copy buttons
+      function copyCitationText(text, btn) {
+        navigator.clipboard.writeText(text).then(function() {
+          var orig = btn.innerHTML;
+          btn.innerHTML = '\\u2713';
+          btn.style.color = '#28a745';
+          setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 1200);
+        });
+      }
     "))
   ),
 
@@ -5776,7 +5799,16 @@ server <- function(input, output, session) {
           FALSE
         }, logical(1))
 
-        # Build citation card with color-coded border
+        # JS-safe string escaper
+        js_escape <- function(s) {
+          s <- gsub("\\\\", "\\\\\\\\", s)
+          s <- gsub("'", "\\\\'", s)
+          s <- gsub("\n", "\\\\n", s)
+          s <- gsub("\r", "", s)
+          s
+        }
+
+        # Build citation card with color-coded border and per-line copy
         build_citation_card <- function(cit, border_color) {
           link_badge <- switch(cit$link_type %||% "reference",
             "reference" = span(style = "background:#007bff;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "reference"),
@@ -5790,9 +5822,11 @@ server <- function(input, output, session) {
           } else {
             span(style = "background:#ffc107;color:black;padding:2px 8px;border-radius:10px;font-size:0.8em;", "short")
           }
+          copy_text <- js_escape(cit$original_text)
           digital_url <- lookup_digital_url(con, cit$parsed_title, cit$page_cited, cit$entry_number)
           div(style = paste0("background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid ", border_color, ";"),
-            div(form_badge, " ", link_badge),
+            div(form_badge, " ", link_badge,
+                HTML(paste0('<button class="copy-btn" onclick="copyCitationText(\'', copy_text, '\', this)" title="Copy this citation">\u2398</button>'))),
             p(style = "margin-top:8px;", htmltools::htmlEscape(cit$original_text)),
             if (!is.na(cit$volume_cited) || !is.na(cit$page_cited)) {
               p(style = "color:#666;font-size:0.9em;",
@@ -5809,26 +5843,30 @@ server <- function(input, output, session) {
           )
         }
 
-        # Build primary and secondary sections
+        # Build primary and secondary sections with copy-section buttons
         primary_idx <- which(is_primary)
         secondary_idx <- which(!is_primary)
 
         sections <- tagList()
         if (length(primary_idx) > 0) {
           primary_cards <- lapply(primary_idx, function(i) build_citation_card(citations[i, ], "#0072B2"))
+          primary_text <- js_escape(paste(citations$original_text[primary_idx], collapse = "\n\n"))
           sections <- tagList(sections,
             h5(style = "color:#0072B2;margin-top:8px;", icon("book"), " Primary Sources",
                span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
-                    paste0("(", length(primary_idx), ")"))),
+                    paste0("(", length(primary_idx), ")")),
+               HTML(paste0('<button class="copy-section-btn" onclick="copyCitationText(\'', primary_text, '\', this)" title="Copy all primary citations">Copy Section</button>'))),
             do.call(tagList, primary_cards)
           )
         }
         if (length(secondary_idx) > 0) {
           secondary_cards <- lapply(secondary_idx, function(i) build_citation_card(citations[i, ], "#E69F00"))
+          secondary_text <- js_escape(paste(citations$original_text[secondary_idx], collapse = "\n\n"))
           sections <- tagList(sections,
             h5(style = "color:#E69F00;margin-top:16px;", icon("flask"), " Secondary Sources",
                span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
-                    paste0("(", length(secondary_idx), ")"))),
+                    paste0("(", length(secondary_idx), ")")),
+               HTML(paste0('<button class="copy-section-btn" onclick="copyCitationText(\'', secondary_text, '\', this)" title="Copy all secondary citations">Copy Section</button>'))),
             do.call(tagList, secondary_cards)
           )
         }
@@ -5968,6 +6006,15 @@ server <- function(input, output, session) {
         # Store for export
         rv$modal_citations <- citations
 
+        # JS-safe string escaper
+        js_escape <- function(s) {
+          s <- gsub("\\\\", "\\\\\\\\", s)
+          s <- gsub("'", "\\\\'", s)
+          s <- gsub("\n", "\\\\n", s)
+          s <- gsub("\r", "", s)
+          s
+        }
+
         # Classify primary/secondary
         # Schema abbreviations are primary; unrecognized full titles (long names, likely editions) also primary
         all_schema_abbrevs <- if (!is.null(WORK_SCHEMAS)) WORK_SCHEMAS$abbrev else PRIMARY_ABBREVS
@@ -6073,8 +6120,13 @@ server <- function(input, output, session) {
             )
           }
 
+          # Copyable text for this title group
+          group_texts <- unique(rows$original_text[!is.na(rows$original_text)])
+          group_copy <- js_escape(paste(group_texts, collapse = "\n"))
+
           div(style = paste0("background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid ", border_color, ";"),
-            div(span(style = "font-weight:600;font-size:1.05em;", HTML(paste0(author_label, htmltools::htmlEscape(title))))),
+            div(span(style = "font-weight:600;font-size:1.05em;", HTML(paste0(author_label, htmltools::htmlEscape(title)))),
+                HTML(paste0('<button class="copy-btn" onclick="copyCitationText(\'', group_copy, '\', this)" title="Copy this citation">\u2398</button>'))),
             ref_display
           )
         }
@@ -6087,10 +6139,12 @@ server <- function(input, output, session) {
             rows <- citations[!is.na(citations$parsed_title) & citations$parsed_title == tt, , drop = FALSE]
             build_title_group(tt, rows, "#0072B2")
           })
+          primary_all_text <- js_escape(paste(unique(citations$original_text[is_primary & !is.na(citations$original_text)]), collapse = "\n\n"))
           sections <- tagList(sections,
             h5(style = "color:#0072B2;margin-top:8px;", icon("book"), " Primary Sources",
                span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
-                    paste0("(", length(primary_titles), " works)"))),
+                    paste0("(", length(primary_titles), " works)")),
+               HTML(paste0('<button class="copy-section-btn" onclick="copyCitationText(\'', primary_all_text, '\', this)" title="Copy all primary citations">Copy Section</button>'))),
             do.call(tagList, primary_cards)
           )
         }
@@ -6100,10 +6154,12 @@ server <- function(input, output, session) {
             rows <- citations[!is.na(citations$parsed_title) & citations$parsed_title == tt, , drop = FALSE]
             build_title_group(tt, rows, "#E69F00")
           })
+          secondary_all_text <- js_escape(paste(unique(citations$original_text[!is_primary & !is.na(citations$original_text)]), collapse = "\n\n"))
           sections <- tagList(sections,
             h5(style = "color:#E69F00;margin-top:16px;", icon("flask"), " Secondary Sources",
                span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
-                    paste0("(", length(secondary_titles), " works)"))),
+                    paste0("(", length(secondary_titles), " works)")),
+               HTML(paste0('<button class="copy-section-btn" onclick="copyCitationText(\'', secondary_all_text, '\', this)" title="Copy all secondary citations">Copy Section</button>'))),
             do.call(tagList, secondary_cards)
           )
         }
