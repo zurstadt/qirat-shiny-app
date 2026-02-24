@@ -1470,7 +1470,7 @@ ui <- fluidPage(
         margin-left: 10px; vertical-align: middle; transition: all 0.2s;
       }
       .copy-section-btn:hover { background: #e9ecef; border-color: #999; color: #333; }
-      .citation-indicator { font-size: 0.85em; margin-left: 4px; color: #6c757d; cursor: help; }
+      /* citation-indicator removed — click on title/author name to view citations */
 
       .status-badge {
         display: inline-block;
@@ -2550,11 +2550,7 @@ server <- function(input, output, session) {
         reuse_symbol = create_text_reuse_symbol(text_reuse, reused_title, reused_author,
                                                 commentary_titles, commentary_types, commentary_authors),
         # Citation indicator for works
-        cite_indicator = if (!is.null(citation_count) && !is.na(citation_count) && citation_count > 0) {
-          sprintf('<span class="citation-indicator" title="%d citation(s)">&#x1F4D6;</span>', citation_count)
-        } else {
-          ""
-        },
+        cite_indicator = "",
         # Clickable title with citation indicator (escaped for XSS safety)
         Title = paste0(
           '<a href="#" class="citation-link" onclick="Shiny.setInputValue(\'clicked_work\', \'',
@@ -2569,11 +2565,7 @@ server <- function(input, output, session) {
       ungroup() %>%
       mutate(
         # Citation indicator for authors
-        author_cite_indicator = ifelse(
-          !is.na(author_citation_count) & !is.null(author_citation_count) & author_citation_count > 0,
-          sprintf('<span class="citation-indicator" title="%d citation(s)">&#x1F4D6;</span>', author_citation_count),
-          ""
-        ),
+        author_cite_indicator = "",
         # Clickable author name with citation indicator (escaped for XSS safety)
         Author = paste0(
           '<a href="#" class="citation-link" onclick="Shiny.setInputValue(\'clicked_author\', ',
@@ -2623,6 +2615,8 @@ server <- function(input, output, session) {
     datatable(
       display_df,
       escape = FALSE,  # Allow HTML
+      caption = htmltools::tags$caption(style = "caption-side:bottom;text-align:left;font-size:0.85em;color:#888;padding-top:4px;",
+        "Click on a title or author name to view citations and details."),
       options = list(
         pageLength = 10,
         scrollX = TRUE,
@@ -5808,64 +5802,134 @@ server <- function(input, output, session) {
           s
         }
 
-        # Build citation card with color-coded border and per-line copy
-        build_citation_card <- function(cit, border_color) {
-          link_badge <- switch(cit$link_type %||% "reference",
-            "reference" = span(style = "background:#007bff;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "reference"),
-            "edition" = span(style = "background:#17a2b8;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "edition"),
-            "study" = span(style = "background:#6f42c1;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "study"),
-            "encyclopedia" = span(style = "background:#fd7e14;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "encyclopedia"),
-            span(style = "background:#6c757d;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", cit$link_type)
+        # Group citations by parsed_title (same approach as author modal)
+        titles <- unique(citations$parsed_title[!is.na(citations$parsed_title)])
+        primary_titles <- titles[vapply(titles, function(tt) {
+          any(is_primary[!is.na(citations$parsed_title) & citations$parsed_title == tt])
+        }, logical(1))]
+        secondary_titles <- setdiff(titles, primary_titles)
+
+        # Build a grouped card for one title (shared logic)
+        build_work_title_group <- function(title, rows, border_color) {
+          author <- rows$parsed_author[1]
+          author_label <- if (!is.na(author) && nchar(author) > 0) paste0(htmltools::htmlEscape(author), ", ") else ""
+
+          # Deduplicate rows with identical volume + page
+          dedup_key <- paste0(
+            ifelse(is.na(rows$volume_cited), "", rows$volume_cited), "|",
+            ifelse(is.na(rows$page_cited), "", rows$page_cited)
           )
-          form_badge <- if (cit$citation_form == "long") {
-            span(style = "background:#28a745;color:white;padding:2px 8px;border-radius:10px;font-size:0.8em;", "long")
-          } else {
-            span(style = "background:#ffc107;color:black;padding:2px 8px;border-radius:10px;font-size:0.8em;", "short")
+          keep_idx <- !duplicated(dedup_key)
+          for (dk in unique(dedup_key[duplicated(dedup_key)])) {
+            dup_rows <- which(dedup_key == dk)
+            has_detail <- vapply(dup_rows, function(r) {
+              (!is.na(rows$entry_number[r]) && nchar(rows$entry_number[r]) > 0) +
+              (!is.na(rows$section[r]) && nchar(rows$section[r]) > 0) +
+              (!is.na(rows$notes[r]) && nchar(rows$notes[r]) > 0)
+            }, integer(1))
+            best <- dup_rows[which.max(has_detail)]
+            keep_idx[dup_rows] <- FALSE
+            keep_idx[best] <- TRUE
           }
-          copy_text <- js_escape(cit$original_text)
-          digital_url <- lookup_digital_url(con, cit$parsed_title, cit$page_cited, cit$entry_number)
-          div(style = paste0("background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid ", border_color, ";"),
-            div(form_badge, " ", link_badge,
-                HTML(paste0('<button class="copy-btn" onclick="copyCitationText(\'', copy_text, '\', this)" title="Copy this citation">\u2398</button>'))),
-            p(style = "margin-top:8px;", htmltools::htmlEscape(cit$original_text)),
-            if (!is.na(cit$volume_cited) || !is.na(cit$page_cited)) {
-              p(style = "color:#666;font-size:0.9em;",
-                if (!is.na(cit$volume_cited)) paste0("Vol. ", htmltools::htmlEscape(cit$volume_cited)) else "",
-                if (!is.na(cit$page_cited)) paste0(", pp. ", htmltools::htmlEscape(cit$page_cited)) else ""
-              )
-            },
-            if (!is.null(digital_url)) {
-              a(href = digital_url, target = "_blank", rel = "noopener noreferrer",
-                style = "display:inline-block;margin-top:4px;font-size:0.85em;color:#17a2b8;text-decoration:none;",
-                "\u2197 View digital edition"
-              )
+          rows <- rows[keep_idx, , drop = FALSE]
+
+          # Build page reference lines
+          page_lines <- lapply(seq_len(nrow(rows)), function(j) {
+            row <- rows[j, ]
+            parts <- c()
+            if (!is.na(row$volume_cited) && nchar(row$volume_cited) > 0) parts <- c(parts, paste0(row$volume_cited, ":"))
+            if (!is.na(row$page_cited) && nchar(row$page_cited) > 0) parts <- c(parts, htmltools::htmlEscape(row$page_cited))
+            ref <- paste0(parts, collapse = "")
+            if (!is.na(row$entry_number) && nchar(row$entry_number) > 0) ref <- paste0(ref, " \u2116", htmltools::htmlEscape(row$entry_number))
+            if (!is.na(row$section) && nchar(row$section) > 0) ref <- paste0(ref, " (", htmltools::htmlEscape(row$section), ")")
+
+            # GdQ/GAL edition pages
+            edition_note <- NULL
+            if (!is.na(row$page_german) && nchar(row$page_german) > 0 &&
+                !is.na(row$page_english) && nchar(row$page_english) > 0) {
+              edition_note <- span(style = "color:#888;font-size:0.85em;margin-left:6px;",
+                paste0("[Ger. p. ", htmltools::htmlEscape(row$page_german),
+                       " / Eng. p. ", htmltools::htmlEscape(row$page_english), "]"))
+            } else if (!is.na(row$page_german) && nchar(row$page_german) > 0) {
+              edition_note <- span(style = "color:#888;font-size:0.85em;margin-left:6px;",
+                paste0("[Ger. p. ", htmltools::htmlEscape(row$page_german), "]"))
+            } else if (!is.na(row$page_english) && nchar(row$page_english) > 0) {
+              edition_note <- span(style = "color:#888;font-size:0.85em;margin-left:6px;",
+                paste0("[Eng. p. ", htmltools::htmlEscape(row$page_english), "]"))
             }
+
+            notes_span <- if (!is.na(row$notes) && nchar(row$notes) > 0) {
+              span(style = "color:#888;font-size:0.85em;font-style:italic;margin-left:6px;",
+                   paste0("(", htmltools::htmlEscape(row$notes), ")"))
+            }
+
+            digital_url <- lookup_digital_url(con, row$parsed_title, row$page_cited, row$entry_number)
+            link_span <- if (!is.null(digital_url)) {
+              a(href = digital_url, target = "_blank", rel = "noopener noreferrer",
+                style = "font-size:0.85em;color:#17a2b8;text-decoration:none;margin-left:4px;",
+                "\u2197")
+            }
+
+            tagList(span(HTML(ref)), edition_note, notes_span, link_span)
+          })
+
+          # For edition entries with no page refs, show truncated original_text
+          has_any_ref <- any(vapply(seq_len(nrow(rows)), function(j) {
+            !is.na(rows$page_cited[j]) && nchar(rows$page_cited[j]) > 0
+          }, logical(1)))
+
+          if (!has_any_ref && nrow(rows) > 0) {
+            ref_display <- div(style = "margin-top:4px;color:#444;font-size:0.9em;",
+              p(style = "margin:0;", htmltools::htmlEscape(
+                substr(rows$original_text[1], 1, 200)
+              ), if (nchar(rows$original_text[1]) > 200) "...")
+            )
+          } else if (length(page_lines) == 1) {
+            ref_display <- div(style = "margin-top:4px;color:#444;", page_lines[[1]])
+          } else {
+            ref_display <- tags$ul(style = "margin-top:4px;margin-bottom:0;padding-left:20px;color:#444;",
+              lapply(page_lines, function(pl) tags$li(style = "margin-bottom:2px;", pl))
+            )
+          }
+
+          # Copyable text for this group
+          group_texts <- unique(rows$original_text[!is.na(rows$original_text)])
+          group_copy <- js_escape(paste(group_texts, collapse = "\n"))
+
+          div(style = paste0("background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:10px;border-left:4px solid ", border_color, ";"),
+            div(span(style = "font-weight:600;font-size:1.05em;", HTML(paste0(author_label, htmltools::htmlEscape(title)))),
+                HTML(paste0('<button class="copy-btn" onclick="copyCitationText(\'', group_copy, '\', this)" title="Copy this citation">\u2398</button>'))),
+            ref_display
           )
         }
 
         # Build primary and secondary sections with copy-section buttons
-        primary_idx <- which(is_primary)
-        secondary_idx <- which(!is_primary)
-
         sections <- tagList()
-        if (length(primary_idx) > 0) {
-          primary_cards <- lapply(primary_idx, function(i) build_citation_card(citations[i, ], "#0072B2"))
-          primary_text <- js_escape(paste(citations$original_text[primary_idx], collapse = "\n\n"))
+
+        if (length(primary_titles) > 0) {
+          primary_cards <- lapply(primary_titles, function(tt) {
+            rows <- citations[!is.na(citations$parsed_title) & citations$parsed_title == tt, , drop = FALSE]
+            build_work_title_group(tt, rows, "#0072B2")
+          })
+          primary_text <- js_escape(paste(unique(citations$original_text[is_primary & !is.na(citations$original_text)]), collapse = "\n\n"))
           sections <- tagList(sections,
-            h5(style = "color:#0072B2;margin-top:8px;", icon("book"), " Primary Sources",
+            h5(style = "color:#0072B2;margin-top:8px;", "Primary Sources",
                span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
-                    paste0("(", length(primary_idx), ")")),
+                    paste0("(", length(primary_titles), " works)")),
                HTML(paste0('<button class="copy-section-btn" onclick="copyCitationText(\'', primary_text, '\', this)" title="Copy all primary citations">Copy Section</button>'))),
             do.call(tagList, primary_cards)
           )
         }
-        if (length(secondary_idx) > 0) {
-          secondary_cards <- lapply(secondary_idx, function(i) build_citation_card(citations[i, ], "#E69F00"))
-          secondary_text <- js_escape(paste(citations$original_text[secondary_idx], collapse = "\n\n"))
+        if (length(secondary_titles) > 0) {
+          secondary_cards <- lapply(secondary_titles, function(tt) {
+            rows <- citations[!is.na(citations$parsed_title) & citations$parsed_title == tt, , drop = FALSE]
+            build_work_title_group(tt, rows, "#E69F00")
+          })
+          secondary_text <- js_escape(paste(unique(citations$original_text[!is_primary & !is.na(citations$original_text)]), collapse = "\n\n"))
           sections <- tagList(sections,
-            h5(style = "color:#E69F00;margin-top:16px;", icon("flask"), " Secondary Sources",
+            h5(style = "color:#E69F00;margin-top:16px;", "Secondary Sources",
                span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
-                    paste0("(", length(secondary_idx), ")")),
+                    paste0("(", length(secondary_titles), " works)")),
                HTML(paste0('<button class="copy-section-btn" onclick="copyCitationText(\'', secondary_text, '\', this)" title="Copy all secondary citations">Copy Section</button>'))),
             do.call(tagList, secondary_cards)
           )
@@ -6141,7 +6205,7 @@ server <- function(input, output, session) {
           })
           primary_all_text <- js_escape(paste(unique(citations$original_text[is_primary & !is.na(citations$original_text)]), collapse = "\n\n"))
           sections <- tagList(sections,
-            h5(style = "color:#0072B2;margin-top:8px;", icon("book"), " Primary Sources",
+            h5(style = "color:#0072B2;margin-top:8px;", "Primary Sources",
                span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
                     paste0("(", length(primary_titles), " works)")),
                HTML(paste0('<button class="copy-section-btn" onclick="copyCitationText(\'', primary_all_text, '\', this)" title="Copy all primary citations">Copy Section</button>'))),
@@ -6156,7 +6220,7 @@ server <- function(input, output, session) {
           })
           secondary_all_text <- js_escape(paste(unique(citations$original_text[!is_primary & !is.na(citations$original_text)]), collapse = "\n\n"))
           sections <- tagList(sections,
-            h5(style = "color:#E69F00;margin-top:16px;", icon("flask"), " Secondary Sources",
+            h5(style = "color:#E69F00;margin-top:16px;", "Secondary Sources",
                span(style = "font-size:0.8em;font-weight:normal;color:#666;margin-left:8px;",
                     paste0("(", length(secondary_titles), " works)")),
                HTML(paste0('<button class="copy-section-btn" onclick="copyCitationText(\'', secondary_all_text, '\', this)" title="Copy all secondary citations">Copy Section</button>'))),
