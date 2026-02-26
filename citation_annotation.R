@@ -250,12 +250,12 @@ save_citation <- function(con, work_id, author_id, original_text, parsed,
     citation_type,
     parsed$author %||% parsed$article_author %||% NA,
     parsed$title %||% parsed$article_title %||% parsed$title_abbrev %||% NA,
-    parsed$editor %||% NA,
+    parsed$editor %||% parsed$book_editor %||% parsed$student_author %||% NA,
     parsed$place %||% NA,
     parsed$publisher %||% NA,
     parsed$year_gregorian %||% parsed$year_hijri %||% NA,
     parsed$volume_cited %||% parsed$volume %||% NA,
-    parsed$page_cited %||% parsed$page %||% NA,
+    parsed$page_cited %||% parsed$page %||% parsed$page_start %||% NA,
     parsed$entry_number %||% NA,
     parsed$section %||% NA,
     parsed$notes %||% NA,
@@ -906,7 +906,7 @@ server <- function(input, output, session) {
 
   output$parse_json <- renderPrint({
     req(rv$parsed_sequence)
-    str(rv$parsed_sequence, max.level = 3)
+    str(rv$parsed_sequence, max.level = 8)
   })
 
   # Save all parsed citations (main + related) as separate DB records
