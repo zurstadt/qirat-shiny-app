@@ -1784,7 +1784,7 @@ ui <- fluidPage(
                 tags$ul(
                   tags$li(strong("7 readings"), ": the system canonized by Ibn Muǧāhid (d. 324/936), encompassing seven readers"),
                   tags$li(strong("7+1 readings"), ": the seven plus Yaʿqūb al-Ḥaḍramī, an eighth reader widely recognized in Baṣra"),
-                  tags$li(strong("10+ readings"), ": ten or more reading traditions, typically the systems of Ibn al-Ǧazarī (d. 833/1429) and his predecessors")
+                  tags$li(strong("10+ readings"), ": ten or more reading traditions, such as the systems compiled by Ibn Mihrān (d. 381/991), al-Ahwāzī (d. 446/1054), and other Mašriqī authors before 653/1255")
                 )),
               tags$li(strong("Region"), " — the author's primary scholarly affiliation:",
                 tags$ul(
@@ -1817,7 +1817,9 @@ ui <- fluidPage(
             p("We want to answer: ", strong("Given a scholar's regional affiliation (and, optionally, century), ",
               "what is the probability that they wrote about each reading system?")),
             p("Formally, we want to estimate P(system = k | region, century) for each system ",
-              em("k"), " ∈ {7, 7+1, 10+}, and to know how confident we can be in those estimates."),
+              em("k"), " ∈ {7, 7+1, 10+}, and to know how confident we can be in those estimates. ",
+              "The 172 works form a contingency table of system × region × century. Our goal is to estimate the cell probabilities ",
+              "of this table while accounting for the fact that some cells are sparse (e.g., only 4 Maġribī works on 10+)."),
             hr(),
 
             # 3. Why Bayesian Methods?
@@ -1901,7 +1903,8 @@ ui <- fluidPage(
               "P(7)   = exp(−1.2) / (exp(−1.2) + exp(−2.0) + 1) = 0.301 / 1.436 = 0.210\nP(7+1) = exp(−2.0) / 1.436 = 0.094\nP(10+) = 1 / 1.436 = 0.696"),
             p("This scholar has an estimated 70% probability of writing about the 10+ system, 21% for the 7-reading system, ",
               "and 9% for 7+1. The negative log-odds for both non-reference categories reflect that, for this Mašriqī scholar, ",
-              "the 10+ system is more probable than either alternative."),
+              "the 10+ system is more probable than either alternative. This estimate is consistent with the raw bibliographic data, ",
+              "which shows that a majority of 5th-century Mašriqī works in the corpus transmit 10+ Readings."),
             hr(),
 
             # 5. Prior Distributions
@@ -1913,7 +1916,9 @@ ui <- fluidPage(
               "than 10+), with a standard deviation of 5 on the log-odds scale. A log-odds of ±5 corresponds to probabilities ",
               "near 0.007 or 0.993 — this is a very wide prior allowing any baseline probability."),
             p(strong("Effects, Normal(0, 2):"), " Centered at zero (no prior expectation about the direction of effects), ",
-              "with a standard deviation of 2. A log-odds shift of ±2 can move a probability from 0.50 to about 0.88 or 0.12 — a substantial effect."),
+              "with a standard deviation of 2. A log-odds shift of ±2 can move a probability from 0.50 to about 0.88 or 0.12 — a substantial effect. ",
+              "Given that our observed proportions range from 0.02 (Maġrib × 10+, 4 works) to 0.51 (Mašriq × 10+, 55 works), ",
+              "shifts of this magnitude are large enough to accommodate any plausible regional effect while discouraging estimates that imply near-zero or near-one probabilities."),
             p("These are ", strong("weakly informative priors"), ": they gently regularize the estimates without imposing strong beliefs. ",
               "With 172 observations, the data overwhelm the prior for most parameters. The prior matters most for sparse cells ",
               "(e.g., Maġrib × 10+ with only 4 works), where it prevents absurdly confident claims from minimal evidence."),
@@ -2051,8 +2056,8 @@ ui <- fluidPage(
               "In other words, given what we have observed, we can be 99.8% confident in the direction of this regional difference."),
 
             h4("Varying Certainty"),
-            p("Not all differences are equally certain. The 10+ system (55 vs. 4 works) yields narrow posterior uncertainty. ",
-              "The 7-reading system (38 vs. 48) yields wider uncertainty, and the 7+1 system (27 total works) the widest. ",
+            p("Not all differences are equally certain. The 10+ system (55 Mašriqī vs. 4 Maġribī works) yields narrow posterior uncertainty. ",
+              "The 7-reading system (48 Maġribī vs. 38 Mašriqī) yields wider uncertainty, and the 7+1 system (27 total works) the widest. ",
               "The Bayesian framework quantifies this automatically — more data means tighter intervals."),
 
             h4("Regularization"),
@@ -3939,7 +3944,7 @@ server <- function(input, output, session) {
           div(class = "info-box",
             p("The table below shows the posterior distributions of the model's regression coefficients:"),
             tags$ul(
-              tags$li(tags$strong("Alpha (Intercepts):"), " Baseline log-odds for each set vs. the reference (7 readings)"),
+              tags$li(tags$strong("Alpha (Intercepts):"), " Baseline log-odds for each set vs. the reference (10+ readings)"),
               tags$li(tags$strong("Beta_geo (Regional Effects):"), " How being in Mašriq changes the log-odds. Positive = Mašriq preference; negative = Maġrib preference."),
               tags$li(tags$strong("Beta_cent (Temporal Effects):"), " How each additional century changes the log-odds.")
             ),
