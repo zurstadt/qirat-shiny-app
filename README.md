@@ -4,7 +4,7 @@ Interactive analysis of Qurʾānic reading tradition (qirāʾāt) canonization p
 
 ## About
 
-This Shiny application explores the pedagogical differences between Mašriqī (Eastern) and Maġribī (Western) scholarly communities in their approaches to documenting Qurʾānic reading traditions. It combines bibliographic data, geographic visualizations, and Bayesian statistical analysis.
+This Shiny application explores the pedagogical differences between Mašriqī (Eastern) and Maġribī (Western) scholarly communities in their approaches to documenting Qurʾānic reading traditions. It combines bibliographic data, geographic visualizations, and Bayesian statistical analysis. Design and feature implementation were aided by the use of Claude Code.
 
 Research from the QurCan ERC Grant project (101054849) at Leiden University.
 
@@ -42,8 +42,8 @@ deploy/
 
 ## Citation
 
-Ireland, J.F. (2025). The Mašriqī and Maġribī Pedagogical Canons of Qurʾānic Reading Traditions.
-IQSA 2025 Annual Meeting. Leiden University.
+Farrell, Jeremy (2025). The Mašriqī and Maġribī Pedagogical Canons of Qurʾānic Reading Traditions.
+IQSA 2025 Annual Meeting, Loyola Marymount University (Los Angeles, CA, USA).
 
 ## License
 
