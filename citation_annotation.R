@@ -10,7 +10,7 @@ library(RSQLite)
 library(jsonlite)
 
 # Database path
-DB_PATH <- "data/iqsa_bibliography.db"
+source("db_config.R")
 
 # Source the refined citation parsers
 source("../shiny-app/deploy/citation_parsers.R")

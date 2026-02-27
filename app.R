@@ -20,7 +20,7 @@ library(jsonlite)
 # library(cmdstanr)  # Disabled for Posit Connect Cloud
 
 # Database path (relative to app directory for deployment)
-DB_PATH <- "data/iqsa_bibliography.db"
+source("db_config.R")
 
 # Pre-computed Bayesian results (replaces live MCMC)
 PRECOMPUTED_PATH <- "data/precomputed_bayesian_results.rds"
@@ -1202,7 +1202,7 @@ load_from_database <- function(db_path = DB_PATH) {
         GROUP_CONCAT(COALESCE(a.author_name_canonical, a.author_name), '|') as commentary_authors
       FROM works w
       LEFT JOIN authors a ON w.author_id = a.author_id
-      WHERE w.text_reuse = 1 AND w.text_reuse_source IS NOT NULL
+      WHERE w.text_reuse_source IS NOT NULL AND w.text_reuse_source <> ''
       GROUP BY text_reuse_source
     "
     commentaries_df <- dbGetQuery(con, commentaries_query)

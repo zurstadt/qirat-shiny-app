@@ -3354,7 +3354,7 @@
     "app.R": {
       "checksum": "ccc587e9daa4404b553cb725b17f6465"
     },
-    "data/iqsa_bibliography.db": {
+    "data/iqsa_deploy.db": {
       "checksum": "6ed42676541b9495b53fbf27184ab3bb"
     },
     "data/precomputed_bayesian_results.rds": {
