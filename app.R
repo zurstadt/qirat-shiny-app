@@ -103,7 +103,7 @@ theme_tufte_custom <- function(base_size = 11) {
 # These colors are used consistently throughout the project
 COLORS <- list(
   # Reading systems (sets) - colors for debugging ordering
-  system = c(
+  set = c(
     "7"   = "#E69F00",   # Orange
     "7+1" = "#009E73",   # Green
     "10+" = "#0072B2"    # Blue
@@ -477,11 +477,11 @@ parse_author_variants <- function(author_str) {
 }
 
 # Helper: Create HTML badge with color coding
-create_color_badge <- function(value, type = "system") {
+create_color_badge <- function(value, type = "set") {
   if (is.na(value) || value == "") return("")
 
   colors <- switch(type,
-    "system" = c(
+    "set" = c(
       "7"   = "#E69F00",   # Orange
       "7+1" = "#009E73",   # Green
       "10+" = "#0072B2"    # Blue
@@ -1169,7 +1169,7 @@ load_from_database <- function(db_path = DB_PATH) {
         w.title,
         w.title_arabic,
         w.type,
-        w.system,
+        w.[set],
         w.extant,
         w.author_id,
         COALESCE(a.author_name_canonical, a.author_name) as author_name,
@@ -1185,9 +1185,9 @@ load_from_database <- function(db_path = DB_PATH) {
       LEFT JOIN works rw ON w.text_reuse_source = rw.work_id
       LEFT JOIN authors ra ON rw.author_id = ra.author_id
       WHERE a.death_century IS NOT NULL
-        AND w.system IS NOT NULL
-        AND w.system != ''
-        AND w.system != 'NA'
+        AND w.[set] IS NOT NULL
+        AND w.[set] != ''
+        AND w.[set] != 'NA'
     "
 
     df <- dbGetQuery(con, query)
@@ -1251,8 +1251,8 @@ load_from_database <- function(db_path = DB_PATH) {
       df$author_citation_count <- NA
     }
 
-    # Clean up system values (e.g., "7.0" -> "7", keep "7+1" and "10+" as-is)
-    df$system <- sapply(df$system, function(x) {
+    # Clean up set values (e.g., "7.0" -> "7", keep "7+1" and "10+" as-is)
+    df$set <- sapply(df$set, function(x) {
       if (x == "7.0") "7" else x
     })
     # Parse semicolon-delimited titles to show canonical (first) element only
@@ -1324,7 +1324,7 @@ initialize_app <- function() {
   if (!is.null(df) && nrow(df) > 0) {
     clean <- process_bib_data(
       df,
-      outcome_col = "system",
+      outcome_col = "set",
       geo_col = "regionality",
       century_col = "death_century"
     )
@@ -1758,46 +1758,32 @@ ui <- fluidPage(
         value = "methodology",
         br(),
         div(class = "card",
-          div(class = "card-header", "How the Bayesian Analysis Works"),
+          div(class = "card-header", "Statistical Methods"),
           div(class = "card-body",
-            h4("A Complete Guide for the IQSA Qirāʾāt Bibliography App"),
+            h4("Bayesian Multinomial Model & Jensen-Shannon Divergence"),
             p(em("QurCan ERC Grant (No. 101054849) — Leiden University Centre for Linguistics")),
             hr(),
 
-            # Overview
-            h3("Overview"),
-            p("This app uses ", strong("Bayesian multinomial logistic regression"),
-              " to estimate the probability that a scholar from a given region wrote about a particular ",
-              "Qurʾānic reading system. The model takes as input a bibliography of works on the qirāʾāt, ",
-              "each classified by reading system (7, 7+1, or 10+) and by the author's regional affiliation ",
-              "(Mašriq or Maġrib), and produces probability estimates with full uncertainty quantification."),
-            p("This page walks through every step of the analysis, from raw data to the final probability statements."),
+            # Summary
+            p("We estimate the association between regional scholarly affiliation (Mašriq / Maġrib) and ",
+              "Qurʾānic reading system (7, 7+1, 10+) using Bayesian multinomial logistic regression with an ",
+              "optional century covariate. Regional divergence across time is quantified via Jensen-Shannon ",
+              "Divergence (JSD) computed from posterior predictive distributions. The model is fit in ",
+              strong("Stan"), " via ", strong("cmdstanr"), "; results are pre-computed and serialized as RDS ",
+              "for deployment."),
             hr(),
 
-            # 1. The Data
-            h3("1. The Data"),
-            p("The corpus consists of ", strong("172 bibliographic works"),
-              " on Qurʾānic reading traditions composed between the 4th and 7th centuries AH ",
-              "(10th–13th centuries CE). Each work is classified by:"),
-            tags$ul(
-              tags$li(strong("Reading system"), " — which pedagogical canon the work describes:",
-                tags$ul(
-                  tags$li(strong("7 readings"), ": the system canonized by Ibn Muǧāhid (d. 324/936), encompassing seven readers"),
-                  tags$li(strong("7+1 readings"), ": the seven plus Yaʿqūb al-Ḥaḍramī, an eighth reader widely recognized in Baṣra"),
-                  tags$li(strong("10+ readings"), ": ten or more reading traditions, such as the systems compiled by Ibn Mihrān (d. 381/991), al-Ahwāzī (d. 446/1054), and other Mašriqī authors before 653/1255")
-                )),
-              tags$li(strong("Region"), " — the author's primary scholarly affiliation:",
-                tags$ul(
-                  tags$li(strong("Maġrib"), ": the western Islamic world (al-Andalus, Ifrīqiyyah, Egypt)"),
-                  tags$li(strong("Mašriq"), ": the eastern Islamic world (al-Šām, Iraq, Fārs, Ǧibāl-Ṭabaristān, Ḫurāsān)")
-                )),
-              tags$li(strong("Century"), " — the author's death century (AH), used as a proxy for the period of the work's circulation")
-            ),
+            # 1. Data Structure
+            h3("1. Data Structure"),
+            p(strong("N"), " = 172 works on Qurʾānic reading traditions, 4th–7th c. AH. ",
+              strong("Outcome:"), " categorical reading system ", em("y"), " ∈ {7, 7+1, 10+}. ",
+              strong("Predictor:"), " region (geo ∈ {0 = Maġrib, 1 = Mašriq}). ",
+              strong("Covariate:"), " author's death century (continuous, mean-centered)."),
 
             h4("Observed Counts"),
             tags$table(class = "table table-bordered table-sm", style = "max-width: 500px;",
               tags$thead(tags$tr(
-                tags$th("System"), tags$th("Maġrib"), tags$th("Mašriq"), tags$th("Total")
+                tags$th("Set"), tags$th("Maġrib"), tags$th("Mašriq"), tags$th("Total")
               )),
               tags$tbody(
                 tags$tr(tags$td("7"), tags$td("48"), tags$td("38"), tags$td("86")),
@@ -1806,292 +1792,28 @@ ui <- fluidPage(
                 tags$tr(tags$td(strong("Total")), tags$td(strong("62")), tags$td(strong("110")), tags$td(strong("172")))
               )
             ),
-            p("Even at a glance, these raw numbers suggest a strong pattern: the 10+ system is overwhelmingly ",
-              "Mašriqī (55 of 59 works), while the 7-reading system is more evenly distributed with a Maġribī lean. ",
-              "But raw counts do not account for the overall imbalance between regions (110 Mašriqī vs. 62 Maġribī works) ",
-              "or quantify our uncertainty. The Bayesian model addresses both problems."),
+            p("Notable imbalance: 110 Mašriq vs. 62 Maġrib works; the Maġrib × 10+ cell contains only 4 observations. ",
+              strong("Assumption:"), " works are treated as independent observations. No author-level hierarchy is modeled; ",
+              "this is an acknowledged limitation given that some authors contribute multiple works."),
             hr(),
 
-            # 2. The Question
-            h3("2. The Question"),
-            p("We want to answer: ", strong("Given a scholar's regional affiliation (and, optionally, century), ",
-              "what is the probability that they wrote about each reading system?")),
-            p("Formally, we want to estimate P(system = k | region, century) for each system ",
-              em("k"), " ∈ {7, 7+1, 10+}, and to know how confident we can be in those estimates. ",
-              "The 172 works form a contingency table of system × region × century. Our goal is to estimate the cell probabilities ",
-              "of this table while accounting for the fact that some cells are sparse (e.g., only 4 Maġribī works on 10+)."),
-            hr(),
-
-            # 3. Why Bayesian Methods?
-            h3("3. Why Bayesian Methods?"),
-            p("A standard chi-square test could tell us whether system and region are statistically associated ",
-              "(they are: ", em("p"), " < 0.001), but it cannot tell us ", em("how much"),
-              " more likely a Mašriqī scholar is to write about the 10+ system. Bayesian inference directly computes the ",
-              strong("probability distribution"), " over plausible parameter values given the data, enabling statements like ",
-              "\"there is a 99.8% probability that P(10+ | Mašriq) > P(10+ | Maġrib)\" and ",
-              "\"the most likely value of P(10+ | Mašriq) is 0.48, with a 95% credible interval of [0.39, 0.57].\" ",
-              "These are direct answers to the research question — not statements about hypothetical repeated experiments."),
-            p("All of Bayesian inference rests on a single formula:"),
+            # 2. Model Specification
+            h3("2. Model Specification"),
+            p("Multinomial logistic regression with ", em("K"), " = 3 response categories and the ",
+              strong("10+ system"), " as the reference (η_K = 0). For each non-reference category ",
+              em("k"), " ∈ {7, 7+1}:"),
             tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
-              "posterior = (likelihood × prior) / normalizing constant"),
-            p("The ", strong("prior"), " encodes what we believe before seeing data; the ", strong("likelihood"),
-              " measures how probable the data are for each parameter value; the ", strong("posterior"),
-              " is what we believe after combining the two. Every probability statement, credible interval, ",
-              "and regional comparison in this app is extracted from the posterior."),
-            hr(),
-
-            # 4. The Model
-            h3("4. The Model"),
-            h4("Why Multinomial Logistic Regression?"),
-            p("Our outcome has three unordered categories (7, 7+1, 10+). This rules out binary logistic regression ",
-              "(two outcomes only) and ordinal regression (requires a natural ordering). Multinomial logistic regression ",
-              "estimates the probability of each category simultaneously, respecting the constraint that ",
-              "P(7) + P(7+1) + P(10+) = 1."),
-
-            h4("The Reference Category"),
-            p("With three categories summing to one, we only need to model two freely — the third is determined. ",
-              "The model uses the ", strong("10+ system"), " as the reference (baseline) and models the other two ",
-              "relative to it. This choice is arbitrary and does not affect the final probability estimates."),
-
-            h4("The Linear Predictor"),
-            p("For each non-reference category ", em("k"), " ∈ {7, 7+1}, the model computes a ",
-              strong("log-odds ratio"), " relative to the 10+ baseline:"),
+              "η_k = α_k + β_k × geo + γ_k × (century − c̄)"),
+            p("where α_k is the intercept (log-odds of system ", em("k"), " vs. 10+ at geo = 0, century = c̄), ",
+              "β_k is the regional effect, and γ_k is the century slope (included only in the century model). ",
+              "Category probabilities are obtained via the softmax link:"),
             tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
-              "η_k = α_k + β_k × region + γ_k × (century − mean_century)"),
-            p("where:"),
-            tags$ul(
-              tags$li(strong("α_k"), " (intercept) = baseline log-odds of system ", em("k"), " vs. 10+, for a Maġribī scholar in the average century"),
-              tags$li(strong("β_k"), " (regional effect) = how the log-odds change when moving from Maġrib to Mašriq"),
-              tags$li(strong("γ_k"), " (century effect) = how the log-odds change per century (century model only)")
-            ),
-            p("For the reference category (10+): η₃ = 0 by definition."),
-            p(strong("What are log-odds?"), " The log-odds (or logit) is log(p / (1−p)). It maps probabilities from the bounded range [0, 1] ",
-              "onto the entire real line (−∞, +∞), which is necessary because the linear predictor can take any value. ",
-              "A log-odds of 0 corresponds to probability 0.5; positive values mean probability > 0.5; negative values mean < 0.5."),
+              "P(y = k) = exp(η_k) / Σⱼ exp(η_j),    η_K = 0"),
+            p("The region-only model has 4 free parameters (α₁, α₂, β₁, β₂); the century model has 6 ",
+              "(adding γ₁, γ₂). The choice of reference category is arbitrary and does not affect predicted probabilities."),
 
-            h4("The Parameters: What the Model Learns"),
-            p("The abstract subscript ", em("k"), " maps onto the two non-reference reading systems:"),
-            p(strong("For the 7-reading system"), " (k = 1, comparing 7 vs. 10+):"),
-            tags$ul(
-              tags$li(strong("α₁"), " = baseline log-odds of 7 vs. 10+ for a Maġribī scholar at the average century. ",
-                "A positive α₁ means the 7-reading system starts out more probable than 10+ in the Maġrib."),
-              tags$li(strong("β₁"), " = regional effect on the 7 vs. 10+ log-odds. ",
-                "A negative β₁ means moving from Maġrib to Mašriq makes the 7-reading system ", em("less"), " probable relative to 10+."),
-              tags$li(strong("γ₁"), " = century effect on the 7 vs. 10+ log-odds (century model only). ",
-                "A negative γ₁ means the 7-reading system becomes less probable relative to 10+ in later centuries.")
-            ),
-            p(strong("For the 7+1 reading system"), " (k = 2, comparing 7+1 vs. 10+):"),
-            tags$ul(
-              tags$li(strong("α₂"), " = baseline log-odds of 7+1 vs. 10+ for a Maġribī scholar at the average century."),
-              tags$li(strong("β₂"), " = regional effect on the 7+1 vs. 10+ log-odds."),
-              tags$li(strong("γ₂"), " = century effect on the 7+1 vs. 10+ log-odds (century model only).")
-            ),
-            p(strong("The 10+ system"), " has no parameters of its own — it is the baseline against which the other two are measured."),
-            p("This gives us ", strong("4 parameters"), " in the simple (region-only) model: α₁, α₂, β₁, β₂. ",
-              "In the century model, we add γ₁ and γ₂ for ", strong("6 parameters"), " total. ",
-              "We refer to the complete set as ", strong("θ"), " (theta). The entire goal of the Bayesian analysis is to ",
-              "estimate the posterior distribution over θ — to determine which combinations of these values are consistent with the observed data."),
-
-            h4("The Softmax Transformation"),
-            p("The softmax converts the log-odds values back into probabilities that automatically sum to one:"),
-            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
-              "P(system = k) = exp(η_k) / [exp(η₁) + exp(η₂) + exp(η₃)]\n\nSince η₃ = 0, exp(η₃) = 1, so:\n\nP(7)   = exp(η₁) / [exp(η₁) + exp(η₂) + 1]\nP(7+1) = exp(η₂) / [exp(η₁) + exp(η₂) + 1]\nP(10+) = 1 / [exp(η₁) + exp(η₂) + 1]"),
-
-            h4("A Worked Example"),
-            p("Suppose for a Mašriqī scholar in the 5th century, the model estimates η₁ (7 vs. 10+) = −1.2 and η₂ (7+1 vs. 10+) = −2.0. Then:"),
-            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
-              "P(7)   = exp(−1.2) / (exp(−1.2) + exp(−2.0) + 1) = 0.301 / 1.436 = 0.210\nP(7+1) = exp(−2.0) / 1.436 = 0.094\nP(10+) = 1 / 1.436 = 0.696"),
-            p("This scholar has an estimated 70% probability of writing about the 10+ system, 21% for the 7-reading system, ",
-              "and 9% for 7+1. The negative log-odds for both non-reference categories reflect that, for this Mašriqī scholar, ",
-              "the 10+ system is more probable than either alternative. This estimate is consistent with the raw bibliographic data, ",
-              "which shows that a majority of 5th-century Mašriqī works in the corpus transmit 10+ Readings."),
-            hr(),
-
-            # 5. Prior Distributions
-            h3("5. Prior Distributions"),
-            p("Before seeing any data, we specify what we believe about the parameters — the ", strong("prior distributions"), ":"),
-            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
-              "α₁, α₂ ~ Normal(0, 5)    intercepts (7 vs. 10+ and 7+1 vs. 10+)\nβ₁, β₂ ~ Normal(0, 2)    regional effects\nγ₁, γ₂ ~ Normal(0, 2)    century effects (century model only)"),
-            p(strong("Intercepts, Normal(0, 5):"), " Centered at zero (no prior expectation that the 7 or 7+1 system is more or less common ",
-              "than 10+), with a standard deviation of 5 on the log-odds scale. A log-odds of ±5 corresponds to probabilities ",
-              "near 0.007 or 0.993 — this is a very wide prior allowing any baseline probability."),
-            p(strong("Effects, Normal(0, 2):"), " Centered at zero (no prior expectation about the direction of effects), ",
-              "with a standard deviation of 2. A log-odds shift of ±2 can move a probability from 0.50 to about 0.88 or 0.12 — a substantial effect. ",
-              "Given that our observed proportions range from 0.02 (Maġrib × 10+, 4 works) to 0.51 (Mašriq × 10+, 55 works), ",
-              "shifts of this magnitude are large enough to accommodate any plausible regional effect while discouraging estimates that imply near-zero or near-one probabilities."),
-            p("These are ", strong("weakly informative priors"), ": they gently regularize the estimates without imposing strong beliefs. ",
-              "With 172 observations, the data overwhelm the prior for most parameters. The prior matters most for sparse cells ",
-              "(e.g., Maġrib × 10+ with only 4 works), where it prevents absurdly confident claims from minimal evidence."),
-            hr(),
-
-            # 6. The Likelihood
-            h3("6. The Likelihood"),
-            p("The likelihood measures how probable the observed data are for each possible set of parameter values — ",
-              "it is the bridge between the abstract model and the concrete data. For work ", em("i"),
-              ", observed to describe system ", em("y_i"), ", the likelihood is the predicted probability of the system actually observed:"),
-            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
-              "L_i(θ) = P(y_i | θ, region_i, century_i)"),
-            p("If work ", em("i"), " describes the 10+ system and the model predicts P(10+) = 0.70, then L_i = 0.70. ",
-              "If instead the model predicted P(10+) = 0.10 for this work, L_i would be only 0.10 — the model would be penalized ",
-              "for assigning low probability to what was actually observed. Assuming independence across works, the total likelihood is the product over all 172 observations:"),
-            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
-              "L(θ) = ∏ᵢ P(y_i | θ, region_i, century_i)"),
-            p("In practice, we work with the ", strong("log-likelihood"), " (sum of log-probabilities) to avoid numerical underflow. ",
-              "The likelihood concentrates the posterior around parameter values that are consistent with the observed data."),
-            hr(),
-
-            # 7. The Posterior Distribution
-            h3("7. The Posterior Distribution"),
-            p("Combining the prior and likelihood via Bayes' theorem yields the ", strong("posterior"),
-              " — a probability distribution over all plausible parameter values given our data:"),
-            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
-              "P(θ | data) ∝ L(θ) × P(θ)"),
-            p("The ∝ (\"proportional to\") means we can ignore the normalizing constant P(data), which is the same for all parameter values. ",
-              "Values of θ that were plausible a priori (high prior probability) ", em("and"), " that make the observed data probable ",
-              "(high likelihood) receive the most posterior weight. The posterior thus represents a compromise between what we expected and what we observed."),
-            p("For our model, the posterior is a continuous distribution over the 4-dimensional (or 6-dimensional) parameter space of θ. ",
-              "It has no closed-form expression — we cannot write it as a simple formula. Instead, we ", strong("sample"), " from it numerically."),
-            hr(),
-
-            # 8. HMC
-            h3("8. Hamiltonian Monte Carlo: How We Sample the Posterior"),
-            h4("The Core Idea of MCMC"),
-            p("Markov Chain Monte Carlo (MCMC) generates a sequence of parameter values — a \"chain\" — constructed so that the frequency ",
-              "with which it visits any region of parameter space is proportional to the posterior probability there. ",
-              "Collect enough samples, and you have an empirical approximation to the posterior."),
-            p("A key property: MCMC only needs ", strong("ratios"), " of posterior densities. When comparing two parameter values, ",
-              "the intractable normalizing constant P(data) appears in both the numerator and denominator and cancels out. ",
-              "This is what makes Bayesian inference computationally feasible for complex models — we never need to evaluate the integral ",
-              "that would be required to compute P(data) directly."),
-
-            h4("The Problem with Simple Approaches"),
-            p("The simplest MCMC method (the Metropolis algorithm, 1953) proposes new parameter values by adding random noise to the ",
-              "current position. It then computes the ratio of posterior density at the proposed point to the current point: if the new point is ",
-              "more probable, always accept; if less probable, accept with probability equal to the ratio (so a point half as probable is ",
-              "accepted 50% of the time). Run long enough, this produces exact posterior samples. But for models with more than a few parameters, ",
-              "it faces a fundamental tension: small random steps are almost always accepted but barely explore the posterior, while large ",
-              "random steps would cover ground but almost always land in low-probability regions and get rejected. In high dimensions, the volume ",
-              "of \"wrong\" landing spots grows exponentially relative to \"right\" ones."),
-
-            h4("How HMC Breaks the Impasse"),
-            p("Hamiltonian Monte Carlo (HMC), named after the physicist William Rowan Hamilton (1805–1865), replaces random jumps with ",
-              strong("gradient-guided trajectories"), ". It treats the model parameters as the position of a particle in a physical system ",
-              "where the negative log-posterior is \"potential energy\" — high-probability regions are valleys, low-probability regions are peaks. ",
-              "At each step, the particle receives a random momentum (a random \"flick\"), then its trajectory is simulated using Hamilton's equations of motion."),
-            p("The crucial insight is ", strong("energy conservation"), ": Hamilton's equations guarantee that total energy (kinetic + potential) ",
-              "is conserved along the trajectory. If the particle starts in a high-probability valley with some kinetic energy, it will end up ",
-              "in another high-probability valley regardless of how far it travels — trading potential for kinetic energy and back, like a ball ",
-              "rolling between hills. Because the trajectory also follows the ", strong("gradient"), " of the log-posterior, the particle naturally ",
-              "curves along the contours of the posterior rather than shooting off into probability desert. The result: proposals that are both far ",
-              "from the current position and in high-probability regions, breaking the tension that cripples random-walk methods."),
-            p("The version used by Stan is the ", strong("No-U-Turn Sampler (NUTS)"), ", which automatically determines trajectory length by ",
-              "stopping when the particle begins to double back. The step size is tuned during warmup. A Metropolis accept/reject check at the end ",
-              "of each trajectory corrects for small numerical errors in the discrete-time simulation, guaranteeing that the samples come from ",
-              "exactly the right distribution."),
-            p("Computing the gradient at every step along the trajectory requires ", strong("automatic differentiation"),
-              " — Stan compiles the model to C++ code that evaluates both the log-posterior and its gradient simultaneously. ",
-              "This compilation step (the brief delay when fitting the model) is the price paid for HMC's efficiency gains over random-walk methods."),
-            hr(),
-
-            # 9. Sampling Configuration
-            h3("9. Sampling Configuration"),
-            tags$ul(
-              tags$li(strong("Chains"), ": 4 independent chains, each starting from a different random position"),
-              tags$li(strong("Iterations per chain"), ": 2,000 total (1,000 warmup + 1,000 sampling)"),
-              tags$li(strong("Total posterior samples"), ": 4,000 (1,000 per chain × 4 chains)")
-            ),
-            p("The ", strong("warmup phase"), " adapts the sampler's internal tuning parameters — the step size and the \"mass matrix\" ",
-              "that scales the momentum to match the posterior's shape. These warmup samples are discarded; they do not represent the posterior. ",
-              "Running ", strong("4 chains"), " from different starting points enables convergence diagnostics:"),
-            tags$ul(
-              tags$li(strong("R̂ (R-hat)"), ": compares within-chain to between-chain variance. R̂ < 1.01 indicates convergence; R̂ > 1.05 means results should not be trusted."),
-              tags$li(strong("Effective sample size (ESS)"), ": how many independent samples the chain is worth after accounting for autocorrelation. Values above 400 are adequate."),
-              tags$li(strong("Divergent transitions"), ": Stan-specific warning that the posterior surface was too steep to navigate safely, suggesting potential bias.")
-            ),
-            hr(),
-
-            # 10. From Posterior Samples to Results
-            h3("10. From Posterior Samples to Results"),
-            p("Once we have 4,000 samples, each is a complete set of values for all parameters in θ. We transform these into quantities of interest."),
-
-            h4("Predicted Probabilities"),
-            p("For each posterior sample ", em("s"), " and each region–century combination:"),
-            tags$ol(
-              tags$li("Plug the sampled parameters into the linear predictor: η_k", tags$sup("(s)"), " = α_k", tags$sup("(s)"), " + β_k", tags$sup("(s)"), " × region + γ_k", tags$sup("(s)"), " × century"),
-              tags$li("Apply the softmax to get P", tags$sup("(s)"), "(7), P", tags$sup("(s)"), "(7+1), P", tags$sup("(s)"), "(10+)")
-            ),
-            p("This gives 4,000 predicted probability vectors per region–century combination, summarized as:"),
-            tags$ul(
-              tags$li(strong("Posterior mean"), ": average across all samples — our best single estimate"),
-              tags$li(strong("95% credible interval"), ": the 2.5th and 97.5th percentiles — the range containing 95% of plausible values")
-            ),
-
-            h4("Posterior Contrasts (Regional Comparisons)"),
-            p("To compare regions, we compute the difference in predicted probability for each posterior sample:"),
-            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
-              "Δ(s) = P(s)(k | Mašriq) − P(s)(k | Maġrib)"),
-            p("From these 4,000 differences we report: ", strong("P(Δ > 0)"),
-              " (the fraction of samples favoring Mašriq — a direct probability statement), the ", strong("mean difference"),
-              ", and the ", strong("95% credible interval of the difference"),
-              ". For example, if 3,992 of 4,000 samples have P(10+ | Mašriq) > P(10+ | Maġrib), ",
-              "we report a 99.8% posterior probability of Mašriqī dominance in 10+ production."),
-
-            h4("Posterior Predictive Checks"),
-            p("To assess model adequacy, we simulate fake datasets: for each posterior sample, we use each work's actual region (and century) ",
-              "to predict a probability vector, randomly draw a system from it, and count the totals. If the observed counts fall within the ",
-              "95% range of simulated counts, the model is capturing the data-generating process adequately."),
-            hr(),
-
-            # 11. Interpreting the Results
-            h3("11. Interpreting the Results"),
-            h4("Credible Intervals"),
-            p("A ", strong("95% credible interval"), " of [0.39, 0.57] for P(10+ | Mašriq) means: given the data and the model, there is a ",
-              "95% probability the true value lies in that range. This is a direct probability statement about the parameter — ",
-              "unlike a frequentist confidence interval, which has a more complex interpretation involving hypothetical repeated experiments. ",
-              "When credible intervals for a regional comparison exclude zero, we have strong evidence of a genuine difference."),
-
-            h4("Posterior Probabilities"),
-            p("When the app reports ", strong("\"P(Mašriq > Maġrib for 10+) = 0.998,\""),
-              " this means 99.8% of posterior parameter values produce a higher 10+ probability in the Mašriq than in the Maġrib. ",
-              "In other words, given what we have observed, we can be 99.8% confident in the direction of this regional difference."),
-
-            h4("Varying Certainty"),
-            p("Not all differences are equally certain. The 10+ system (55 Mašriqī vs. 4 Maġribī works) yields narrow posterior uncertainty. ",
-              "The 7-reading system (48 Maġribī vs. 38 Mašriqī) yields wider uncertainty, and the 7+1 system (27 total works) the widest. ",
-              "The Bayesian framework quantifies this automatically — more data means tighter intervals."),
-
-            h4("Regularization"),
-            p("For sparse cells (like Maġrib × 10+ with only 4 works), the prior gently pulls extreme estimates toward the overall average. ",
-              "This ", strong("regularization"), " produces more conservative and reliable results than raw proportions, which can be misleadingly ",
-              "precise when based on few observations."),
-            hr(),
-
-            # 12. The Century Model
-            h3("12. The Century Model"),
-            p("When \"Include Century Effect\" is enabled, the model adds γ₁ and γ₂ parameters capturing temporal trends in how reading ",
-              "system preferences changed over time. The century variable is ", strong("mean-centered"),
-              " (each value minus the average century across all works) so that the intercept α_k represents log-odds at the average century ",
-              "rather than at century zero, which has no meaningful interpretation."),
-            p("The century effect γ_k captures temporal dynamics: a negative γ₁ would indicate that the 7-reading system became less dominant ",
-              "over time relative to 10+. Combined with the regional effect, this allows the model to detect patterns like the dramatic historical ",
-              "shift in which the 10+ system expanded in the Mašriq while the Maġrib remained focused on the 7-reading tradition — a divergence ",
-              "that intensified century by century across the period under study."),
-            hr(),
-
-            # 13. Technical Implementation
-            h3("13. Technical Implementation"),
-            p("The model specification, prior choices, and overall analytical workflow follow closely the approach developed by Richard McElreath in ",
-              em("Statistical Rethinking: A Bayesian Course with Examples in R and Stan"),
-              " (2nd ed., 2020), particularly his treatment of multinomial categorical models in Chapter 11 (\"God Spiked the Integers\") ",
-              "and his framework for generative modeling and posterior predictive checking throughout the book. ",
-              "McElreath's companion R package ", code("rethinking"), " — and especially his ", code("ulam()"),
-              " function, which translates R model formulae into Stan code — was instrumental in developing the initial version of this app. ",
-              "The current version uses ", strong("cmdstanr"), " (the R interface to CmdStan) directly for greater deployment flexibility, ",
-              "but the underlying Stan model preserves the structure and parameterization from the ", code("rethinking"), "-based prototype. ",
-              "McElreath's code repository (", tags$a(href = "https://github.com/rmcelreath/rethinking", target = "_blank", "github.com/rmcelreath/rethinking"),
-              ") and the accompanying lecture series were essential references throughout."),
-            p("Stan's ", code("categorical_logit"), " function handles the softmax transformation internally with numerical stability. ",
-              "Below is the Stan model for the century version (the simple model omits ", code("beta_cent"), " and the ", code("century"), " data):"),
+            h4("Stan Code (Century Model)"),
+            p("The simple model omits ", code("beta_cent"), " and the ", code("century"), " data."),
             tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 0.95em; overflow-x: auto;",
 "data {
   int<lower=1> N;                          // number of works (172)
@@ -2121,46 +1843,112 @@ model {
 }"),
             hr(),
 
-            # 14. Summary of the Pipeline
-            h3("14. Summary of the Pipeline"),
-            tags$table(class = "table table-bordered table-sm",
-              tags$thead(tags$tr(
-                tags$th("Step"), tags$th("What Happens"), tags$th("Mathematical Object")
-              )),
-              tags$tbody(
-                tags$tr(tags$td("1. Data"), tags$td("172 works classified by system, region, century"), tags$td("Observed counts")),
-                tags$tr(tags$td("2. Model"), tags$td("Multinomial logistic regression with softmax"), tags$td("P(system) = softmax(α + β×region + γ×century)")),
-                tags$tr(tags$td("3. Priors"), tags$td("Weakly informative Normal distributions"), tags$td("α ~ N(0,5), β ~ N(0,2), γ ~ N(0,2)")),
-                tags$tr(tags$td("4. Likelihood"), tags$td("Probability of observed data given parameters"), tags$td("∏ᵢ P(yᵢ | θ, regionᵢ, centuryᵢ)")),
-                tags$tr(tags$td("5. Posterior"), tags$td("Bayes' theorem combines prior and likelihood"), tags$td("P(θ | data) ∝ L(θ) × P(θ)")),
-                tags$tr(tags$td("6. Sampling"), tags$td("HMC/NUTS generates 4,000 posterior draws"), tags$td("4 chains × 1,000 post-warmup samples")),
-                tags$tr(tags$td("7. Predictions"), tags$td("Softmax applied to each posterior draw"), tags$td("4,000 probability vectors per region–century")),
-                tags$tr(tags$td("8. Contrasts"), tags$td("Differences computed sample-by-sample"), tags$td("P(system | Mašriq) − P(system | Maġrib)")),
-                tags$tr(tags$td("9. Checks"), tags$td("Simulated data compared to observed"), tags$td("Posterior predictive distributions"))
-              )
-            ),
+            # 3. Priors & Prior Predictive Checks
+            h3("3. Priors & Prior Predictive Checks"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "α_k ~ Normal(0, 5)     intercepts\nβ_k ~ Normal(0, 2)     regional effects\nγ_k ~ Normal(0, 2)     century effects"),
+            p("These are ", strong("weakly informative priors"), " following McElreath (2020, Ch. 4). On the log-odds scale, ",
+              "Normal(0, 5) spans probabilities from ~0.007 to ~0.993; Normal(0, 2) permits shifts large enough to accommodate any ",
+              "plausible regional or temporal effect while regularizing against extreme values in sparse cells ",
+              "(e.g., Maġrib × 10+ with 4 observations)."),
+            p(strong("Prior predictive simulation:"), " Drawing parameter vectors from the priors and passing them through ",
+              "the softmax yields approximately uniform distributions over category probabilities — confirming that the priors ",
+              "do not inadvertently favor any particular allocation. This follows the prior predictive checking workflow ",
+              "recommended by McElreath (2020, Ch. 4) and Gelman et al. (2013, Ch. 6) as a quality control step before ",
+              "conditioning on data."),
             hr(),
 
-            # References
-            h3("References"),
-            h4("Primary Methodological Source"),
+            # 4. Estimation & Convergence Diagnostics
+            h3("4. Estimation & Convergence Diagnostics"),
+            p("The posterior is sampled via the ", strong("No-U-Turn Sampler (NUTS)"),
+              " (Hoffman & Gelman, 2014), a variant of Hamiltonian Monte Carlo with automatic trajectory-length ",
+              "adaptation. Stan compiles the model to C++ with automatic differentiation for gradient evaluation."),
             tags$ul(
-              tags$li("McElreath, R. (2020). ", em("Statistical Rethinking: A Bayesian Course with Examples in R and Stan"),
-                " (2nd ed.). CRC Press. Companion R package and code: ",
-                tags$a(href = "https://github.com/rmcelreath/rethinking", target = "_blank", "github.com/rmcelreath/rethinking"),
-                ". Lecture series: ",
-                tags$a(href = "https://www.youtube.com/playlist?list=PLDcUM9US4XdMROZ57-OIRtIK0aOynbgZN", target = "_blank", "YouTube playlist"), ".")
+              tags$li(strong("Chains:"), " 4 independent chains from dispersed initial values"),
+              tags$li(strong("Iterations:"), " 2,000 per chain (1,000 warmup + 1,000 sampling) = 4,000 posterior draws"),
+              tags$li(strong("Convergence criteria"), " (per McElreath, 2020, Ch. 9):",
+                tags$ul(
+                  tags$li("R̂ < 1.01 for all parameters"),
+                  tags$li("ESS", tags$sub("bulk"), " > 400 and ESS", tags$sub("tail"), " > 400"),
+                  tags$li("Zero divergent transitions")
+                ))
             ),
-            h4("Additional Bayesian References"),
+            p(strong("Posterior predictive check:"), " For each posterior draw, simulated counts per region × system cell ",
+              "are compared to observed counts. Adequate fit requires observed values to fall within the 95% posterior predictive interval."),
+            hr(),
+
+            # 5. Jensen-Shannon Divergence
+            h3("5. Jensen-Shannon Divergence"),
+            p("The multinomial model yields per-category probability vectors for each region, but does not directly quantify the ",
+              em("magnitude"), " of distributional divergence between Mašriq and Maġrib across time. ",
+              "Jensen-Shannon Divergence (JSD; Lin, 1991) provides a single scalar summary in bits."),
+            p(strong("Scope:"), " JSD operates on the 3-category Set distribution alone — it does not incorporate genre, format, ",
+              "mobility, or other variables coded in this study."),
+
+            h4("Definition"),
+            p("For discrete distributions ", em("P"), " and ", em("Q"), " over ", em("K"), " categories:"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "JSD(P ‖ Q) = ½ KL(P ‖ M) + ½ KL(Q ‖ M)\n\nwhere  M = ½(P + Q)\n       KL(A ‖ B) = Σ_k  a_k log₂(a_k / b_k)\n\nwith convention 0 · log₂(0 / b) = 0"),
+            p("JSD is symmetric, bounded in [0, 1] bits (for the base-2 logarithm), and defined even when one distribution ",
+              "assigns zero probability to a category (unlike raw KL divergence)."),
+
+            h4("Model-Based JSD"),
+            p("For each posterior draw ", em("s"), " ∈ {1, …, 4000} and each century ", em("c"), ", the softmax-transformed ",
+              "probability vectors ", em("P"), tags$sub("Maġrib"), tags$sup("(s,c)"), " and ",
+              em("P"), tags$sub("Mašriq"), tags$sup("(s,c)"), " are extracted from the multinomial model. ",
+              "JSD", tags$sup("(s,c)"), " is computed for each draw; summaries report the posterior mean, CI", tags$sub("50"),
+              ", and CI", tags$sub("95"), " per century. This variant inherits full model uncertainty, including covariance between ",
+              "parameters."),
+
+            h4("Dirichlet-Smoothed JSD (Model-Free Robustness Check)"),
+            p("As a specification check independent of the multinomial model, we compute JSD from Dirichlet-smoothed empirical ",
+              "distributions. For each century × region cell, 4,000 probability vectors are drawn from:"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "P ~ Dirichlet(1 + n₁, 1 + n₂, 1 + n₃)"),
+            p("where ", em("n_k"), " are the observed counts — a conjugate update with a uniform (flat Dirichlet) prior. ",
+              "JSD is computed pairwise across draws, yielding mean, CI", tags$sub("50"), ", and CI", tags$sub("95"),
+              " per century. Agreement between the model-based and Dirichlet-smoothed JSD trajectories validates the multinomial ",
+              "specification; divergence would signal model misfit."),
+            p(strong("Implementation:"), " ", code("compute_jsd()"), " and ", code("draw_dirichlet()"), " functions in ",
+              code("scripts/extract_bayesian_results.R"), "."),
+            hr(),
+
+            # 6. Software & Reproducibility
+            h3("6. Software & Reproducibility"),
+            tags$table(class = "table table-bordered table-sm",
+              tags$thead(tags$tr(tags$th("Component"), tags$th("Package / Tool"), tags$th("Role"))),
+              tags$tbody(
+                tags$tr(tags$td("Model fitting"), tags$td(code("Stan"), " via ", code("cmdstanr")),
+                  tags$td(code("categorical_logit"), " likelihood; NUTS sampling")),
+                tags$tr(tags$td("Diagnostics"), tags$td(code("posterior")),
+                  tags$td("R̂, ESS", tags$sub("bulk"), ", ESS", tags$sub("tail"))),
+                tags$tr(tags$td("Visualization"), tags$td(code("ggplot2"), " + ", code("plotly")),
+                  tags$td("Static and interactive plots")),
+                tags$tr(tags$td("Data access"), tags$td(code("DBI"), " / ", code("RSQLite")),
+                  tags$td("SQLite database interface")),
+                tags$tr(tags$td("Application"), tags$td(code("shiny"), " / ", code("shinyjs")),
+                  tags$td("Interactive web framework"))
+              )
+            ),
+            p("Development followed McElreath (2020) ", em("Statistical Rethinking"), " (2nd ed.); the prototype was built with ",
+              code("rethinking::ulam()"), " and subsequently ported to ", code("cmdstanr"), " for deployment flexibility. ",
+              "Pre-computed posterior draws and derived quantities are serialized as RDS files, enabling deployment without ",
+              "a Stan toolchain."),
+            hr(),
+
+            # 7. References
+            h3("7. References"),
             tags$ul(
+              tags$li("Carpenter, B., et al. (2017). Stan: A Probabilistic Programming Language. ",
+                em("Journal of Statistical Software"), ", 76(1)."),
               tags$li("Gelman, A., et al. (2013). ", em("Bayesian Data Analysis"), " (3rd ed.). CRC Press."),
-              tags$li("Kruschke, J. K. (2014). ", em("Doing Bayesian Data Analysis"), " (2nd ed.). Academic Press.")
-            ),
-            h4("Computational Methods"),
-            tags$ul(
-              tags$li("Betancourt, M. (2017). \"A Conceptual Introduction to Hamiltonian Monte Carlo.\" ", em("arXiv:1701.02434"), "."),
-              tags$li("Carpenter, B., et al. (2017). \"Stan: A Probabilistic Programming Language.\" ", em("Journal of Statistical Software"), ", 76(1)."),
-              tags$li("Hoffman, M. D., & Gelman, A. (2014). \"The No-U-Turn Sampler.\" ", em("JMLR"), ", 15(1), 1593–1623.")
+              tags$li("Hoffman, M. D. & Gelman, A. (2014). The No-U-Turn Sampler: Adaptively Setting Path Lengths in Hamiltonian Monte Carlo. ",
+                em("JMLR"), ", 15, 1593–1623."),
+              tags$li("Lin, J. (1991). Divergence Measures Based on the Shannon Entropy. ",
+                em("IEEE Transactions on Information Theory"), ", 37(1), 145–151."),
+              tags$li("McElreath, R. (2020). ", em("Statistical Rethinking: A Bayesian Course with Examples in R and Stan"),
+                " (2nd ed.). CRC Press. Companion package: ",
+                tags$a(href = "https://github.com/rmcelreath/rethinking", target = "_blank", "github.com/rmcelreath/rethinking"), ".")
             )
           )
         )
@@ -2308,7 +2096,7 @@ server <- function(input, output, session) {
       HTML(paste0(
         "<strong>✓ App Initialized</strong><br/>",
         init_data$n_works, " works loaded from database<br/>",
-        "<small>system × regionality × century</small>"
+        "<small>set × regionality × century</small>"
       )),
       type = "message",
       duration = 5
@@ -2338,7 +2126,7 @@ server <- function(input, output, session) {
            paste(" Dataset loaded:", n, "works")),
       span(class = "status-badge status-success",
            icon("check-circle"),
-           " Variables: system (outcome), regionality (geographic)"),
+           " Variables: set (outcome), regionality (geographic)"),
       span(class = "status-badge status-success",
            icon("check-circle"),
            " Century effect: included")
@@ -2420,7 +2208,7 @@ server <- function(input, output, session) {
 
     # Filter by reading set (multi-select)
     if (!is.null(input$filter_system) && length(input$filter_system) > 0) {
-      df <- df %>% filter(system %in% input$filter_system)
+      df <- df %>% filter(`set` %in% input$filter_system)
     }
 
     # Filter by region (multi-select)
@@ -2581,7 +2369,7 @@ server <- function(input, output, session) {
           author_cite_indicator
         ),
         # Color badges
-        Set = sapply(system, function(x) create_color_badge(x, "system")),
+        Set = sapply(`set`, function(x) create_color_badge(x, "set")),
         # Handle multi-type works (separated by semicolon or comma)
         Type = sapply(type, function(x) {
           if (is.na(x) || x == "") return("")
@@ -2648,7 +2436,7 @@ server <- function(input, output, session) {
           author_formatted = sapply(author_name, function(x) format_camel_case(x, "author"))
         ) %>%
         select(work_id, title = title_formatted, author = author_formatted,
-               reading_set = system, type, region = regionality, death_century)
+               reading_set = `set`, type, region = regionality, death_century)
       write.csv(export_df, file, row.names = FALSE)
     }
   )
@@ -2666,7 +2454,7 @@ server <- function(input, output, session) {
           author_formatted = sapply(author_name, function(x) format_camel_case(x, "author"))
         ) %>%
         select(work_id, title = title_formatted, author = author_formatted,
-               reading_set = system, type, region = regionality, death_century)
+               reading_set = `set`, type, region = regionality, death_century)
       write(jsonlite::toJSON(export_df, pretty = TRUE), file)
     }
   )
@@ -3840,7 +3628,7 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$bayes_next, {
-    if (rv$bayes_current_card < 4) {
+    if (rv$bayes_current_card < 5) {
       rv$bayes_current_card <- rv$bayes_current_card + 1
     }
   })
@@ -3858,10 +3646,14 @@ server <- function(input, output, session) {
     rv$bayes_current_card <- 4
   })
 
+  observeEvent(input$bayes_next_from_card4, {
+    rv$bayes_current_card <- 5
+  })
+
   # Card indicator
   output$bayes_card_indicator <- renderUI({
     span(class = "card-indicator",
-      sprintf("Card %d of 4", rv$bayes_current_card)
+      sprintf("Card %d of 5", rv$bayes_current_card)
     )
   })
 
@@ -3877,7 +3669,9 @@ server <- function(input, output, session) {
       # Card 3: Predictions
       render_bayes_card_3(),
       # Card 4: Contrasts + Diagnostics
-      render_bayes_card_4()
+      render_bayes_card_4(),
+      # Card 5: Regional Divergence (JSD)
+      render_bayes_card_5()
     )
   })
 
@@ -4111,10 +3905,86 @@ server <- function(input, output, session) {
           div(class = "alert alert-warning",
             icon("exclamation-triangle"),
             " Please wait for the model to finish fitting before viewing contrasts and diagnostics.")
+        ),
+
+        div(style = "text-align: right; margin-top: 20px;",
+          actionButton("bayes_next_from_card4", "Next \u2192", class = "btn-primary")
         )
       )
     )
   }
+
+  # Card 5: Regional Divergence (JSD)
+  render_bayes_card_5 <- function() {
+    div(class = "card",
+      div(class = "card-header", "Regional Divergence (JSD)"),
+      div(class = "card-body",
+        h4("How Different Are Ma\u0121rib and Ma\u0161riq?"),
+        p("Jensen-Shannon Divergence (JSD) summarizes the overall dissimilarity between two probability distributions into a single number between 0 (identical) and 1 (maximally distinct) bits. Here we compute JSD between the regional distributions of Sets of Readings per century using two complementary approaches:"),
+        tags$ul(
+          tags$li(tags$strong("Model-based:"), " Derived from the Bayesian multinomial regression posterior. Each MCMC draw yields a JSD value, producing a full posterior distribution."),
+          tags$li(tags$strong("Dirichlet-smoothed:"), " A model-free robustness check using Dirichlet(1 + counts) posteriors directly from the raw data. Wider credible intervals where data is sparse (e.g., 7th century).")
+        ),
+
+        plotlyOutput("jsd_trajectory_plot", height = "450px"),
+        br(),
+        h5(class = "section-header-bold", "Summary Table"),
+        DT::dataTableOutput("jsd_table")
+      )
+    )
+  }
+
+  # JSD trajectory plot (plotly)
+  output$jsd_trajectory_plot <- renderPlotly({
+    req(precomputed)
+
+    jsd_combined <- rbind(precomputed$jsd_model_summary, precomputed$jsd_dir_summary)
+    jsd_combined$method <- factor(jsd_combined$method,
+                                  levels = c("Model-based", "Dirichlet-smoothed"))
+
+    method_colors <- c("Model-based" = "#0072B2", "Dirichlet-smoothed" = "#D55E00")
+
+    jsd_combined$hover_text <- sprintf(
+      "<b>%s</b><br>Century: %sth c. AH<br>Mean JSD: %.3f<br>95%% CI: [%.3f, %.3f]",
+      jsd_combined$method, jsd_combined$century,
+      jsd_combined$mean, jsd_combined$ci95_low, jsd_combined$ci95_high
+    )
+
+    p <- ggplot(jsd_combined, aes(x = century, color = method, fill = method,
+                                  text = hover_text)) +
+      geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high), alpha = 0.12, color = NA) +
+      geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high), alpha = 0.25, color = NA) +
+      geom_line(aes(y = mean), linewidth = 0.9) +
+      geom_point(aes(y = mean), size = 2.5) +
+      scale_color_manual(values = method_colors) +
+      scale_fill_manual(values = method_colors) +
+      scale_x_continuous(breaks = precomputed$centuries,
+                         labels = paste0(precomputed$centuries, "th c.")) +
+      scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
+      labs(x = "Century (AH)", y = "JSD (bits)", color = "Method", fill = "Method") +
+      theme_tufte_custom(base_size = 11)
+
+    ggplotly(p, tooltip = "text") %>%
+      plotly::layout(legend = list(x = 0.05, y = 0.95))
+  })
+
+  # JSD summary table
+  output$jsd_table <- DT::renderDataTable({
+    req(precomputed)
+
+    jsd_combined <- rbind(precomputed$jsd_model_summary, precomputed$jsd_dir_summary)
+    display_df <- data.frame(
+      Method = jsd_combined$method,
+      Century = paste0(jsd_combined$century, "th c. AH"),
+      `Mean JSD` = sprintf("%.3f", jsd_combined$mean),
+      `95% CI` = sprintf("[%.3f, %.3f]", jsd_combined$ci95_low, jsd_combined$ci95_high),
+      check.names = FALSE
+    )
+
+    DT::datatable(display_df, rownames = FALSE, options = list(
+      pageLength = 10, dom = "t", ordering = FALSE
+    ))
+  })
 
   # Interactive prediction plot (plotly version)
   output$pred_plot_interactive <- renderPlotly({
@@ -4314,7 +4184,7 @@ server <- function(input, output, session) {
     prob_east_greater <- mean(diff > 0)
 
     list(
-      system = target_system,
+      set = target_system,
       p_east = p_east,
       p_west = p_west,
       diff = diff,
@@ -4346,7 +4216,7 @@ server <- function(input, output, session) {
       div(class = "card-body",
         tags$ul(
           tags$li(tags$strong("Type:"), " Bayesian Multinomial Logistic Regression"),
-          tags$li(tags$strong("Outcome:"), " system (3 levels: 7, 7+1, 10+)"),
+          tags$li(tags$strong("Outcome:"), " set (3 levels: 7, 7+1, 10+)"),
           tags$li(tags$strong("Predictor:"), " regionality (Maġrib, Mašriq)"),
           tags$li(tags$strong("Covariate:"), " death_century (mean-centered)"),
           tags$li(tags$strong("Observations:"), nrow(df)),
@@ -4500,7 +4370,7 @@ server <- function(input, output, session) {
 
     div(class = "card",
       div(class = "card-header", style = "background-color: #17a2b8; color: white;",
-        h4(style = "margin: 0;", paste("System:", input$selected_system_card4))
+        h4(style = "margin: 0;", paste("Set:", input$selected_system_card4))
       ),
       div(class = "card-body",
         # Explanatory text
@@ -4513,7 +4383,7 @@ server <- function(input, output, session) {
           h4("Regional Contrast Results"),
           tags$ul(
             tags$li(tags$strong(sprintf("P(%s|mašriq) > P(%s|maġrib):",
-                                       contrast$system, contrast$system)),
+                                       contrast$set, contrast$set)),
                    sprintf(" %.3f", contrast$prob_east_greater)),
             tags$li(tags$strong("Mean difference (mašriq - maġrib):"),
                    sprintf(" %.3f", contrast$mean_diff)),
@@ -4522,7 +4392,7 @@ server <- function(input, output, session) {
           ),
           tags$hr(),
           p(tags$strong("Interpretation: "),
-            get_interpretation(contrast$prob_east_greater, contrast$mean_diff, contrast$system))
+            get_interpretation(contrast$prob_east_greater, contrast$mean_diff, contrast$set))
         ),
 
         # Histogram
@@ -4595,13 +4465,13 @@ server <- function(input, output, session) {
   plot_contrast_histogram <- function(contrast_result) {
     df <- data.frame(diff = contrast_result$diff)
 
-    # Get appropriate color based on system
-    hist_color <- COLORS$system[contrast_result$system]
-    if (is.na(hist_color)) hist_color <- COLORS$system["7"]
+    # Get appropriate color based on set
+    hist_color <- COLORS$set[contrast_result$set]
+    if (is.na(hist_color)) hist_color <- COLORS$set["7"]
 
     # Create base plot with Tufte principles
     p <- ggplot(df, aes(x = diff)) +
-      # Histogram colored by system
+      # Histogram colored by set
       geom_histogram(bins = 50, fill = hist_color, color = "white",
                      alpha = 0.75, linewidth = 0.25) +
       # Subtle shaded region for 95% credible interval
@@ -4615,7 +4485,7 @@ server <- function(input, output, session) {
                  linetype = "solid", color = "gray40", linewidth = 0.5) +
       geom_vline(xintercept = contrast_result$mean_diff,
                  color = "gray10", linewidth = 0.9) +
-      # CI bounds - subtle with system color
+      # CI bounds - subtle with set color
       geom_vline(xintercept = contrast_result$ci_lower,
                  linetype = "dashed", color = hist_color, linewidth = 0.6) +
       geom_vline(xintercept = contrast_result$ci_upper,
@@ -4633,7 +4503,7 @@ server <- function(input, output, session) {
       theme_tufte_custom(base_size = 11) +
       labs(
         title = sprintf("P(%s|Mašriq) − P(%s|Maġrib)",
-                       contrast_result$system, contrast_result$system),
+                       contrast_result$set, contrast_result$set),
         x = "Difference in Probability",
         y = NULL,  # Remove y-axis label for cleaner look
         caption = sprintf("Mean difference: %.3f  |  95%% CI: [%.3f, %.3f]",
@@ -4727,14 +4597,14 @@ server <- function(input, output, session) {
 
     # Fixed y-axis: 0.99 to 1.05 puts threshold (1.01) at ~1/3 up
     ggplot(df, aes(x = variable, y = rhat)) +
-      geom_point(size = 3, color = COLORS$system["7"], shape = 16) +
+      geom_point(size = 3, color = COLORS$set["7"], shape = 16) +
       geom_hline(yintercept = 1.0, linetype = "solid",
                  color = "gray60", linewidth = 0.3) +
       geom_hline(yintercept = 1.01, linetype = "dashed",
-                 color = COLORS$system["10+"], linewidth = 0.6) +
+                 color = COLORS$set["10+"], linewidth = 0.6) +
       scale_y_continuous(limits = c(0.99, 1.05), breaks = seq(0.99, 1.05, 0.01)) +
       annotate("text", x = 1, y = 1.01, label = "threshold = 1.01",
-               vjust = -0.5, hjust = 0, size = 2.5, color = COLORS$system["10+"]) +
+               vjust = -0.5, hjust = 0, size = 2.5, color = COLORS$set["10+"]) +
       labs(x = NULL, y = expression(hat(R))) +
       theme_tufte_custom(base_size = 10) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
@@ -4761,11 +4631,11 @@ server <- function(input, output, session) {
       geom_col(position = position_dodge(0.8), width = 0.7,
                color = NA, alpha = 0.85) +
       geom_hline(yintercept = 400, linetype = "dashed",
-                 color = COLORS$system["10+"], linewidth = 0.6) +
+                 color = COLORS$set["10+"], linewidth = 0.6) +
       scale_fill_manual(values = COLORS$ess, name = NULL) +
       scale_y_continuous(limits = c(0, y_max), expand = c(0, 0)) +
       annotate("text", x = 0.5, y = 400, label = "threshold = 400",
-               vjust = -0.5, size = 2.5, color = COLORS$system["10+"]) +
+               vjust = -0.5, size = 2.5, color = COLORS$set["10+"]) +
       labs(x = NULL, y = "Effective Sample Size") +
       theme_tufte_custom(base_size = 10) +
       theme(
@@ -5455,7 +5325,7 @@ server <- function(input, output, session) {
     )
 
     # Map categories to colors (orange=7, green=7+1, blue=10+)
-    category_colors <- COLORS$system[lvl]
+    category_colors <- COLORS$set[lvl]
     if (any(is.na(category_colors))) {
       category_colors <- setNames(
         c("#E69F00", "#009E73", "#0072B2")[1:length(lvl)],
@@ -5565,7 +5435,7 @@ server <- function(input, output, session) {
     spaghetti$Category <- factor(spaghetti$Category, levels = lvl)
 
     # Colors for categories (orange=7, green=7+1, blue=10+)
-    category_colors <- COLORS$system[lvl]
+    category_colors <- COLORS$set[lvl]
     # If some categories don't match, use default colors
     if (any(is.na(category_colors))) {
       category_colors <- setNames(
@@ -5614,7 +5484,7 @@ server <- function(input, output, session) {
 
     p <- ggplot(counts, aes(x = outcome, y = n, fill = outcome, text = hover_text)) +
       geom_col(color = NA, alpha = 0.85, width = 0.7) +
-      scale_fill_manual(values = COLORS$system, guide = "none") +
+      scale_fill_manual(values = COLORS$set, guide = "none") +
       scale_x_discrete(limits = c("7", "7+1", "10+")) +
       theme_tufte_custom(base_size = 11) +
       labs(title = "Reading Systems", x = NULL, y = "Count") +
@@ -5690,10 +5560,10 @@ server <- function(input, output, session) {
     if (input$toggle_arabic) {
       display_df <- rv$raw_data %>%
         select(any_of(c("work_id", "title", "title_arabic", "author_name", "author_name_arabic",
-                       "system", "type", "regionality")))
+                       "set", "type", "regionality")))
     } else {
       display_df <- rv$raw_data %>%
-        select(any_of(c("work_id", "title", "author_name", "system", "type", "regionality")))
+        select(any_of(c("work_id", "title", "author_name", "set", "type", "regionality")))
     }
 
     datatable(
