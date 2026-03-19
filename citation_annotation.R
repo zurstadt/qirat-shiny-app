@@ -13,7 +13,7 @@ library(jsonlite)
 source("db_config.R")
 
 # Source the refined citation parsers
-source("../shiny-app/deploy/citation_parsers.R")
+source("citation_parsers.R")
 
 # ============================================================================
 # RIS Export Function
@@ -548,7 +548,7 @@ server <- function(input, output, session) {
   # Load works on startup
   observe({
     rv$works <- dbGetQuery(db_con, "
-      SELECT w.work_id, w.title, w.title_arabic, w.type, w.system,
+      SELECT w.work_id, w.title, w.title_arabic, w.type, w.[set],
              w.author_id,
              COALESCE(a.author_name_canonical, a.author_name) as author_name,
              a.author_name_arabic as author_arabic, a.death_hijri,
@@ -556,7 +556,7 @@ server <- function(input, output, session) {
       FROM works w
       LEFT JOIN authors a ON w.author_id = a.author_id
       WHERE a.in_range = 'T'
-        AND w.system IS NOT NULL AND w.system != 'NA'
+        AND w.[set] IS NOT NULL AND w.[set] != 'NA'
       ORDER BY CASE WHEN a.death_hijri IS NULL THEN 1 ELSE 0 END,
                CAST(a.death_hijri AS INTEGER), w.work_id
     ")
@@ -602,7 +602,7 @@ server <- function(input, output, session) {
     }
 
     if (!is.null(filter_readings) && filter_readings != "all") {
-      reading_match <- which(rv$entities$system == filter_readings)
+      reading_match <- which(rv$entities$`set` == filter_readings)
       ids <- intersect(ids, reading_match)
     }
 
@@ -692,8 +692,8 @@ server <- function(input, output, session) {
         div(class = "field-label", "Type"),
         div(class = "field-value", entity$type %||% "—")),
       div(class = "field-row",
-        div(class = "field-label", "System"),
-        div(class = "field-value", entity$system %||% "—"))
+        div(class = "field-label", "Set"),
+        div(class = "field-value", entity$`set` %||% "—"))
     )
   })
 

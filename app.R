@@ -497,12 +497,12 @@ create_color_badge <- function(value, type = "set") {
       "Inter-regional" = "#CC79A7"
     ),
     "type" = c(
-      "commentary_compression" = "#9467bd",
-      "commentary_expansion" = "#8c564b",
-      "descriptive catalogue" = "#e377c2",
-      "didactic poem" = "#7f7f7f",
+      "compression" = "#9467bd",
+      "expansion" = "#8c564b",
+      "descriptive_catalogue" = "#e377c2",
+      "didactic_poem" = "#7f7f7f",
       "mufradah" = "#bcbd22",
-      "adaa" = "#17becf",
+      "rasm" = "#2ca02c",
       "ʾadāʾ" = "#17becf"
     ),
     "extant" = c(
@@ -1911,6 +1911,21 @@ model {
               "specification; divergence would signal model misfit."),
             p(strong("Implementation:"), " ", code("compute_jsd()"), " and ", code("draw_dirichlet()"), " functions in ",
               code("scripts/extract_bayesian_results.R"), "."),
+
+            h4("Constrained Maximum and Normalization"),
+            p("The theoretical JSD maximum of 1 bit is unattainable when both regions produce works on a shared category — ",
+              "as is the case with the Set of 7 throughout the period under study. To provide an interpretable scale, we compute ",
+              "a ", em("constrained"), " theoretical maximum for each posterior draw: the JSD that would obtain if both regions ",
+              "allocated their observed Set of 7 share exactly as predicted, but placed all remaining probability mass in ",
+              "non-overlapping categories:"),
+            tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
+              "Maġrib_max = (p7_magh, 1 - p7_magh, 0)\nMašriq_max = (p7_mash, 0, 1 - p7_mash)"),
+            p("Normalized JSD = JSD / JSD", tags$sub("max"), " expresses the observed divergence as a proportion of the ",
+              "maximum possible divergence given the shared Set of 7 baseline. A value of 100% would mean the regions are ",
+              "as different as they could possibly be, given their shared commitment to the Set of 7."),
+            p("The constrained maximum itself rises over the period (from ~0.38 to ~0.62 bits, model-based) because the ",
+              "Set of 7 shrinks as a share of total production — particularly in the Mašriq — which mechanically widens the ",
+              "ceiling for divergence."),
             hr(),
 
             # 6. Software & Reproducibility
@@ -2307,15 +2322,9 @@ server <- function(input, output, session) {
           } else {
             "Unknown"
           }
-          # Format type: "commentary_compression" → "commentary (compression)"
-          raw_type <- if (i <= length(types) && !is.na(types[i]) && types[i] != "") types[i] else "commentary"
-          # Handle underscore-separated type labels
-          if (grepl("_", raw_type)) {
-            parts <- strsplit(raw_type, "_")[[1]]
-            type_label <- paste0(parts[1], " (", paste(parts[-1], collapse = " "), ")")
-          } else {
-            type_label <- raw_type
-          }
+          # Format type label for display
+          raw_type <- if (i <= length(types) && !is.na(types[i]) && types[i] != "") types[i] else "unknown"
+          type_label <- gsub("_", " ", raw_type)
           paste0("• ", title_fmt, " (", type_label, ") by ", author_fmt)
         })
 
@@ -3925,6 +3934,8 @@ server <- function(input, output, session) {
           tags$li(tags$strong("Model-based:"), " Derived from the Bayesian multinomial regression posterior. Each MCMC draw yields a JSD value, producing a full posterior distribution."),
           tags$li(tags$strong("Dirichlet-smoothed:"), " A model-free robustness check using Dirichlet(1 + counts) posteriors directly from the raw data. Wider credible intervals where data is sparse (e.g., 7th century).")
         ),
+        p("The plot also shows the ", tags$strong("constrained theoretical maximum"), " (dashed lines): the highest JSD achievable given that both regions continue to produce Set of 7 works. ",
+          "Percentages at each point show the observed JSD as a proportion of this constrained maximum. See the Methodology tab for details."),
 
         plotlyOutput("jsd_trajectory_plot", height = "450px"),
         br(),
@@ -3936,11 +3947,22 @@ server <- function(input, output, session) {
 
   # JSD trajectory plot (plotly)
   output$jsd_trajectory_plot <- renderPlotly({
-    req(precomputed)
+    req(PRECOMPUTED)
 
-    jsd_combined <- rbind(precomputed$jsd_model_summary, precomputed$jsd_dir_summary)
+    jsd_combined <- rbind(PRECOMPUTED$jsd_model_summary, PRECOMPUTED$jsd_dir_summary)
     jsd_combined$method <- factor(jsd_combined$method,
                                   levels = c("Model-based", "Dirichlet-smoothed"))
+
+    jsd_max_combined <- rbind(PRECOMPUTED$jsd_max_model_summary, PRECOMPUTED$jsd_max_dir_summary)
+    jsd_max_combined$method <- factor(jsd_max_combined$method,
+                                      levels = c("Model-based", "Dirichlet-smoothed"))
+
+    norm_model <- PRECOMPUTED$jsd_norm_model_summary
+    norm_labels <- data.frame(
+      century = norm_model$century,
+      y = PRECOMPUTED$jsd_model_summary$mean,
+      label = sprintf("%.0f%%", norm_model$mean * 100)
+    )
 
     method_colors <- c("Model-based" = "#0072B2", "Dirichlet-smoothed" = "#D55E00")
 
@@ -3950,16 +3972,32 @@ server <- function(input, output, session) {
       jsd_combined$mean, jsd_combined$ci95_low, jsd_combined$ci95_high
     )
 
+    jsd_max_combined$hover_text <- sprintf(
+      "<b>%s (constrained max)</b><br>Century: %sth c. AH<br>Max JSD: %.3f<br>95%% CI: [%.3f, %.3f]",
+      jsd_max_combined$method, jsd_max_combined$century,
+      jsd_max_combined$mean, jsd_max_combined$ci95_low, jsd_max_combined$ci95_high
+    )
+
     p <- ggplot(jsd_combined, aes(x = century, color = method, fill = method,
                                   text = hover_text)) +
+      geom_ribbon(data = jsd_max_combined,
+                  aes(ymin = ci95_low, ymax = ci95_high),
+                  alpha = 0.06, color = NA) +
+      geom_line(data = jsd_max_combined, aes(y = mean),
+                linewidth = 0.7, linetype = "dashed") +
       geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high), alpha = 0.12, color = NA) +
       geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high), alpha = 0.25, color = NA) +
       geom_line(aes(y = mean), linewidth = 0.9) +
       geom_point(aes(y = mean), size = 2.5) +
+      geom_text(data = norm_labels,
+                aes(x = century, y = y, label = label),
+                inherit.aes = FALSE,
+                vjust = -1.5, hjust = 0.5, size = 3.0, color = "gray30",
+                fontface = "italic") +
       scale_color_manual(values = method_colors) +
       scale_fill_manual(values = method_colors) +
-      scale_x_continuous(breaks = precomputed$centuries,
-                         labels = paste0(precomputed$centuries, "th c.")) +
+      scale_x_continuous(breaks = PRECOMPUTED$centuries,
+                         labels = paste0(PRECOMPUTED$centuries, "th c.")) +
       scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
       labs(x = "Century (AH)", y = "JSD (bits)", color = "Method", fill = "Method") +
       theme_tufte_custom(base_size = 11)
@@ -3970,14 +4008,19 @@ server <- function(input, output, session) {
 
   # JSD summary table
   output$jsd_table <- DT::renderDataTable({
-    req(precomputed)
+    req(PRECOMPUTED)
 
-    jsd_combined <- rbind(precomputed$jsd_model_summary, precomputed$jsd_dir_summary)
+    jsd_combined <- rbind(PRECOMPUTED$jsd_model_summary, PRECOMPUTED$jsd_dir_summary)
+    jsd_max_combined <- rbind(PRECOMPUTED$jsd_max_model_summary, PRECOMPUTED$jsd_max_dir_summary)
+    jsd_norm_combined <- rbind(PRECOMPUTED$jsd_norm_model_summary, PRECOMPUTED$jsd_norm_dir_summary)
+
     display_df <- data.frame(
       Method = jsd_combined$method,
       Century = paste0(jsd_combined$century, "th c. AH"),
       `Mean JSD` = sprintf("%.3f", jsd_combined$mean),
       `95% CI` = sprintf("[%.3f, %.3f]", jsd_combined$ci95_low, jsd_combined$ci95_high),
+      `Constrained Max` = sprintf("%.3f", jsd_max_combined$mean),
+      `Normalized` = sprintf("%.0f%%", jsd_norm_combined$mean * 100),
       check.names = FALSE
     )
 
