@@ -30,6 +30,14 @@ PRECOMPUTED <- if (file.exists(PRECOMPUTED_PATH)) {
   NULL
 }
 
+# Pre-computed confound analysis results
+CONFOUND_PATH <- "data/precomputed_confound_results.rds"
+CONFOUND <- if (file.exists(CONFOUND_PATH)) {
+  readRDS(CONFOUND_PATH)
+} else {
+  NULL
+}
+
 # Primary/secondary citation classification from parser-work-schemas.json
 WORK_SCHEMAS <- tryCatch({
   raw <- jsonlite::fromJSON("data/parser-work-schemas.json")$schemas
@@ -2069,6 +2077,10 @@ model {
       p(
         style = "margin-top: 15px; font-size: 0.85em; color: #666;",
         "Funded by the European Research Council (ERC) under the European Union's Horizon 2020 programme (Grant 101054849)"
+      ),
+      p(
+        style = "margin-top: 10px; font-size: 0.8em; color: #888;",
+        HTML('This work is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" style="color: #888;">CC BY-NC-SA 4.0</a> license.')
       )
     )
   )
@@ -3637,7 +3649,7 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$bayes_next, {
-    if (rv$bayes_current_card < 5) {
+    if (rv$bayes_current_card < 6) {
       rv$bayes_current_card <- rv$bayes_current_card + 1
     }
   })
@@ -3659,10 +3671,14 @@ server <- function(input, output, session) {
     rv$bayes_current_card <- 5
   })
 
+  observeEvent(input$bayes_next_from_card5, {
+    rv$bayes_current_card <- 6
+  })
+
   # Card indicator
   output$bayes_card_indicator <- renderUI({
     span(class = "card-indicator",
-      sprintf("Card %d of 5", rv$bayes_current_card)
+      sprintf("Card %d of 6", rv$bayes_current_card)
     )
   })
 
@@ -3680,7 +3696,9 @@ server <- function(input, output, session) {
       # Card 4: Contrasts + Diagnostics
       render_bayes_card_4(),
       # Card 5: Regional Divergence (JSD)
-      render_bayes_card_5()
+      render_bayes_card_5(),
+      # Card 6: Confound Analysis
+      render_bayes_card_6()
     )
   })
 
@@ -3940,7 +3958,100 @@ server <- function(input, output, session) {
         plotlyOutput("jsd_trajectory_plot", height = "450px"),
         br(),
         h5(class = "section-header-bold", "Summary Table"),
-        DT::dataTableOutput("jsd_table")
+        DT::dataTableOutput("jsd_table"),
+        div(style = "text-align: right; margin-top: 20px;",
+          actionButton("bayes_next_from_card5", "Next \u2192", class = "btn-primary")
+        )
+      )
+    )
+  }
+
+  # Card 6: Confound Analysis
+  render_bayes_card_6 <- function() {
+    div(class = "card",
+      div(class = "card-header", "Confound Analysis"),
+      div(class = "card-body",
+        h4("Is the Regional Effect Robust?"),
+        p("The base model identifies region as a strong predictor of Set preference. ",
+          "Four extended models test whether this effect survives after controlling for plausible confounds:"),
+        tags$ol(
+          tags$li(tags$strong("Sub-region model:"), " Adds a varying (partial-pooling) intercept for city/province-level milieu ",
+                  "(e.g., Iraq, al-Andalus, \u0160\u0101m, Egypt). Tests whether a single sub-region (e.g., Baghdad) drives the Ma\u0161riq effect."),
+          tags$li(tags$strong("Mobility model:"), " Adds a binary predictor for inter-regional travel. ",
+                  "Tests whether mobile scholars blur the regional signal."),
+          tags$li(tags$strong("Format model:"), " Adds a categorical predictor for work genre ",
+                  "(catalogue, expansion, compression, mufradah, poem, \u02beadā\u02be). ",
+                  "Tests whether genre explains Set preference independently of region."),
+          tags$li(tags$strong("Mobility \u00d7 Century model:"), " Adds an interaction between mobility and century. ",
+                  "Tests whether the behaviour of inter-regional scholars changed over time\u2014specifically, whether later mobile scholars ",
+                  "adhered more rigidly to region-of-origin norms than their earlier counterparts.")
+        ),
+        p("Each extended model is compared to the base (Region + Century) model via:"),
+        tags$ul(
+          tags$li("LOO-CV (leave-one-out cross-validation) for predictive accuracy"),
+          tags$li("Change in the Region coefficient (does it shrink?)"),
+          tags$li("Posterior probability that Region > 0 (does it remain decisive?)")
+        ),
+
+        hr(),
+
+        if (!is.null(CONFOUND)) {
+          tagList(
+            # Forest plot
+            h4(class = "section-header-bold", "Region Coefficient Stability"),
+            p("The forest plot shows the Region coefficient (log-odds of Ma\u0161riq effect) across all five models. ",
+              "Thick bars = 50% credible interval; thin bars = 95% CI. Stability across models means the regional effect is not an artifact of confounds."),
+            plotOutput("confound_forest_plot", height = "400px"),
+
+            hr(),
+
+            # LOO-CV table
+            h4(class = "section-header-bold", "LOO-CV Model Comparison"),
+            p("Leave-one-out cross-validation compares predictive accuracy. ",
+              "Lower LOOIC is better; \u0394LOOIC shows improvement relative to the best model."),
+            DT::dataTableOutput("confound_loo_table"),
+
+            hr(),
+
+            # Coefficient stability table
+            h4(class = "section-header-bold", "Coefficient Stability"),
+            p("How much does the Region coefficient change when each confound is added?"),
+            DT::dataTableOutput("confound_stability_table"),
+
+            hr(),
+
+            # Mobility × Century interaction
+            h4(class = "section-header-bold", "Mobility \u00d7 Century Interaction"),
+            if (!is.null(CONFOUND$interaction)) {
+              tagList(
+                p("The interaction model (the best-fitting by LOO-CV) reveals that the mobility effect on Set preference ",
+                  "is not constant across centuries\u2014it intensifies over time:"),
+                DT::dataTableOutput("confound_interaction_table"),
+                br(),
+                p("A positive interaction coefficient means that in later centuries, inter-regional scholars become ",
+                  tags$em("more"), " likely to produce works on the Set of 7 (relative to 10+) compared to their sedentary peers. ",
+                  "In other words, by the 6th\u20137th centuries, regional canons were so entrenched that mobile scholars ",
+                  "who crossed the boundary carried their region-of-origin norms more rigidly than the earlier, ",
+                  "more ecumenical generation.")
+              )
+            } else {
+              NULL
+            },
+
+            hr(),
+
+            # Interpretation
+            h4(class = "section-header-bold", "Interpretation"),
+            div(class = "info-box",
+              p(CONFOUND$interpretation$summary)
+            )
+          )
+        } else {
+          div(class = "alert alert-info",
+            icon("info-circle"),
+            " Confound analysis results not yet available. Run scripts/confound_models.R and scripts/extract_confound_results.R to generate them."
+          )
+        }
       )
     )
   }
@@ -4021,6 +4132,111 @@ server <- function(input, output, session) {
       `95% CI` = sprintf("[%.3f, %.3f]", jsd_combined$ci95_low, jsd_combined$ci95_high),
       `Constrained Max` = sprintf("%.3f", jsd_max_combined$mean),
       `Normalized` = sprintf("%.0f%%", jsd_norm_combined$mean * 100),
+      check.names = FALSE
+    )
+
+    DT::datatable(display_df, rownames = FALSE, options = list(
+      pageLength = 10, dom = "t", ordering = FALSE
+    ))
+  })
+
+  # ============================================================================
+  # CONFOUND ANALYSIS - Server Renderers
+  # ============================================================================
+
+  # Forest plot: Region coefficient across models
+  output$confound_forest_plot <- renderPlot({
+    req(CONFOUND)
+
+    df <- CONFOUND$beta_geo_summary
+    df$label <- paste0(df$category, " vs. 10+")
+    df$label <- factor(df$label, levels = c("7 vs. 10+", "7+1 vs. 10+"))
+    df$model <- factor(df$model, levels = rev(CONFOUND$model_names))
+
+    SYSTEM_COLORS <- c("7" = "#0072B2", "7+1" = "#D55E00", "10+" = "#009E73")
+
+    ggplot(df, aes(x = mean, y = model, color = label)) +
+      geom_linerange(aes(xmin = ci_lower, xmax = ci_upper),
+                     linewidth = 0.5, alpha = 0.7,
+                     position = position_dodge(width = 0.5)) +
+      geom_linerange(aes(xmin = ci50_lower, xmax = ci50_upper),
+                     linewidth = 1.5, alpha = 0.9,
+                     position = position_dodge(width = 0.5)) +
+      geom_point(size = 2.5, position = position_dodge(width = 0.5)) +
+      geom_vline(xintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.4) +
+      scale_color_manual(
+        values = c("7 vs. 10+" = unname(SYSTEM_COLORS["7"]),
+                   "7+1 vs. 10+" = unname(SYSTEM_COLORS["7+1"])),
+        name = NULL
+      ) +
+      labs(
+        x = "Region Coefficient (log-odds, Mashriq effect)",
+        y = NULL
+      ) +
+      theme_tufte_custom(base_size = 12) +
+      theme(
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        axis.text.y = element_text(size = 11),
+        panel.grid.major.x = element_line(color = "gray90", linewidth = 0.25)
+      )
+  })
+
+  # LOO-CV comparison table
+  output$confound_loo_table <- DT::renderDataTable({
+    req(CONFOUND)
+
+    loo_df <- CONFOUND$loo_table
+    best_looic <- min(loo_df$looic)
+
+    display_df <- data.frame(
+      Model = loo_df$model,
+      `ELPD LOO` = sprintf("%.1f", loo_df$elpd_loo),
+      `SE` = sprintf("%.1f", loo_df$se_elpd_loo),
+      `LOOIC` = sprintf("%.1f", loo_df$looic),
+      `Delta LOOIC` = sprintf("%.1f", loo_df$looic - best_looic),
+      `p_loo` = sprintf("%.1f", loo_df$p_loo),
+      check.names = FALSE
+    )
+
+    DT::datatable(display_df, rownames = FALSE, options = list(
+      pageLength = 10, dom = "t", ordering = FALSE
+    ))
+  })
+
+  # Coefficient stability table
+  output$confound_stability_table <- DT::renderDataTable({
+    req(CONFOUND)
+
+    stab <- CONFOUND$stability
+    display_df <- data.frame(
+      `Extended Model` = stab$model,
+      Category = stab$category,
+      `Base Mean` = sprintf("%.3f", stab$base_mean),
+      `Extended Mean` = sprintf("%.3f", stab$extended_mean),
+      `Abs. Change` = sprintf("%.3f", stab$abs_change),
+      `% Change` = sprintf("%.1f%%", stab$pct_change),
+      `P(Region>0) Base` = sprintf("%.1f%%", stab$base_prob_pos * 100),
+      `P(Region>0) Extended` = sprintf("%.1f%%", stab$extended_prob_pos * 100),
+      check.names = FALSE
+    )
+
+    DT::datatable(display_df, rownames = FALSE, options = list(
+      pageLength = 10, dom = "t", ordering = FALSE
+    ))
+  })
+
+  # Mobility × Century interaction table
+  output$confound_interaction_table <- DT::renderDataTable({
+    req(CONFOUND, CONFOUND$interaction)
+
+    ix <- CONFOUND$interaction
+    display_df <- data.frame(
+      `Category` = paste0(ix$category, " vs. 10+"),
+      `Interaction Mean` = sprintf("%.3f", ix$interaction_mean),
+      `95% CI` = sprintf("[%.3f, %.3f]", ix$interaction_ci_lower, ix$interaction_ci_upper),
+      `P(> 0)` = sprintf("%.1f%%", ix$interaction_prob_positive * 100),
+      `Mobility Main Effect` = sprintf("%.3f [%.3f, %.3f]", ix$mob_main_mean, ix$mob_main_ci_lower, ix$mob_main_ci_upper),
       check.names = FALSE
     )
 
