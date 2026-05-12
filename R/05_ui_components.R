@@ -313,8 +313,8 @@ ui_tab_home <- function() {
     ),
 
     div(class = "home-section",
-      h3("Scholar Mobility Visualization"),
-      p("The animated map below shows the geographic distribution and mobility patterns of scholars in the corpus across centuries."),
+      h3(HTML("Distribution of Literary Production (<em>qirāʾāt</em>)")),
+      p("The animated map below shows the geographic distribution of qirāʾāt literary production across centuries."),
       imageOutput("home_animation", height = "auto")
     )
   )
@@ -392,10 +392,8 @@ ui_tab_methodology <- function() {
     value = "methodology",
     br(),
     div(class = "card",
-      div(class = "card-header", "Statistical Methods"),
+      div(class = "card-header", "Bayesian Multinomial Model & Jensen-Shannon Divergence"),
       div(class = "card-body",
-        h4("Bayesian Multinomial Model & Jensen-Shannon Divergence"),
-        p(em("QurCan ERC Grant (No. 101054849) \u2014 Leiden University Centre for Linguistics")),
         hr(),
 
         p("We estimate the association between regional scholarly affiliation (Ma\u0161riq / Ma\u0121rib) and ",

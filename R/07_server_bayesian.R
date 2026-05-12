@@ -417,17 +417,23 @@ server_bayesian <- function(input, output, session, rv) {
       jsd_max_combined$mean, jsd_max_combined$ci95_low, jsd_max_combined$ci95_high
     )
 
-    p <- ggplot(jsd_combined, aes(x = century, color = method, fill = method,
-                                  text = hover_text)) +
+    # NB: do NOT put `text = hover_text` in the global aes — ggplotly splits a
+    # geom_line into separate traces when the inherited text aesthetic varies
+    # per row, and the connecting line vanishes. Apply `text` only to
+    # geom_point (where the hover tooltip is wanted) and explicitly `group`
+    # the lines by method so the curve renders continuously across centuries.
+    p <- ggplot(jsd_combined, aes(x = century, color = method, fill = method)) +
       geom_ribbon(data = jsd_max_combined,
-                  aes(ymin = ci95_low, ymax = ci95_high),
+                  aes(ymin = ci95_low, ymax = ci95_high, group = method),
                   alpha = 0.06, color = NA) +
-      geom_line(data = jsd_max_combined, aes(y = mean),
+      geom_line(data = jsd_max_combined, aes(y = mean, group = method),
                 linewidth = 0.7, linetype = "dashed") +
-      geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high), alpha = 0.12, color = NA) +
-      geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high), alpha = 0.25, color = NA) +
-      geom_line(aes(y = mean), linewidth = 0.9) +
-      geom_point(aes(y = mean), size = 2.5) +
+      geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high, group = method),
+                  alpha = 0.12, color = NA) +
+      geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high, group = method),
+                  alpha = 0.25, color = NA) +
+      geom_line(aes(y = mean, group = method), linewidth = 0.9) +
+      geom_point(aes(y = mean, text = hover_text), size = 2.5) +
       geom_text(data = norm_labels,
                 aes(x = century, y = y, label = label),
                 inherit.aes = FALSE,
