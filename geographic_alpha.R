@@ -75,7 +75,7 @@ geo_explorer_ui <- function() {
                        "Inter-Regional" = "inter"))),
           column(2, selectInput("geo_home_subregion", "Home Subregion:",
             choices = c("All" = "all", "al-ʿirāq", "al-šām", "al-ʾandalus", "egypt",
-                       "ǧibāl-ṭabaristān", "ʾifrīqiyyah", "fārs", "ḫurāsān", "ḥiǧāz"))),
+                       "ǧibāl-ṭabaristān", "ʾifrīqiyah", "fārs", "ḫurāsān", "ḥiǧāz"))),
           column(2, sliderInput("geo_century_filter", "Century (AH):", min = 4, max = 7, value = c(4, 7), step = 1)),
           column(2, sliderInput("geo_subregions_filter", "Subregions:", min = 1, max = 7, value = c(1, 7), step = 1)),
           column(2, actionButton("geo_reset", "Reset", icon = icon("redo"), class = "btn-secondary", style = "margin-top: 25px;"))
@@ -532,7 +532,7 @@ get_region_category <- function(thurayya_region) {
 # Subregion rectangles (matching GIF animations)
 get_subregion_rects <- function() {
   data.frame(
-    subregion = c("al-ʾandalus", "egypt", "ʾifrīqiyyah", "al-šām", "al-ʿirāq",
+    subregion = c("al-ʾandalus", "egypt", "ʾifrīqiyah", "al-šām", "al-ʿirāq",
                   "ǧibāl-ṭabaristān", "fārs", "ḫurāsān", "ḥiǧāz"),
     xmin = c(-9.5, 25.0, -8.0, 34.0, 42.0, 48.0, 47.0, 57.0, 36.5),
     xmax = c(-2.0, 35.0, 13.0, 42.0, 48.0, 54.0, 57.0, 70.0, 43.0),

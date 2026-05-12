@@ -234,14 +234,32 @@ get_citation_counts <- function(con) {
 save_citation <- function(con, work_id, author_id, original_text, parsed,
                           citation_form, citation_type, link_type, source_type,
                           comment = NA) {
+  # Phase 4: split entry_number into typed columns at save time.
+  # entry_number is preserved for backward compatibility, but new writes
+  # also populate citation_index (integer entries) or appendix_ref (A.X.Y).
+  en <- parsed$entry_number %||% NA
+  cit_idx <- NA_integer_
+  app_ref <- NA_character_
+  if (!is.na(en) && nzchar(en)) {
+    if (grepl("^A\\.\\d+\\.\\d+$", en)) {
+      app_ref <- en
+    } else if (grepl("^\\d+$", en)) {
+      cit_idx <- as.integer(en)
+    } else if (grepl("^(\\d+)", en)) {
+      # composite like "300n4" — extract leading integer, leave the rest in
+      # entry_number for forensic preservation
+      cit_idx <- as.integer(sub("^(\\d+).*$", "\\1", en))
+    }
+  }
   dbExecute(con, "
     INSERT INTO bibliographic_citations
     (work_id, author_id, original_text, citation_form, citation_type,
      parsed_author, parsed_title, parsed_editor, parsed_place, parsed_publisher,
      parsed_year, volume_cited, page_cited, entry_number, section, notes,
      link_type, source, created_at, comment,
-     edition_qualifier, page_german, page_english)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     edition_qualifier, page_german, page_english,
+     citation_index, appendix_ref)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   ", params = list(
     if (is.null(work_id) || is.na(work_id) || work_id == "") NA else work_id,
     if (is.null(author_id) || is.na(author_id)) NA else as.integer(author_id),
@@ -256,7 +274,7 @@ save_citation <- function(con, work_id, author_id, original_text, parsed,
     parsed$year_gregorian %||% parsed$year_hijri %||% NA,
     parsed$volume_cited %||% parsed$volume %||% NA,
     parsed$page_cited %||% parsed$page %||% parsed$page_start %||% NA,
-    parsed$entry_number %||% NA,
+    en,
     parsed$section %||% NA,
     parsed$notes %||% NA,
     link_type,
@@ -265,13 +283,70 @@ save_citation <- function(con, work_id, author_id, original_text, parsed,
     if (is.null(comment) || is.na(comment) || trimws(comment) == "") NA else trimws(comment),
     parsed$edition_qualifier %||% NA,
     parsed$page_german %||% NA,
-    parsed$page_english %||% NA
+    parsed$page_english %||% NA,
+    if (is.na(cit_idx)) NA else as.integer(cit_idx),
+    app_ref
   ))
 }
 
 delete_citation <- function(con, citation_id) {
   dbExecute(con, "DELETE FROM bibliographic_citations WHERE citation_id = ?",
             params = list(as.integer(citation_id)))
+}
+
+# Phase 5 Wave B — update a single citation row by citation_id.
+# `updates` is a named list of column→value pairs. Only the keys listed in
+# EDITABLE_CITATION_COLS are accepted (defensive — prevents writes to PK,
+# work_id, author_id, original_text, created_at which require separate flows).
+# entry_number / citation_index / appendix_ref are kept consistent on save:
+# if citation_index or appendix_ref changes, entry_number is mirrored.
+EDITABLE_CITATION_COLS <- c(
+  "citation_form", "citation_type", "link_type", "source",
+  "parsed_author", "parsed_title", "parsed_editor", "parsed_place",
+  "parsed_publisher", "parsed_year",
+  "volume_cited", "page_cited", "entry_number",
+  "citation_index", "appendix_ref",
+  "section", "notes", "comment",
+  "edition_qualifier", "page_german", "page_english",
+  "work_id", "author_id"
+)
+
+update_citation <- function(con, citation_id, updates) {
+  if (length(updates) == 0) return(0)
+  bad <- setdiff(names(updates), EDITABLE_CITATION_COLS)
+  if (length(bad) > 0) {
+    stop("update_citation: refusing to update non-editable columns: ",
+         paste(bad, collapse = ", "))
+  }
+  # Derive entry_number / citation_index / appendix_ref consistency:
+  # if user sets citation_index, mirror to entry_number; if user sets
+  # appendix_ref, mirror that; if user sets entry_number directly, derive
+  # the typed columns.
+  if ("citation_index" %in% names(updates) && !is.na(updates$citation_index)
+      && (!"entry_number" %in% names(updates) || is.na(updates$entry_number))) {
+    updates$entry_number <- as.character(updates$citation_index)
+  }
+  if ("appendix_ref" %in% names(updates) && !is.na(updates$appendix_ref)
+      && nzchar(as.character(updates$appendix_ref))
+      && (!"entry_number" %in% names(updates) || is.na(updates$entry_number))) {
+    updates$entry_number <- updates$appendix_ref
+  }
+  if ("entry_number" %in% names(updates)) {
+    en <- updates$entry_number
+    if (!is.na(en) && nzchar(en)) {
+      if (grepl("^A\\.\\d+\\.\\d+$", en)) {
+        if (!"appendix_ref" %in% names(updates)) updates$appendix_ref <- en
+      } else if (grepl("^\\d+$", en)) {
+        if (!"citation_index" %in% names(updates)) updates$citation_index <- as.integer(en)
+      }
+    }
+  }
+  set_clause <- paste(sprintf('"%s" = ?', names(updates)), collapse = ", ")
+  sql <- sprintf("UPDATE bibliographic_citations SET %s WHERE citation_id = ?",
+                 set_clause)
+  params <- c(unname(lapply(updates, function(v) if (is.null(v) || identical(v, "")) NA else v)),
+              list(as.integer(citation_id)))
+  dbExecute(con, sql, params = params)
 }
 
 # ============================================================================
@@ -388,6 +463,10 @@ ui <- fluidPage(
         actionButton("next_entity", icon("arrow-right"), class = "btn btn-secondary")
       )
     ),
+
+    tabsetPanel(id = "main_tabs", type = "tabs",
+      tabPanel("Annotate", value = "annotate",
+        br(),
 
     # Stats bar
     uiOutput("stats_bar"),
@@ -521,6 +600,28 @@ ui <- fluidPage(
         )
       )
     )
+      ),  # close 'Annotate' tabPanel
+
+      tabPanel("Adjudication Queue", value = "adjudication",
+        br(),
+        p(em("Citations flagged for review: unknown type, populated notes/comment, ",
+             "unlinked (work_id NULL), or otherwise non-trivial. Filter and edit ",
+             "inline; same Save/Cancel controls as the Annotate tab.")),
+        fluidRow(
+          column(3, selectInput("adj_filter", "Filter:",
+            choices = c("All flagged" = "all",
+                        "Notes / comment populated" = "notes",
+                        "Unlinked (work_id NULL)" = "unlinked",
+                        "Unknown citation_type" = "unknown"),
+            selected = "all", width = "100%")),
+          column(2, br(), actionButton("adj_refresh", "Refresh",
+            class = "btn btn-secondary", icon = icon("redo"))),
+          column(7, br(), uiOutput("adj_count_label"))
+        ),
+        hr(),
+        uiOutput("adjudication_queue_display")
+      )
+    )  # close tabsetPanel
   )
 )
 
@@ -697,64 +798,212 @@ server <- function(input, output, session) {
     )
   })
 
-  # Existing citations display
+  # Track which citation cards are currently in edit mode (citation_id → TRUE)
+  edit_mode <- reactiveVal(list())
+
+  # Phase 5 Wave B: existing citations rendered with inline edit support.
+  # Each card has an "Edit" button that flips the row into a form-input
+  # mode; "Save" persists changes via update_citation(); "Cancel" reverts.
+  render_citation_card <- function(cit, in_edit) {
+    cid <- cit$citation_id
+    card_class <- if (!is.na(cit$citation_form) && cit$citation_form == "short")
+      "citation-card short-form" else "citation-card"
+    link_badge_class <- switch(cit$link_type %||% "reference",
+      "reference" = "badge-reference",
+      "edition" = "badge-edition",
+      "study" = "badge-study",
+      "encyclopedia" = "badge-encyclopedia",
+      "badge-reference")
+
+    header <- div(style = "display: flex; justify-content: space-between; align-items: center;",
+      span(
+        if (!is.na(cit$citation_form) && cit$citation_form == "long")
+          span(class = "badge-long", "Long")
+        else span(class = "badge-short", "Short"),
+        " ",
+        span(class = link_badge_class, cit$link_type %||% "reference"),
+        " ",
+        span(style = "color:#888; font-size:.85em;",
+             "type=", cit$citation_type %||% "—",
+             if (!is.na(cit$work_id)) "" else " · ⚠ unlinked")
+      ),
+      div(
+        if (!in_edit) actionButton(paste0("edit_cit_", cid),
+          icon("pencil"), class = "btn btn-sm btn-secondary",
+          onclick = sprintf(
+            "Shiny.setInputValue('edit_citation_id', %d, {priority: 'event'})", cid)),
+        if (in_edit) actionButton(paste0("save_cit_", cid),
+          icon("save"), title = "Save", class = "btn btn-sm btn-success",
+          onclick = sprintf(
+            "Shiny.setInputValue('save_citation_id', %d, {priority: 'event'})", cid)),
+        " ",
+        if (in_edit) actionButton(paste0("cancel_cit_", cid),
+          icon("times"), title = "Cancel", class = "btn btn-sm btn-secondary",
+          onclick = sprintf(
+            "Shiny.setInputValue('cancel_citation_id', %d, {priority: 'event'})", cid)),
+        " ",
+        actionButton(paste0("delete_cit_", cid),
+          icon("trash"), class = "btn btn-sm btn-danger",
+          onclick = sprintf(
+            "Shiny.setInputValue('delete_citation_id', %d, {priority: 'event'})", cid))
+      )
+    )
+
+    if (!in_edit) {
+      body <- tagList(
+        p(style = "margin-top: 10px;", strong("Text: "),
+          htmltools::htmlEscape(cit$original_text)),
+        if (!is.na(cit$parsed_author)) p(strong("Author: "),
+          htmltools::htmlEscape(cit$parsed_author)),
+        if (!is.na(cit$parsed_title)) p(strong("Title: "),
+          htmltools::htmlEscape(cit$parsed_title)),
+        if (!is.na(cit$parsed_editor)) p(strong("Editor: "),
+          htmltools::htmlEscape(cit$parsed_editor)),
+        if (!is.na(cit$volume_cited)) p(strong("Vol: "),
+          htmltools::htmlEscape(cit$volume_cited),
+          if (!is.na(cit$page_cited)) paste0(", pp. ",
+            htmltools::htmlEscape(cit$page_cited)) else ""),
+        if (!is.na(cit$entry_number)) p(strong("Entry: "),
+          htmltools::htmlEscape(cit$entry_number),
+          if (!is.na(cit$citation_index)) sprintf(
+            " (citation_index=%s)", cit$citation_index) else "",
+          if (!is.na(cit$appendix_ref)) sprintf(
+            " (appendix_ref=%s)", cit$appendix_ref) else ""),
+        if (!is.na(cit$edition_qualifier)) p(strong("Edition: "),
+          htmltools::htmlEscape(cit$edition_qualifier)),
+        if (!is.na(cit$page_german) || !is.na(cit$page_english))
+          p(strong("Alt pp: "),
+            if (!is.na(cit$page_german)) paste0("DE ",
+              htmltools::htmlEscape(cit$page_german)) else "",
+            if (!is.na(cit$page_german) && !is.na(cit$page_english)) " · " else "",
+            if (!is.na(cit$page_english)) paste0("EN ",
+              htmltools::htmlEscape(cit$page_english)) else ""),
+        if (!is.na(cit$notes)) p(strong("Notes: "),
+          htmltools::htmlEscape(cit$notes)),
+        if (!is.na(cit$comment)) p(style = "color:#a06000;",
+          strong("Comment: "), htmltools::htmlEscape(cit$comment))
+      )
+    } else {
+      ns_id <- function(field) paste0("edit_", cid, "_", field)
+      txt <- function(field, label, value, w = "100%")
+        textInput(ns_id(field), label, value = value %||% "", width = w)
+      ta <- function(field, label, value, rows = 2)
+        textAreaInput(ns_id(field), label, value = value %||% "",
+                      rows = rows, width = "100%")
+      sel <- function(field, label, choices, value)
+        selectInput(ns_id(field), label, choices = choices,
+                    selected = value %||% choices[[1]], width = "100%")
+
+      body <- tagList(
+        p(style = "margin-top: 10px; color:#666;", strong("Text: "),
+          htmltools::htmlEscape(cit$original_text)),
+        fluidRow(
+          column(4, sel("citation_form", "Form",
+            choices = c("long", "short"), value = cit$citation_form)),
+          column(4, sel("citation_type", "Type",
+            choices = c("monograph","edition","article","journal_article",
+                        "article-journal","book_section","dissertation",
+                        "thesis","short","short_secondary","encyclopedia",
+                        "unknown"),
+            value = cit$citation_type)),
+          column(4, sel("link_type", "Link type",
+            choices = c("reference","edition","study","encyclopedia"),
+            value = cit$link_type))
+        ),
+        fluidRow(
+          column(6, txt("parsed_author", "Parsed author", cit$parsed_author)),
+          column(6, txt("parsed_editor", "Editor", cit$parsed_editor))
+        ),
+        txt("parsed_title", "Parsed title", cit$parsed_title),
+        fluidRow(
+          column(4, txt("parsed_place", "Place", cit$parsed_place)),
+          column(4, txt("parsed_publisher", "Publisher", cit$parsed_publisher)),
+          column(4, txt("parsed_year", "Year", cit$parsed_year))
+        ),
+        fluidRow(
+          column(3, txt("volume_cited", "Vol cited", cit$volume_cited)),
+          column(3, txt("page_cited", "Page cited", cit$page_cited)),
+          column(3, txt("citation_index", "Citation index",
+                        cit$citation_index)),
+          column(3, txt("appendix_ref", "Appendix ref",
+                        cit$appendix_ref))
+        ),
+        fluidRow(
+          column(4, txt("edition_qualifier", "Edition qualifier",
+                        cit$edition_qualifier)),
+          column(4, txt("page_german", "Page (de)", cit$page_german)),
+          column(4, txt("page_english", "Page (en)", cit$page_english))
+        ),
+        ta("notes", "Notes", cit$notes, rows = 2),
+        ta("comment", "Comment (scholarly)", cit$comment, rows = 2),
+        # Re-linking (work_id) — text input keeps it minimal; full select is
+        # offered via the Adjudication Queue tab where it's most useful.
+        txt("work_id", "work_id (link)", cit$work_id),
+        txt("author_id", "author_id", cit$author_id)
+      )
+    }
+    div(class = card_class, header, body)
+  }
+
   output$existing_citations_display <- renderUI({
     entity <- current_entity()
     req(entity)
-    rv$citation_refresh  # depend on refresh counter
-
+    rv$citation_refresh
     citations <- dbGetQuery(db_con,
       "SELECT * FROM bibliographic_citations WHERE work_id = ? ORDER BY created_at DESC",
       params = list(entity$work_id))
-
-    if (nrow(citations) == 0) {
+    if (nrow(citations) == 0)
       return(p(em("No citations added yet for this entity.")))
-    }
-
+    em <- edit_mode()
     cards <- lapply(seq_len(nrow(citations)), function(i) {
       cit <- citations[i, ]
-      card_class <- if (cit$citation_form == "short") {
-        "citation-card short-form"
-      } else {
-        "citation-card"
-      }
-
-      link_badge_class <- switch(cit$link_type %||% "reference",
-        "reference" = "badge-reference",
-        "edition" = "badge-edition",
-        "study" = "badge-study",
-        "encyclopedia" = "badge-encyclopedia",
-        "badge-reference"
-      )
-
-      div(class = card_class,
-        div(style = "display: flex; justify-content: space-between; align-items: center;",
-          span(
-            if (cit$citation_form == "long") span(class = "badge-long", "Long")
-            else span(class = "badge-short", "Short"),
-            " ",
-            span(class = link_badge_class, cit$link_type %||% "reference")
-          ),
-          actionButton(
-            paste0("delete_cit_", cit$citation_id),
-            icon("trash"),
-            class = "btn btn-sm btn-danger",
-            onclick = sprintf(
-              "Shiny.setInputValue('delete_citation_id', %d, {priority: 'event'})",
-              cit$citation_id
-            )
-          )
-        ),
-        p(style = "margin-top: 10px;", strong("Text: "), htmltools::htmlEscape(cit$original_text)),
-        if (!is.na(cit$parsed_author)) p(strong("Author: "), htmltools::htmlEscape(cit$parsed_author)),
-        if (!is.na(cit$parsed_title)) p(strong("Title: "), htmltools::htmlEscape(cit$parsed_title)),
-        if (!is.na(cit$volume_cited)) p(strong("Vol: "), htmltools::htmlEscape(cit$volume_cited),
-          if (!is.na(cit$page_cited)) paste0(", pp. ", htmltools::htmlEscape(cit$page_cited)) else ""),
-        if (!is.na(cit$notes)) p(strong("Notes: "), htmltools::htmlEscape(cit$notes))
-      )
+      render_citation_card(cit, isTRUE(em[[as.character(cit$citation_id)]]))
     })
-
     do.call(tagList, cards)
+  })
+
+  # Toggle a card into edit mode
+  observeEvent(input$edit_citation_id, {
+    cid <- as.character(input$edit_citation_id)
+    em <- edit_mode(); em[[cid]] <- TRUE; edit_mode(em)
+  })
+
+  observeEvent(input$cancel_citation_id, {
+    cid <- as.character(input$cancel_citation_id)
+    em <- edit_mode(); em[[cid]] <- FALSE; edit_mode(em)
+    rv$citation_refresh <- rv$citation_refresh + 1
+  })
+
+  observeEvent(input$save_citation_id, {
+    cid <- input$save_citation_id
+    fields <- c("citation_form","citation_type","link_type",
+                "parsed_author","parsed_title","parsed_editor","parsed_place",
+                "parsed_publisher","parsed_year",
+                "volume_cited","page_cited","citation_index","appendix_ref",
+                "edition_qualifier","page_german","page_english",
+                "notes","comment","work_id","author_id")
+    updates <- list()
+    for (f in fields) {
+      v <- input[[paste0("edit_", cid, "_", f)]]
+      if (is.null(v)) next
+      if (f == "citation_index") {
+        v <- if (nzchar(v)) suppressWarnings(as.integer(v)) else NA
+      } else if (f == "author_id") {
+        v <- if (nzchar(as.character(v))) suppressWarnings(as.integer(v)) else NA
+      } else {
+        v <- if (nzchar(as.character(v))) trimws(as.character(v)) else NA
+      }
+      updates[[f]] <- v
+    }
+    tryCatch({
+      n <- update_citation(db_con, cid, updates)
+      em <- edit_mode(); em[[as.character(cid)]] <- FALSE; edit_mode(em)
+      rv$citation_refresh <- rv$citation_refresh + 1
+      showNotification(sprintf("Citation %s saved (%d field(s)).", cid, length(updates)),
+                       type = "message", duration = 3)
+    }, error = function(e) {
+      showNotification(paste("Save failed:", conditionMessage(e)), type = "error", duration = 6)
+    })
   })
 
   # Delete citation
@@ -1184,6 +1433,56 @@ server <- function(input, output, session) {
     }, error = function(e) {
       showNotification(paste("Export error:", e$message), type = "error")
     })
+  })
+
+  # ============================================================================
+  # Phase 5 Wave B — Adjudication queue
+  # ============================================================================
+  adj_query <- reactive({
+    rv$citation_refresh  # depend on save/delete to refresh
+    filter_val <- input$adj_filter %||% "all"
+    base_where <- "1=1"
+    where <- switch(filter_val,
+      "notes" = "(notes IS NOT NULL AND notes != '') OR (comment IS NOT NULL AND comment != '')",
+      "unlinked" = "work_id IS NULL",
+      "unknown" = "(citation_type IS NULL OR citation_type = 'unknown')",
+      # 'all': union of all three
+      "((citation_type IS NULL OR citation_type = 'unknown')
+        OR (notes IS NOT NULL AND notes != '')
+        OR (comment IS NOT NULL AND comment != '')
+        OR work_id IS NULL)"
+    )
+    sql <- paste(
+      "SELECT * FROM bibliographic_citations WHERE", where,
+      "ORDER BY",
+      "  CASE WHEN work_id IS NULL THEN 0 ELSE 1 END,",  # unlinked first
+      "  CASE WHEN citation_type IS NULL OR citation_type = 'unknown' THEN 0 ELSE 1 END,",
+      "  citation_id DESC LIMIT 500"
+    )
+    dbGetQuery(db_con, sql)
+  })
+
+  output$adj_count_label <- renderUI({
+    n <- nrow(adj_query())
+    span(style = "font-weight: bold;", sprintf("%d citation(s) match the filter", n))
+  })
+
+  output$adjudication_queue_display <- renderUI({
+    rv$citation_refresh  # refresh after save/delete
+    cits <- adj_query()
+    if (nrow(cits) == 0)
+      return(div(class = "input-section", icon("check-circle"),
+                 " Queue is empty for this filter."))
+    em <- edit_mode()
+    cards <- lapply(seq_len(nrow(cits)), function(i) {
+      cit <- cits[i, ]
+      render_citation_card(cit, isTRUE(em[[as.character(cit$citation_id)]]))
+    })
+    do.call(tagList, cards)
+  })
+
+  observeEvent(input$adj_refresh, {
+    rv$citation_refresh <- rv$citation_refresh + 1
   })
 }
 
