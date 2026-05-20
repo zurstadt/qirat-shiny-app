@@ -300,6 +300,9 @@ ui_tab_home <- function() {
         "Traditions (qir\u0101\u02be\u0101t), 4th\u20137th centuries AH. It comprises ",
         textOutput("home_works_count", inline = TRUE),
         " works by authors across the Ma\u0121rib and Ma\u0161riq."),
+      p(tags$a(href = "manuscript.pdf", target = "_blank", download = NA,
+               icon("file-pdf"), " Download the current draft (PDF)"),
+        " \u2014 the latest rendered manuscript, updated with each deployment."),
       p("Use the tabs above to:",
         tags$ul(
           tags$li(tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'corpus_explorer', {priority: 'event'});", "Corpus Explorer"),
@@ -307,10 +310,7 @@ ui_tab_home <- function() {
           tags$li(tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'methodology', {priority: 'event'});", "Methodology"),
             " \u2014 a complete walk-through of the data, model, and interpretation"),
           tags$li(tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'bayesian_analysis', {priority: 'event'});", "Bayesian Analysis"),
-            " \u2014 interactive results of the multinomial regression model"),
-          tags$li(tags$a(href = "manuscript.pdf", target = "_blank", download = NA,
-                         icon("file-pdf"), " Download the current draft (PDF)"),
-            " \u2014 the latest rendered manuscript, updated with each deployment")
+            " \u2014 interactive results of the multinomial regression model")
         )
       )
     ),
