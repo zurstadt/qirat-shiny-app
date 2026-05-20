@@ -307,7 +307,10 @@ ui_tab_home <- function() {
           tags$li(tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'methodology', {priority: 'event'});", "Methodology"),
             " \u2014 a complete walk-through of the data, model, and interpretation"),
           tags$li(tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'bayesian_analysis', {priority: 'event'});", "Bayesian Analysis"),
-            " \u2014 interactive results of the multinomial regression model")
+            " \u2014 interactive results of the multinomial regression model"),
+          tags$li(tags$a(href = "manuscript.pdf", target = "_blank", download = NA,
+                         icon("file-pdf"), " Download the current draft (PDF)"),
+            " \u2014 the latest rendered manuscript, updated with each deployment")
         )
       )
     ),
