@@ -168,10 +168,11 @@
       "description": {
         "Package": "Rcpp",
         "Title": "Seamless R and C++ Integration",
-        "Version": "1.1.0",
-        "Date": "2025-07-01",
+        "Version": "1.1.1-1.1",
+        "Date": "2026-04-19",
         "Authors@R": "c(person(\"Dirk\", \"Eddelbuettel\", role = c(\"aut\", \"cre\"), email = \"edd@debian.org\",\n                    comment = c(ORCID = \"0000-0001-6419-907X\")),\n             person(\"Romain\", \"Francois\", role = \"aut\",\n                    comment = c(ORCID = \"0000-0002-2444-4226\")),\n             person(\"JJ\", \"Allaire\", role = \"aut\",\n                    comment = c(ORCID = \"0000-0003-0174-9868\")),\n             person(\"Kevin\", \"Ushey\", role = \"aut\",\n                    comment = c(ORCID = \"0000-0003-2880-7407\")),\n             person(\"Qiang\", \"Kou\", role = \"aut\",\n                    comment = c(ORCID = \"0000-0001-6786-5453\")),\n             person(\"Nathan\", \"Russell\", role = \"aut\"),\n             person(\"Iñaki\", \"Ucar\", role = \"aut\",\n                    comment = c(ORCID = \"0000-0001-6403-5550\")),\n             person(\"Doug\", \"Bates\", role = \"aut\",\n                    comment = c(ORCID = \"0000-0001-8316-9503\")),\n             person(\"John\", \"Chambers\", role = \"aut\"))",
         "Description": "The 'Rcpp' package provides R functions as well as C++ classes which\n offer a seamless integration of R and C++. Many R data types and objects can be\n mapped back and forth to C++ equivalents which facilitates both writing of new\n code as well as easier integration of third-party libraries. Documentation\n about 'Rcpp' is provided by several vignettes included in this package, via the\n 'Rcpp Gallery' site at <https://gallery.rcpp.org>, the paper by Eddelbuettel and\n Francois (2011, <doi:10.18637/jss.v040.i08>), the book by Eddelbuettel (2013,\n <doi:10.1007/978-1-4614-6868-4>) and the paper by Eddelbuettel and Balamuta (2018,\n <doi:10.1080/00031305.2017.1375990>); see 'citation(\"Rcpp\")' for details.",
+        "Depends": "R (>= 3.5.0)",
         "Imports": "methods, utils",
         "Suggests": "tinytest, inline, rbenchmark, pkgKitten (>= 0.1.2)",
         "URL": "https://www.rcpp.org,\nhttps://dirk.eddelbuettel.com/code/rcpp.html,\nhttps://github.com/RcppCore/Rcpp",
@@ -180,19 +181,15 @@
         "MailingList": "rcpp-devel@lists.r-forge.r-project.org",
         "RoxygenNote": "6.1.1",
         "Encoding": "UTF-8",
+        "VignetteBuilder": "Rcpp",
         "NeedsCompilation": "yes",
-        "Packaged": "2025-07-01 12:58:41 UTC; edd",
+        "Packaged": "2026-04-23 14:12:31 UTC; edd",
         "Author": "Dirk Eddelbuettel [aut, cre] (ORCID:\n    <https://orcid.org/0000-0001-6419-907X>),\n  Romain Francois [aut] (ORCID: <https://orcid.org/0000-0002-2444-4226>),\n  JJ Allaire [aut] (ORCID: <https://orcid.org/0000-0003-0174-9868>),\n  Kevin Ushey [aut] (ORCID: <https://orcid.org/0000-0003-2880-7407>),\n  Qiang Kou [aut] (ORCID: <https://orcid.org/0000-0001-6786-5453>),\n  Nathan Russell [aut],\n  Iñaki Ucar [aut] (ORCID: <https://orcid.org/0000-0001-6403-5550>),\n  Doug Bates [aut] (ORCID: <https://orcid.org/0000-0001-8316-9503>),\n  John Chambers [aut]",
         "Maintainer": "Dirk Eddelbuettel <edd@debian.org>",
         "Repository": "CRAN",
-        "Date/Publication": "2025-07-02 16:40:02 UTC",
-        "Built": "R 4.5.0; aarch64-apple-darwin20; 2025-07-04 07:28:39 UTC; unix",
-        "Archs": "Rcpp.so.dSYM",
-        "RemoteType": "standard",
-        "RemotePkgRef": "Rcpp",
-        "RemoteRef": "Rcpp",
-        "RemoteRepos": "https://cloud.r-project.org",
-        "RemoteSha": "1.1.0"
+        "Date/Publication": "2026-04-24 05:30:02 UTC",
+        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-04-24 13:22:07 UTC; unix",
+        "Archs": "Rcpp.so.dSYM"
       }
     },
     "S7": {
@@ -2833,35 +2830,20 @@
     }
   },
   "files": {
-    ".claude/settings.local.json": {
-      "checksum": "581d8370dce9e7c09fbe8c6e3bf0c373"
-    },
     "app.R": {
-      "checksum": "bc845cb9a8041a07d7fc5ce70f0f3add"
+      "checksum": "b2362a80c5460342fe4c1de30d795226"
     },
     "citation_annotation.R": {
-      "checksum": "19cf28081bb721335978b50e8aec1d99"
+      "checksum": "032a74d07d135493e60365b9b15ae39d"
     },
     "citation_parsers.R": {
       "checksum": "fa20c3bbf79ecbd0c81cd1668b66bbee"
     },
-    "data/citation-type-mapping-logic.md": {
-      "checksum": "ed93a47bd797b2be7244ed8815ba5903"
-    },
-    "data/gal-examples.txt": {
-      "checksum": "9c493b91c7d4746223a67f222706c868"
-    },
-    "data/gal-parser-analysis.md": {
-      "checksum": "27e0e8c021caffe43111891357013156"
-    },
     "data/gn_url_concordance.csv": {
       "checksum": "50a7646959b20a44cd69af7ddf722114"
     },
-    "data/iqsa_deploy_backup_pre_type_refactor.db": {
-      "checksum": "0b1419bb2b167d7ecc057b7328b98b38"
-    },
     "data/iqsa_deploy.db": {
-      "checksum": "a902cf9e9e5d9f284a9a7d4f424cfe0a"
+      "checksum": "9ea5a9e1cc3374d10be62d0dd227ada0"
     },
     "data/mashriq-maghrib_bibliography.ris": {
       "checksum": "ac1da4b77e68b3855738643a07d38409"
@@ -2870,28 +2852,52 @@
       "checksum": "906795d729f40e46e03e725446ffb226"
     },
     "data/parser-work-schemas.json": {
-      "checksum": "0f4828b77be264b48de210368e1f3e71"
+      "checksum": "2c4d42bb0561b4f0eaa5b402bd15550a"
     },
     "data/precomputed_bayesian_results.rds": {
-      "checksum": "d0a44efec4b8d12791ebb1f02761159d"
+      "checksum": "f9e65ec8edc07839a657de89cb2cc190"
+    },
+    "data/precomputed_confound_results.rds": {
+      "checksum": "069429446f7b09c11ffc8de3e04867bb"
     },
     "data/zotero-type-mappings.json": {
-      "checksum": "428d91bcae4fec040d9a29cdd8c9c358"
+      "checksum": "9e88f2d4468810b6a5e929f835a728f0"
     },
     "db_config.R": {
       "checksum": "f71cc5cf5b6fd54ada5825312616068f"
     },
     "geographic_alpha.R": {
-      "checksum": "ab007fa617f48b49db89d59104e94a59"
+      "checksum": "b63c1c9a9cd136ea15f5550ae1c985b6"
     },
     "output/animations/islamic_bibliography_map_ALL.gif": {
       "checksum": "07b18a44889aeead00607b7813626bc5"
     },
-    "PENDING_CHANGES.md": {
-      "checksum": "69aae515cb8d1734345de5861a55d901"
+    "R/01_constants.R": {
+      "checksum": "ce55ebacd9dfd7c65d211f7d0c004ef0"
     },
-    "prompts/prompt-bibliographic-reference-manager.txt": {
-      "checksum": "6d7535070b06770f2ae7cd08508ba98e"
+    "R/02_utils.R": {
+      "checksum": "90cee0455f336c029702f340efd85869"
+    },
+    "R/03_search.R": {
+      "checksum": "8adb8acddeda3e4fefc61e84b5676f21"
+    },
+    "R/04_data.R": {
+      "checksum": "59a1cef1cf72e023526f28f8723b3920"
+    },
+    "R/05_ui_components.R": {
+      "checksum": "a946d2f8f15988e5b7ba48ec8bbe19d6"
+    },
+    "R/06_server_corpus.R": {
+      "checksum": "52da423142470ebdf5ad8e1a59da41b1"
+    },
+    "R/07_server_bayesian.R": {
+      "checksum": "5a0753b1a1d8bd5b1b8208459ba66dee"
+    },
+    "R/08_server_diagnostics.R": {
+      "checksum": "d1ab8f8adeee860804f08ef7cc737d06"
+    },
+    "R/09_server_citations.R": {
+      "checksum": "5e021166c996fcf1e27c7cc03ac79b4e"
     },
     "README.md": {
       "checksum": "24b70f1cadbd5b3eeeaebcf3d16ca39f"
@@ -2919,6 +2925,12 @@
     },
     "www/images/qurxan_logo.png": {
       "checksum": "fb4069e9db9ca7757075c7416bd074cf"
+    },
+    "www/manuscript.pdf": {
+      "checksum": "85a4a06575f7f164890e6037c95a83b0"
+    },
+    "www/paper.html": {
+      "checksum": "9d32790d8fcfe51a97b4fa8c3d7e30af"
     }
   },
   "users": null
