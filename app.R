@@ -36,6 +36,7 @@ ui <- fluidPage(
       type = "pills",
 
       ui_tab_home(),
+      ui_tab_paper(),
       ui_tab_corpus(),
       ui_tab_methodology(),
       ui_tab_bayesian(),

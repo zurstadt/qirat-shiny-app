@@ -8,3 +8,8 @@
 rsconnect/
 .quarto/
 _site/
+
+# Local DB snapshots & scratch — never commit
+*.bak-*
+data/*.bak-*
+*_backup_*.db

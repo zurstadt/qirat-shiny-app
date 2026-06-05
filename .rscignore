@@ -1,0 +1,4 @@
+# Large DB snapshots & local metadata — never ship to Posit Connect
+data/*.bak-*
+*.bak-*
+rsconnect/

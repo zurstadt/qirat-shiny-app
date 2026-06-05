@@ -48,11 +48,11 @@ server_bayesian <- function(input, output, session, rv) {
       div(class = "card-header", "Introduction to Bayesian Analysis"),
       div(class = "card-body",
         h4("Why Bayesian?"),
-        p("Bayesian analysis provides a principled framework for quantifying uncertainty in our estimates. Unlike traditional frequentist approaches that give point estimates with confidence intervals, Bayesian methods produce full probability distributions that directly answer questions like: 'Given the data, what is the probability that regional affiliation influenced reading system choice?'"),
+        p("Bayesian analysis provides a principled framework for quantifying uncertainty in our estimates. Unlike traditional frequentist approaches that give point estimates with confidence intervals, Bayesian methods produce full probability distributions that directly answer questions like: 'Given the data, what is the probability that regional affiliation influenced the choice of Set of Readings?'"),
 
         h4("Research Questions"),
         tags$ol(
-          tags$li("Did regional affiliation (Ma\u0121rib vs. Ma\u0161riq) influence which reading systems scholars chose to document?"),
+          tags$li("Did regional affiliation (Ma\u0121rib vs. Ma\u0161riq) influence which Sets of Readings scholars chose to document?"),
           tags$li("How confident can we be in observed regional differences?"),
           tags$li("Did patterns of regional preference change over the study period (4th-7th centuries AH)?")
         ),
@@ -80,7 +80,7 @@ server_bayesian <- function(input, output, session, rv) {
       div(class = "card-header", "Model Configuration & Parameters"),
       div(class = "card-body",
         h4(class = "section-header-bold", "Understanding the Model"),
-        p("This analysis uses Bayesian multinomial logistic regression to model the probability that a work describes a particular reading system (7, 7+1, or 10+) based on the author's regional location and the century of production."),
+        p("This analysis uses Bayesian multinomial logistic regression to model the probability that a work describes a particular Set of Readings (7, 7+1, or 10+) based on the author's regional location and the century of production."),
 
         tags$h5("Model Structure:"),
         tags$ul(
@@ -142,7 +142,7 @@ server_bayesian <- function(input, output, session, rv) {
               tags$li("Colors distinguish regions: ", span(style = "color: #56B4E9;", "Ma\u0121rib"), " vs. ", span(style = "color: #E69F00;", "Ma\u0161riq")),
               tags$li("Error bars show 95% credible intervals - ranges of plausible values")
             ),
-            p(tags$strong("Interpreting differences:"), " When error bars for Ma\u0121rib and Ma\u0161riq do not overlap for a given set, this indicates strong evidence of regional differences in pedagogical preferences.")
+            p(tags$strong("Interpreting differences:"), " When error bars for Ma\u0121rib and Ma\u0161riq do not overlap for a given Set, this is suggestive of a regional difference. Note that non-overlapping marginal intervals are a conservative cue, not a formal test \u2014 the posterior contrast on the Regional Contrasts card provides the rigorous comparison.")
           ),
 
           hr(),
@@ -285,10 +285,17 @@ server_bayesian <- function(input, output, session, rv) {
           tags$li(tags$strong("Model-based:"), " Derived from the Bayesian multinomial regression posterior. Each MCMC draw yields a JSD value, producing a full posterior distribution."),
           tags$li(tags$strong("Dirichlet-smoothed:"), " A model-free robustness check using Dirichlet(1 + counts) posteriors directly from the raw data. Wider credible intervals where data is sparse (e.g., 7th century).")
         ),
-        p("The plot also shows the ", tags$strong("constrained theoretical maximum"), " (dashed lines): the highest JSD achievable given that both regions continue to produce Set of 7 works. ",
-          "Percentages at each point show the observed JSD as a proportion of this constrained maximum. See the Methodology tab for details."),
+        p("Two views are shown. ", tags$strong("Absolute divergence"), " (top) plots JSD in bits against the ",
+          tags$strong("constrained theoretical maximum"), " (dashed) — the highest JSD achievable given that both regions ",
+          "continue to produce Set of 7 works. ", tags$strong("Normalized divergence"), " (bottom) re-expresses the same ",
+          "trajectories as a percentage of that constrained maximum. Agreement between the model-based and Dirichlet-smoothed ",
+          "curves validates the multinomial specification. See the Methodology tab for details."),
 
-        plotlyOutput("jsd_trajectory_plot", height = "450px"),
+        h5(class = "section-header-bold", "Absolute divergence (bits)"),
+        plotlyOutput("jsd_absolute_plot", height = "380px"),
+        br(),
+        h5(class = "section-header-bold", "Normalized divergence (% of constrained maximum)"),
+        plotlyOutput("jsd_normalized_plot", height = "380px"),
         br(),
         h5(class = "section-header-bold", "Summary Table"),
         DT::dataTableOutput("jsd_table"),
@@ -384,71 +391,96 @@ server_bayesian <- function(input, output, session, rv) {
     )
   }
 
-  # JSD trajectory plot (plotly)
-  output$jsd_trajectory_plot <- renderPlotly({
+  # JSD method colors (shared by both panels): blue = model, vermillion = Dirichlet
+  JSD_METHOD_COLORS <- c("Model-based" = "#0072B2", "Dirichlet-smoothed" = "#D55E00")
+  JSD_METHOD_LEVELS <- c("Model-based", "Dirichlet-smoothed")
+
+  # NB: do NOT put `text = hover_text` in the global aes — ggplotly splits a
+  # geom_line into separate traces when the inherited text aesthetic varies
+  # per row, and the connecting line vanishes. Apply `text` only to geom_point
+  # and explicitly `group` the lines by method so the curve renders continuously.
+
+  # --- Panel A: absolute divergence (bits), with constrained-max ceiling ---
+  output$jsd_absolute_plot <- renderPlotly({
     req(PRECOMPUTED)
 
     jsd_combined <- rbind(PRECOMPUTED$jsd_model_summary, PRECOMPUTED$jsd_dir_summary)
-    jsd_combined$method <- factor(jsd_combined$method,
-                                  levels = c("Model-based", "Dirichlet-smoothed"))
+    jsd_combined$method <- factor(jsd_combined$method, levels = JSD_METHOD_LEVELS)
 
     jsd_max_combined <- rbind(PRECOMPUTED$jsd_max_model_summary, PRECOMPUTED$jsd_max_dir_summary)
-    jsd_max_combined$method <- factor(jsd_max_combined$method,
-                                      levels = c("Model-based", "Dirichlet-smoothed"))
-
-    norm_model <- PRECOMPUTED$jsd_norm_model_summary
-    norm_labels <- data.frame(
-      century = norm_model$century,
-      y = PRECOMPUTED$jsd_model_summary$mean,
-      label = sprintf("%.0f%%", norm_model$mean * 100)
-    )
-
-    method_colors <- c("Model-based" = "#0072B2", "Dirichlet-smoothed" = "#D55E00")
+    jsd_max_combined$method <- factor(jsd_max_combined$method, levels = JSD_METHOD_LEVELS)
 
     jsd_combined$hover_text <- sprintf(
       "<b>%s</b><br>Century: %sth c. AH<br>Mean JSD: %.3f<br>95%% CI: [%.3f, %.3f]",
       jsd_combined$method, jsd_combined$century,
       jsd_combined$mean, jsd_combined$ci95_low, jsd_combined$ci95_high
     )
-
     jsd_max_combined$hover_text <- sprintf(
-      "<b>%s (constrained max)</b><br>Century: %sth c. AH<br>Max JSD: %.3f<br>95%% CI: [%.3f, %.3f]",
-      jsd_max_combined$method, jsd_max_combined$century,
-      jsd_max_combined$mean, jsd_max_combined$ci95_low, jsd_max_combined$ci95_high
+      "<b>%s — constrained max</b><br>Century: %sth c. AH<br>Ceiling JSD: %.3f",
+      jsd_max_combined$method, jsd_max_combined$century, jsd_max_combined$mean
     )
 
-    # NB: do NOT put `text = hover_text` in the global aes — ggplotly splits a
-    # geom_line into separate traces when the inherited text aesthetic varies
-    # per row, and the connecting line vanishes. Apply `text` only to
-    # geom_point (where the hover tooltip is wanted) and explicitly `group`
-    # the lines by method so the curve renders continuously across centuries.
+    # data-driven upper bound — the old fixed 0–1 axis compressed the data into
+    # the lower half; anchor at 0 (honest) up to just above the ceiling line.
+    y_top <- max(jsd_combined$ci95_high, jsd_max_combined$mean) * 1.08
+
     p <- ggplot(jsd_combined, aes(x = century, color = method, fill = method)) +
-      geom_ribbon(data = jsd_max_combined,
-                  aes(ymin = ci95_low, ymax = ci95_high, group = method),
-                  alpha = 0.06, color = NA) +
+      geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high, group = method),
+                  alpha = 0.12, color = NA) +
+      geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high, group = method),
+                  alpha = 0.25, color = NA) +
       geom_line(data = jsd_max_combined, aes(y = mean, group = method),
                 linewidth = 0.7, linetype = "dashed") +
+      geom_point(data = jsd_max_combined, aes(y = mean, text = hover_text),
+                 size = 1.4, shape = 21, stroke = 0.4) +
+      geom_line(aes(y = mean, group = method), linewidth = 0.9) +
+      geom_point(aes(y = mean, text = hover_text), size = 2.5) +
+      scale_color_manual(values = JSD_METHOD_COLORS) +
+      scale_fill_manual(values = JSD_METHOD_COLORS) +
+      scale_x_continuous(breaks = PRECOMPUTED$centuries,
+                         labels = paste0(PRECOMPUTED$centuries, "th c.")) +
+      scale_y_continuous(limits = c(0, y_top)) +
+      labs(x = "Century (AH)", y = "JSD (bits)", color = "Method", fill = "Method") +
+      theme_tufte_custom(base_size = 11)
+
+    ggplotly(p, tooltip = "text") %>%
+      plotly::layout(legend = list(orientation = "h", x = 0.5, y = 1.12,
+                                   xanchor = "center", yanchor = "bottom"))
+  })
+
+  # --- Panel B: normalized divergence (% of constrained maximum) ---
+  output$jsd_normalized_plot <- renderPlotly({
+    req(PRECOMPUTED)
+
+    norm_combined <- rbind(PRECOMPUTED$jsd_norm_model_summary, PRECOMPUTED$jsd_norm_dir_summary)
+    norm_combined$method <- factor(norm_combined$method, levels = JSD_METHOD_LEVELS)
+
+    norm_combined$hover_text <- sprintf(
+      "<b>%s</b><br>Century: %sth c. AH<br>Normalized JSD: %.0f%%<br>95%% CI: [%.0f%%, %.0f%%]",
+      norm_combined$method, norm_combined$century,
+      norm_combined$mean * 100, norm_combined$ci95_low * 100, norm_combined$ci95_high * 100
+    )
+
+    p <- ggplot(norm_combined, aes(x = century, color = method, fill = method)) +
       geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high, group = method),
                   alpha = 0.12, color = NA) +
       geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high, group = method),
                   alpha = 0.25, color = NA) +
       geom_line(aes(y = mean, group = method), linewidth = 0.9) +
       geom_point(aes(y = mean, text = hover_text), size = 2.5) +
-      geom_text(data = norm_labels,
-                aes(x = century, y = y, label = label),
-                inherit.aes = FALSE,
-                vjust = -1.5, hjust = 0.5, size = 3.0, color = "gray30",
-                fontface = "italic") +
-      scale_color_manual(values = method_colors) +
-      scale_fill_manual(values = method_colors) +
+      scale_color_manual(values = JSD_METHOD_COLORS) +
+      scale_fill_manual(values = JSD_METHOD_COLORS) +
       scale_x_continuous(breaks = PRECOMPUTED$centuries,
                          labels = paste0(PRECOMPUTED$centuries, "th c.")) +
-      scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
-      labs(x = "Century (AH)", y = "JSD (bits)", color = "Method", fill = "Method") +
+      scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2),
+                         labels = function(x) paste0(x * 100, "%")) +
+      labs(x = "Century (AH)", y = "JSD (% of constrained max)",
+           color = "Method", fill = "Method") +
       theme_tufte_custom(base_size = 11)
 
     ggplotly(p, tooltip = "text") %>%
-      plotly::layout(legend = list(x = 0.05, y = 0.95))
+      plotly::layout(legend = list(orientation = "h", x = 0.5, y = 1.12,
+                                   xanchor = "center", yanchor = "bottom"))
   })
 
   # JSD summary table
@@ -634,7 +666,7 @@ server_bayesian <- function(input, output, session, rv) {
       geom_errorbar(aes(ymin = low, ymax = high),
                     position = position_dodge(0.8), width = 0.15, linewidth = 0.4, color = "gray30") +
       facet_wrap(~ Century, ncol = 2) +
-      scale_fill_manual(values = c("Ma\u0121rib" = "#56B4E9", "Ma\u0161riq" = "#E69F00")) +
+      scale_fill_manual(values = setNames(COLORS$region, c("Ma\u0121rib", "Ma\u0161riq"))) +
       scale_x_discrete(limits = c("7", "7+1", "10+")) +
       scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25),
                         labels = scales::percent_format(accuracy = 1)) +
@@ -675,11 +707,11 @@ server_bayesian <- function(input, output, session, rv) {
     if (input$tabs == "analysis_results" && !rv$analysis_results_visited) {
       rv$analysis_results_visited <- TRUE
       if (!rv$contrasts_computed && !is.null(rv$fit_obj)) {
-        showNotification("Computing posterior contrasts for all systems...",
+        showNotification("Computing posterior contrasts for all Sets...",
           type = "message", duration = NULL, id = "auto_contrasts")
         compute_all_contrasts()
         removeNotification(id = "auto_contrasts")
-        showNotification("\u2713 All contrasts computed! Select a system to view results.",
+        showNotification("\u2713 All contrasts computed! Select a Set to view results.",
           type = "message", duration = 5)
       }
     }
@@ -899,7 +931,7 @@ server_bayesian <- function(input, output, session, rv) {
         plotOutput(paste0("contrast_plot_", gsub("\\+", "plus", input$selected_system_card4)),
                   height = "350px"),
         p(class = "text-muted", style = "font-size: 0.85em;",
-          "The histogram shows the posterior distribution of the difference in probabilities. The dark vertical line marks the mean difference, while the gray line at zero represents no regional effect. The subtle gray shaded region indicates the 95% credible interval. When the distribution is clearly shifted away from zero, this provides evidence of systematic regional preference for this reading system.")
+          "The histogram shows the posterior distribution of the difference in probabilities. The dark vertical line marks the mean difference, while the gray line at zero represents no regional effect. The subtle gray shaded region indicates the 95% credible interval. When the distribution is clearly shifted away from zero, this provides evidence of systematic regional preference for this Set of Readings.")
       )
     )
   })
@@ -907,17 +939,17 @@ server_bayesian <- function(input, output, session, rv) {
   # Get system-specific explanation
   get_system_explanation <- function(system) {
     explanations <- list(
-      "7" = "<h5>The Seven-Reading System and Regional Canons</h5>
-<p>The seven-reading system represents Ibn Mu\u01e7\u0101hid's (d. 324/936) canonical selection, which became the foundation of qir\u0101\u02be\u0101t pedagogy. Regional preferences for this system indicate adoption of Ibn Mu\u01e7\u0101hid's framework as the standard pedagogical model.</p>
-<p><strong>If Ma\u0161riq shows higher probability:</strong> This aligns with historical expectations, as Ibn Mu\u01e7\u0101hid worked in Baghdad and the seven-reading system initially spread through Ma\u0161riq\u012b scholarly networks.</p>
+      "7" = "<h5>The Set of 7 and Regional Canons</h5>
+<p>The Set of 7 represents Ibn Mu\u01e7\u0101hid's (d. 324/936) canonical selection, which became the foundation of qir\u0101\u02be\u0101t pedagogy. Regional preferences for this Set indicate adoption of Ibn Mu\u01e7\u0101hid's framework as the standard pedagogical model.</p>
+<p><strong>If Ma\u0161riq shows higher probability:</strong> This aligns with historical expectations, as Ibn Mu\u01e7\u0101hid worked in Baghdad and the Set of 7 initially spread through Ma\u0161riq\u012b scholarly networks.</p>
 <p><strong>If Ma\u0121rib shows higher probability:</strong> This indicates that Ma\u0121rib\u012b scholars particularly embraced Ibn Mu\u01e7\u0101hid's canonical framework, perhaps as a means of standardizing instruction.</p>",
 
-      "7+1" = "<h5>The 7+1 System and Regional Variation</h5>
-<p>The 7+1 system adds the reading of Ya\u02bfq\u016bb al-\u1e24a\u1e0dram\u012b (d. 205/821) to Ibn Mu\u01e7\u0101hid's seven, representing an expansion of the canonical framework. Production patterns for this system reveal regional attitudes toward canonical boundaries and acceptable variation.</p>
+      "7+1" = "<h5>The Set of 7+1 and Regional Variation</h5>
+<p>The Set of 7+1 adds the reading of Ya\u02bfq\u016bb al-\u1e24a\u1e0dram\u012b (d. 205/821) to Ibn Mu\u01e7\u0101hid's seven, representing an expansion of the canonical framework. Production patterns for this Set reveal regional attitudes toward canonical boundaries and acceptable variation.</p>
 <p><strong>If Ma\u0161riq shows higher probability:</strong> This suggests Ma\u0161riq\u012b scholars were more willing to expand beyond Ibn Mu\u01e7\u0101hid's original framework, perhaps reflecting continued engagement with pre-canonical reading traditions.</p>
 <p><strong>If Ma\u0121rib shows higher probability:</strong> This is particularly significant, suggesting Ma\u0121rib\u012b scholars developed a distinct pedagogical tradition that systematically included Ya\u02bfq\u016bb's reading alongside the canonical seven, potentially indicating a Ma\u0121rib\u012b counter-canon.</p>",
 
-      "10+" = "<h5>The 10+ System and Comprehensive Pedagogical Approaches</h5>
+      "10+" = "<h5>The Set of 10+ and Comprehensive Pedagogical Approaches</h5>
 <p>Works describing ten or more reading traditions represent the most comprehensive approach to qir\u0101\u02be\u0101t instruction, often including the 'three additional' readings beyond the seven (Ya\u02bfq\u016bb, \u1e2aalaf, al-\u1e24asan al-Ba\u1e63r\u012b, etc.) or engaging with even broader reading traditions.</p>
 <p><strong>If Ma\u0161riq shows higher probability:</strong> This suggests Ma\u0161riq\u012b scholars maintained stronger interest in preserving and transmitting the full diversity of reading traditions beyond canonical selections, perhaps reflecting the region's role as the original site of reading tradition development.</p>
 <p><strong>If Ma\u0121rib shows higher probability:</strong> This indicates that Ma\u0121rib\u012b scholars, despite geographic distance from the original centers of qir\u0101\u02be\u0101t development, sought comprehensive knowledge of reading traditions, possibly as a strategy for scholarly authority.</p>"
@@ -928,19 +960,19 @@ server_bayesian <- function(input, output, session, rv) {
   # Get interpretation text
   get_interpretation <- function(prob_east_greater, mean_diff, system) {
     if (prob_east_greater > 0.95) {
-      sprintf("Strong evidence that Ma\u0161riq has higher probability for the %s system across all centuries. The mean difference of %.3f indicates Ma\u0161riq scholars had substantially higher preference for this system.",
+      sprintf("Strong evidence that Ma\u0161riq has higher probability for the %s Set across all centuries. The mean difference of %.3f indicates Ma\u0161riq scholars had substantially higher preference for this Set.",
               system, mean_diff)
     } else if (prob_east_greater < 0.05) {
-      sprintf("Strong evidence that Ma\u0121rib has higher probability for the %s system across all centuries. The mean difference of %.3f indicates Ma\u0121rib scholars had substantially higher preference for this system.",
+      sprintf("Strong evidence that Ma\u0121rib has higher probability for the %s Set across all centuries. The mean difference of %.3f indicates Ma\u0121rib scholars had substantially higher preference for this Set.",
               system, abs(mean_diff))
     } else if (prob_east_greater > 0.75) {
-      sprintf("Moderate evidence that Ma\u0161riq has higher probability for the %s system (%.1f%% confidence). The mean difference of %.3f suggests a Ma\u0161riq\u012b preference, but with some uncertainty.",
+      sprintf("Moderate evidence that Ma\u0161riq has higher probability for the %s Set (%.1f%% confidence). The mean difference of %.3f suggests a Ma\u0161riq\u012b preference, but with some uncertainty.",
               system, prob_east_greater * 100, mean_diff)
     } else if (prob_east_greater < 0.25) {
-      sprintf("Moderate evidence that Ma\u0121rib has higher probability for the %s system (%.1f%% confidence). The mean difference of %.3f suggests a Ma\u0121rib\u012b preference, but with some uncertainty.",
+      sprintf("Moderate evidence that Ma\u0121rib has higher probability for the %s Set (%.1f%% confidence). The mean difference of %.3f suggests a Ma\u0121rib\u012b preference, but with some uncertainty.",
               system, (1 - prob_east_greater) * 100, abs(mean_diff))
     } else {
-      sprintf("Weak or no evidence of regional difference for the %s system. The posterior probability is %.3f, suggesting relatively balanced preferences between regions.",
+      sprintf("Weak or no evidence of regional difference for the %s Set. The posterior probability is %.3f, suggesting relatively balanced preferences between regions.",
               system, prob_east_greater)
     }
   }

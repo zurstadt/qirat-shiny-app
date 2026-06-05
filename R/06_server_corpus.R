@@ -226,6 +226,24 @@ server_corpus <- function(input, output, session, rv) {
     )
   })
 
+  # Shared export shaping for the CSV/JSON download handlers
+  build_export_df <- function(df) {
+    df %>%
+      mutate(
+        title_formatted = sapply(title, function(x) format_camel_case(x, "title")),
+        author_formatted = sapply(author_name, function(x) format_camel_case(x, "author"))
+      ) %>%
+      select(work_id, title = title_formatted, author = author_formatted,
+             reading_set = `set`, type, region = regionality, death_century)
+  }
+
+  # 0-row export skeleton with the correct columns (used when filters match nothing)
+  empty_export_df <- function() {
+    data.frame(work_id = integer(), title = character(), author = character(),
+               reading_set = character(), type = character(), region = character(),
+               death_century = integer())
+  }
+
   # Download handlers for CSV and JSON
   output$download_csv <- downloadHandler(
     filename = function() {
@@ -233,14 +251,12 @@ server_corpus <- function(input, output, session, rv) {
     },
     content = function(file) {
       df <- filtered_corpus()
-      export_df <- df %>%
-        mutate(
-          title_formatted = sapply(title, function(x) format_camel_case(x, "title")),
-          author_formatted = sapply(author_name, function(x) format_camel_case(x, "author"))
-        ) %>%
-        select(work_id, title = title_formatted, author = author_formatted,
-               reading_set = `set`, type, region = regionality, death_century)
-      write.csv(export_df, file, row.names = FALSE)
+      if (nrow(df) == 0) {
+        showNotification("No works match the current filters — nothing to export.", type = "warning")
+        write.csv(empty_export_df(), file, row.names = FALSE)
+        return(invisible())
+      }
+      write.csv(build_export_df(df), file, row.names = FALSE)
     }
   )
 
@@ -250,14 +266,12 @@ server_corpus <- function(input, output, session, rv) {
     },
     content = function(file) {
       df <- filtered_corpus()
-      export_df <- df %>%
-        mutate(
-          title_formatted = sapply(title, function(x) format_camel_case(x, "title")),
-          author_formatted = sapply(author_name, function(x) format_camel_case(x, "author"))
-        ) %>%
-        select(work_id, title = title_formatted, author = author_formatted,
-               reading_set = `set`, type, region = regionality, death_century)
-      write(jsonlite::toJSON(export_df, pretty = TRUE), file)
+      if (nrow(df) == 0) {
+        showNotification("No works match the current filters — nothing to export.", type = "warning")
+        write(jsonlite::toJSON(empty_export_df(), pretty = TRUE), file)
+        return(invisible())
+      }
+      write(jsonlite::toJSON(build_export_df(df), pretty = TRUE), file)
     }
   )
 }

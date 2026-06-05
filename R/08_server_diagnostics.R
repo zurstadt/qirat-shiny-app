@@ -30,14 +30,17 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
     df <- diag$diag_stats
     df$variable <- factor(df$variable, levels = df$variable)
 
-    # Fixed y-axis: 0.99 to 1.05 puts threshold (1.01) at ~1/3 up
+    # Data-driven upper bound: keep the tight 0.99–1.05 view when every chain has
+    # converged, but extend the axis to show any parameter with R-hat > 1.05 —
+    # a fixed limit would silently DROP the exact convergence failure you need to see.
+    y_top <- max(1.05, max(df$rhat, na.rm = TRUE) * 1.01)
     ggplot(df, aes(x = variable, y = rhat)) +
       geom_point(size = 3, color = COLORS$set["7"], shape = 16) +
       geom_hline(yintercept = 1.0, linetype = "solid",
                  color = "gray60", linewidth = 0.3) +
       geom_hline(yintercept = 1.01, linetype = "dashed",
                  color = COLORS$set["10+"], linewidth = 0.6) +
-      scale_y_continuous(limits = c(0.99, 1.05), breaks = seq(0.99, 1.05, 0.01)) +
+      scale_y_continuous(limits = c(0.99, y_top), breaks = scales::pretty_breaks(n = 7)) +
       annotate("text", x = 1, y = 1.01, label = "threshold = 1.01",
                vjust = -0.5, hjust = 0, size = 2.5, color = COLORS$set["10+"]) +
       labs(x = NULL, y = expression(hat(R))) +
@@ -220,7 +223,7 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
       tags$style(HTML("
         .posterior-card:hover {
           box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-          border-color: #3498db;
+          border-color: #0072B2;
         }
       ")),
       row_divs
@@ -247,7 +250,7 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
         q025 <- quantile(all_vals, 0.025)
         q975 <- quantile(all_vals, 0.975)
         zero_in_ci <- (0 >= q025 && 0 <= q975)
-        zero_line_color <- if (zero_in_ci) "#e74c3c" else "gray50"
+        zero_line_color <- if (zero_in_ci) "#D55E00" else "gray50"
 
         # Build data for this parameter
         plot_data <- do.call(rbind, lapply(1:n_chains, function(ch) {
@@ -266,7 +269,7 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
         ggplot(plot_data, aes(x = x, y = y, color = Chain, fill = Chain)) +
           # 95% CI shading (background)
           annotate("rect", xmin = q025, xmax = q975, ymin = 0, ymax = max_y * 1.05,
-                   fill = "#3498db", alpha = 0.15) +
+                   fill = "#0072B2", alpha = 0.15) +
           geom_line(linewidth = 0.8) +
           geom_area(alpha = 0.3, position = "identity") +
           geom_vline(xintercept = 0, linetype = "dashed", color = zero_line_color, linewidth = 0.7) +
@@ -323,7 +326,7 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
     overall_q025 <- quantile(all_vals, 0.025)
     overall_q975 <- quantile(all_vals, 0.975)
     zero_in_ci <- (0 >= overall_q025 && 0 <= overall_q975)
-    zero_line_color <- if (zero_in_ci) "#e74c3c" else "gray50"
+    zero_line_color <- if (zero_in_ci) "#D55E00" else "gray50"
 
     # Get max y for shapes
     max_y <- max(sapply(1:n_chains, function(ch) max(density(draws_array[, ch, param])$y)))
@@ -337,7 +340,7 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
       type = 'scatter',
       mode = 'none',
       fill = 'toself',
-      fillcolor = 'rgba(52, 152, 219, 0.15)',
+      fillcolor = 'rgba(0, 114, 178, 0.15)',
       line = list(width = 0),
       name = '95% CI',
       hoverinfo = 'text',
@@ -609,12 +612,16 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
 
     ggplot(cor_long, aes(x = Var1, y = Var2, fill = value)) +
       geom_tile(color = "white", linewidth = 0.5) +
-      geom_text(aes(label = sprintf("%.2f", value)),
-                size = 2.5, color = "gray20") +
+      geom_text(aes(label = sprintf("%.2f", value),
+                    color = abs(value) > 0.5),
+                size = 2.5, show.legend = FALSE) +
       scale_fill_gradient2(low = COLORS$correlation["low"],
                            mid = COLORS$correlation["mid"],
                            high = COLORS$correlation["high"],
                            midpoint = 0, limits = c(-1, 1), name = "r") +
+      # Contrast-aware label: white on strongly-colored tiles, dark elsewhere
+      scale_color_manual(values = c("FALSE" = "gray20", "TRUE" = "white"),
+                         guide = "none") +
       labs(x = NULL, y = NULL) +
       theme_tufte_custom(base_size = 9) +
       theme(
@@ -622,7 +629,9 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
         axis.text.y = element_text(size = 8),
         axis.line = element_blank(),
         axis.ticks = element_blank(),
-        legend.position = "none"  # Values shown directly
+        legend.position = "right",  # slim colorbar keys hue → sign of r
+        legend.key.height = unit(1.2, "cm"),
+        legend.key.width = unit(0.4, "cm")
       )
   })
 
@@ -768,21 +777,25 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
       )
     }
 
-    p <- ggplot(ppc_plot_data, aes(x = Simulated, fill = Category, text = hover_text)) +
-      geom_histogram(aes(y = after_stat(density)), bins = 20,
-                     alpha = 0.75, color = "white",
-                     linewidth = 0.25) +
-      geom_vline(aes(xintercept = Observed),
-                 color = "gray10", linewidth = 0.7) +
-      facet_grid(Region ~ Category, scales = "free_x") +
-      scale_fill_manual(values = category_colors, guide = "none") +
-      labs(x = "Simulated Count", y = NULL) +
-      theme_tufte_custom(base_size = 9) +
-      theme(
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.line.y = element_blank()
-      )
+    # One summary row per Region × Category (the per-sim rows collapse to an
+    # interval). Replaces a 6-panel free-scale histogram grid — which stripped
+    # the y-axis and buried the observed line — with a posterior-predictive
+    # interval plot: the standard, legible PPC presentation for peer review.
+    ppc_summary <- unique(ppc_plot_data[, c(
+      "Region", "Category", "Observed", "Predicted",
+      "SimMean", "SimQ025", "SimQ975", "hover_text"
+    )])
+
+    p <- ggplot(ppc_summary, aes(y = Category, color = Category)) +
+      geom_linerange(aes(xmin = SimQ025, xmax = SimQ975), linewidth = 1.3, alpha = 0.45) +
+      geom_point(aes(x = SimMean), shape = 16, size = 2.6, alpha = 0.6) +
+      geom_point(aes(x = Observed, text = hover_text), shape = 18, size = 4, color = "gray10") +
+      facet_wrap(~ Region, ncol = 2) +
+      scale_color_manual(values = category_colors, guide = "none") +
+      labs(x = "Count (works)", y = NULL,
+           subtitle = "bar = 95% posterior-predictive interval   ● simulated mean   ◆ observed") +
+      theme_tufte_custom(base_size = 10) +
+      theme(plot.subtitle = element_text(size = 8, color = "gray40"))
 
     ggplotly(p, tooltip = "text") %>%
       layout(
@@ -821,14 +834,8 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
       exp_eta / rowSums(exp_eta)
     }
 
-    # Sample draws for spaghetti
-    n_draws_show <- 50
-    set.seed(42)
-    draw_idx <- sample(1:S, n_draws_show)
-
     # Compute predictions
     results <- data.frame()
-    spaghetti <- data.frame()
 
     for (cent_val in century_seq) {
       cent_dev <- cent_val - cent_mean
@@ -849,25 +856,15 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
             Category = lvl[k],
             Mean = mean(probs_all[, k]),
             CI50_low = quantile(probs_all[, k], 0.25),
-            CI50_high = quantile(probs_all[, k], 0.75)
+            CI50_high = quantile(probs_all[, k], 0.75),
+            CI95_low = quantile(probs_all[, k], 0.025),
+            CI95_high = quantile(probs_all[, k], 0.975)
           ))
-
-          # Spaghetti draws
-          for (d in seq_along(draw_idx)) {
-            spaghetti <- rbind(spaghetti, data.frame(
-              Century = cent_val,
-              Region = region,
-              Category = lvl[k],
-              Draw = d,
-              Prob = probs_all[draw_idx[d], k]
-            ))
-          }
         }
       }
     }
 
     results$Category <- factor(results$Category, levels = lvl)
-    spaghetti$Category <- factor(spaghetti$Category, levels = lvl)
 
     # Colors for categories (orange=7, green=7+1, blue=10+)
     category_colors <- COLORS$set[lvl]
@@ -880,12 +877,12 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
     }
 
     ggplot() +
-      # Spaghetti - very subtle
-      geom_line(data = spaghetti,
-                aes(x = Century, y = Prob, color = Category,
-                    group = interaction(Category, Draw)),
-                alpha = 0.08, linewidth = 0.2) +
-      # Ribbon - subtle shading
+      # 95% credible band (outer) — replaces the near-invisible spaghetti
+      geom_ribbon(data = results,
+                  aes(x = Century, ymin = CI95_low, ymax = CI95_high,
+                      fill = Category),
+                  alpha = 0.12) +
+      # 50% credible band (inner)
       geom_ribbon(data = results,
                   aes(x = Century, ymin = CI50_low, ymax = CI50_high,
                       fill = Category),
@@ -965,11 +962,14 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
 
     p <- ggplot(counts, aes(x = century_label, y = n, fill = century_label, text = hover_text)) +
       geom_col(color = NA, alpha = 0.85, width = 0.7) +
+      # Sequential, colorblind-safe Blues (ordinal centuries; light → dark).
+      # Replaces a brown ramp that was indistinguishable in grayscale / for
+      # brown-confusion viewers and clashed with the app palette.
       scale_fill_manual(values = c(
-        "4th c. AH" = "#8B4513",  # Saddle brown
-        "5th c. AH" = "#CD853F",  # Peru
-        "6th c. AH" = "#D2691E",  # Chocolate
-        "7th c. AH" = "#A0522D"   # Sienna
+        "4th c. AH" = "#C6DBEF",
+        "5th c. AH" = "#6BAED6",
+        "6th c. AH" = "#2171B5",
+        "7th c. AH" = "#08306B"
       ), guide = "none") +
       theme_tufte_custom(base_size = 11) +
       labs(title = "Century Distribution", x = NULL, y = "Count") +

@@ -323,6 +323,24 @@ ui_tab_home <- function() {
   )
 }
 
+ui_tab_paper <- function() {
+  tabPanel(
+    title = tagList(icon("file-lines"), "Paper"),
+    value = "paper",
+    br(),
+    div(class = "home-section",
+      p(tags$a(href = "manuscript.pdf", target = "_blank", download = NA,
+               icon("file-pdf"), " Download the paper (PDF)"),
+        " — the full manuscript, updated with each deployment."),
+      tags$iframe(
+        src = "paper.html",
+        style = "width:100%; height:1100px; border:1px solid #ddd; border-radius:4px;",
+        title = "The Rise of Mašriqī and Maġribī Pedagogical Canons"
+      )
+    )
+  )
+}
+
 ui_tab_corpus <- function() {
   tabPanel(
     title = tagList(icon("book"), "Corpus Explorer"),
@@ -333,7 +351,7 @@ ui_tab_corpus <- function() {
 
     p("Showing ", textOutput("corpus_works_count", inline = TRUE),
       " works on Qur\u02beanic Reading Traditions (4th\u20137th c. AH). ",
-      "For definitions of reading systems, regions, and the statistical model, see the ",
+      "For definitions of the Sets of Readings, regions, and the statistical model, see the ",
       tags$a(href = "#", onclick = "Shiny.setInputValue('nav_to', 'methodology', {priority: 'event'});", "Methodology"),
       " tab."),
     br(),
@@ -373,7 +391,7 @@ ui_tab_corpus <- function() {
           column(3, sliderInput("filter_century", "Century (AH):", min = 4, max = 7, value = c(4, 7), step = 1))
         ),
         fluidRow(
-          column(12, actionButton("clear_filters", icon("times"), " Clear Filters", class = "btn-secondary"))
+          column(12, actionButton("clear_filters", "Clear Filters", icon = icon("times"), class = "btn-secondary"))
         ),
         hr(),
         uiOutput("corpus_results_count"),
@@ -382,8 +400,10 @@ ui_tab_corpus <- function() {
         fluidRow(
           column(4, downloadButton("download_csv", "Download CSV", class = "btn-primary btn-block")),
           column(4, downloadButton("download_json", "Download JSON", class = "btn-info btn-block")),
-          column(4, downloadButton("download_ris", "Download RIS (Zotero)", class = "btn-success btn-block"))
-        )
+          column(4, downloadButton("download_ris", "Full bibliography (RIS)", class = "btn-success btn-block"))
+        ),
+        p(class = "text-muted", style = "font-size: 11px; margin-top: 8px;",
+          "CSV and JSON export the works currently shown by your filters; the RIS file is the complete curated bibliography for Zotero/reference managers.")
       )
     )
   )
@@ -400,7 +420,7 @@ ui_tab_methodology <- function() {
         hr(),
 
         p("We estimate the association between regional scholarly affiliation (Ma\u0161riq / Ma\u0121rib) and ",
-          "Qur\u02beanic reading system (7, 7+1, 10+) using Bayesian multinomial logistic regression with an ",
+          "Qur\u02beanic Set of Readings (7, 7+1, 10+) using Bayesian multinomial logistic regression with an ",
           "optional century covariate. Regional divergence across time is quantified via Jensen-Shannon ",
           "Divergence (JSD) computed from posterior predictive distributions. The model is fit in ",
           strong("Stan"), " via ", strong("cmdstanr"), "; results are pre-computed and serialized as RDS ",
@@ -409,7 +429,7 @@ ui_tab_methodology <- function() {
 
         h3("1. Data Structure"),
         p(strong("N"), " = 172 works on Qur\u02beanic reading traditions, 4th\u20137th c. AH. ",
-          strong("Outcome:"), " categorical reading system ", em("y"), " \u2208 {7, 7+1, 10+}. ",
+          strong("Outcome:"), " categorical Set of Readings ", em("y"), " \u2208 {7, 7+1, 10+}. ",
           strong("Predictor:"), " region (geo \u2208 {0 = Ma\u0121rib, 1 = Ma\u0161riq}). ",
           strong("Covariate:"), " author's death century (continuous, mean-centered)."),
 
@@ -432,11 +452,11 @@ ui_tab_methodology <- function() {
 
         h3("2. Model Specification"),
         p("Multinomial logistic regression with ", em("K"), " = 3 response categories and the ",
-          strong("10+ system"), " as the reference (\u03b7_K = 0). For each non-reference category ",
+          strong("10+ Set"), " as the reference (\u03b7_K = 0). For each non-reference category ",
           em("k"), " \u2208 {7, 7+1}:"),
         tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
           "\u03b7_k = \u03b1_k + \u03b2_k \u00d7 geo + \u03b3_k \u00d7 (century \u2212 c\u0304)"),
-        p("where \u03b1_k is the intercept (log-odds of system ", em("k"), " vs. 10+ at geo = 0, century = c\u0304), ",
+        p("where \u03b1_k is the intercept (log-odds of Set ", em("k"), " vs. 10+ at geo = 0, century = c\u0304), ",
           "\u03b2_k is the regional effect, and \u03b3_k is the century slope (included only in the century model). ",
           "Category probabilities are obtained via the softmax link:"),
         tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 1.05em;",
@@ -503,7 +523,7 @@ model {
               tags$li("Zero divergent transitions")
             ))
         ),
-        p(strong("Posterior predictive check:"), " For each posterior draw, simulated counts per region \u00d7 system cell ",
+        p(strong("Posterior predictive check:"), " For each posterior draw, simulated counts per region \u00d7 Set cell ",
           "are compared to observed counts. Adequate fit requires observed values to fall within the 95% posterior predictive interval."),
         hr(),
 
