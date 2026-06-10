@@ -777,24 +777,22 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
       )
     }
 
-    # One summary row per Region × Category (the per-sim rows collapse to an
-    # interval). Replaces a 6-panel free-scale histogram grid — which stripped
-    # the y-axis and buried the observed line — with a posterior-predictive
-    # interval plot: the standard, legible PPC presentation for peer review.
-    ppc_summary <- unique(ppc_plot_data[, c(
-      "Region", "Category", "Observed", "Predicted",
-      "SimMean", "SimQ025", "SimQ975", "hover_text"
-    )])
-
-    p <- ggplot(ppc_summary, aes(y = Category, color = Category)) +
-      geom_linerange(aes(xmin = SimQ025, xmax = SimQ975), linewidth = 1.3, alpha = 0.45) +
-      geom_point(aes(x = SimMean), shape = 16, size = 2.6, alpha = 0.6) +
-      geom_point(aes(x = Observed, text = hover_text), shape = 18, size = 4, color = "gray10") +
-      facet_wrap(~ Region, ncol = 2) +
-      scale_color_manual(values = category_colors, guide = "none") +
-      labs(x = "Count (works)", y = NULL,
-           subtitle = "bar = 95% posterior-predictive interval   ● simulated mean   ◆ observed") +
-      theme_tufte_custom(base_size = 10) +
+    # Faceted posterior-predictive histogram (Region × Category): the simulated
+    # count distribution per cell with the observed count overlaid as a bold
+    # vertical line. Restored from the interval-plot variant per editorial
+    # preference, with the two prior shortcomings fixed: the y-axis (posterior-
+    # draw frequency) is retained, and the observed line is drawn prominently so
+    # it reads clearly against the coloured bars.
+    p <- ggplot(ppc_plot_data, aes(x = Simulated, fill = Category, text = hover_text)) +
+      geom_histogram(aes(y = after_stat(count)), bins = 20,
+                     alpha = 0.78, color = "white") +
+      geom_vline(aes(xintercept = Observed),
+                 color = "black", linewidth = 1.0) +
+      facet_grid(Region ~ Category, scales = "free_x") +
+      scale_fill_manual(values = category_colors, guide = "none") +
+      labs(x = "Simulated count (works)", y = "Posterior draws",
+           subtitle = "histogram = posterior-simulated counts   |   vertical line = observed count") +
+      theme_tufte_custom(base_size = 9) +
       theme(plot.subtitle = element_text(size = 8, color = "gray40"))
 
     ggplotly(p, tooltip = "text") %>%

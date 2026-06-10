@@ -292,10 +292,24 @@ server_bayesian <- function(input, output, session, rv) {
           "curves validates the multinomial specification. See the Methodology tab for details."),
 
         h5(class = "section-header-bold", "Absolute divergence (bits)"),
-        plotlyOutput("jsd_absolute_plot", height = "380px"),
+        fluidRow(
+          column(6,
+            p(tags$strong("Model-based"), style = "text-align:center; margin-bottom:2px; color:#0072B2;"),
+            plotlyOutput("jsd_absolute_model_plot", height = "340px")),
+          column(6,
+            p(tags$strong("Dirichlet-smoothed"), style = "text-align:center; margin-bottom:2px; color:#D55E00;"),
+            plotlyOutput("jsd_absolute_dir_plot", height = "340px"))
+        ),
         br(),
         h5(class = "section-header-bold", "Normalized divergence (% of constrained maximum)"),
-        plotlyOutput("jsd_normalized_plot", height = "380px"),
+        fluidRow(
+          column(6,
+            p(tags$strong("Model-based"), style = "text-align:center; margin-bottom:2px; color:#0072B2;"),
+            plotlyOutput("jsd_normalized_model_plot", height = "340px")),
+          column(6,
+            p(tags$strong("Dirichlet-smoothed"), style = "text-align:center; margin-bottom:2px; color:#D55E00;"),
+            plotlyOutput("jsd_normalized_dir_plot", height = "340px"))
+        ),
         br(),
         h5(class = "section-header-bold", "Summary Table"),
         DT::dataTableOutput("jsd_table"),
@@ -401,86 +415,70 @@ server_bayesian <- function(input, output, session, rv) {
   # and explicitly `group` the lines by method so the curve renders continuously.
 
   # --- Panel A: absolute divergence (bits), with constrained-max ceiling ---
-  output$jsd_absolute_plot <- renderPlotly({
-    req(PRECOMPUTED)
-
-    jsd_combined <- rbind(PRECOMPUTED$jsd_model_summary, PRECOMPUTED$jsd_dir_summary)
-    jsd_combined$method <- factor(jsd_combined$method, levels = JSD_METHOD_LEVELS)
-
-    jsd_max_combined <- rbind(PRECOMPUTED$jsd_max_model_summary, PRECOMPUTED$jsd_max_dir_summary)
-    jsd_max_combined$method <- factor(jsd_max_combined$method, levels = JSD_METHOD_LEVELS)
-
-    jsd_combined$hover_text <- sprintf(
+  # --- JSD plots, split by method so each panel carries a single series ---
+  # (Previously model-based + Dirichlet were overlaid on one axis, which the
+  #  ribbons made too noisy to read. One method per panel, matching the
+  #  manuscript's separate Figs 7-8.)
+  jsd_abs_plotly <- function(d, dmax, method_label) {
+    col <- unname(JSD_METHOD_COLORS[method_label]); if (is.na(col)) col <- "#0072B2"
+    d$hover_text <- sprintf(
       "<b>%s</b><br>Century: %sth c. AH<br>Mean JSD: %.3f<br>95%% CI: [%.3f, %.3f]",
-      jsd_combined$method, jsd_combined$century,
-      jsd_combined$mean, jsd_combined$ci95_low, jsd_combined$ci95_high
-    )
-    jsd_max_combined$hover_text <- sprintf(
-      "<b>%s — constrained max</b><br>Century: %sth c. AH<br>Ceiling JSD: %.3f",
-      jsd_max_combined$method, jsd_max_combined$century, jsd_max_combined$mean
-    )
-
-    # data-driven upper bound — the old fixed 0–1 axis compressed the data into
-    # the lower half; anchor at 0 (honest) up to just above the ceiling line.
-    y_top <- max(jsd_combined$ci95_high, jsd_max_combined$mean) * 1.08
-
-    p <- ggplot(jsd_combined, aes(x = century, color = method, fill = method)) +
-      geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high, group = method),
-                  alpha = 0.12, color = NA) +
-      geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high, group = method),
-                  alpha = 0.25, color = NA) +
-      geom_line(data = jsd_max_combined, aes(y = mean, group = method),
-                linewidth = 0.7, linetype = "dashed") +
-      geom_point(data = jsd_max_combined, aes(y = mean, text = hover_text),
-                 size = 1.4, shape = 21, stroke = 0.4) +
-      geom_line(aes(y = mean, group = method), linewidth = 0.9) +
-      geom_point(aes(y = mean, text = hover_text), size = 2.5) +
-      scale_color_manual(values = JSD_METHOD_COLORS) +
-      scale_fill_manual(values = JSD_METHOD_COLORS) +
+      method_label, d$century, d$mean, d$ci95_low, d$ci95_high)
+    dmax$hover_text <- sprintf(
+      "<b>Constrained max</b><br>Century: %sth c. AH<br>Ceiling JSD: %.3f",
+      dmax$century, dmax$mean)
+    y_top <- max(d$ci95_high, dmax$mean) * 1.08
+    p <- ggplot(d, aes(x = century)) +
+      geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high), fill = col, alpha = 0.12) +
+      geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high), fill = col, alpha = 0.25) +
+      geom_line(data = dmax, aes(y = mean), linewidth = 0.7,
+                linetype = "dashed", color = "gray45") +
+      geom_point(data = dmax, aes(y = mean, text = hover_text), size = 1.4,
+                 shape = 21, stroke = 0.4, color = "gray45", fill = "white") +
+      geom_line(aes(y = mean), color = col, linewidth = 0.9) +
+      geom_point(aes(y = mean, text = hover_text), color = col, size = 2.5) +
       scale_x_continuous(breaks = PRECOMPUTED$centuries,
                          labels = paste0(PRECOMPUTED$centuries, "th c.")) +
       scale_y_continuous(limits = c(0, y_top)) +
-      labs(x = "Century (AH)", y = "JSD (bits)", color = "Method", fill = "Method") +
+      labs(x = "Century (AH)", y = "JSD (bits)") +
       theme_tufte_custom(base_size = 11)
+    ggplotly(p, tooltip = "text") %>% plotly::layout(showlegend = FALSE)
+  }
 
-    ggplotly(p, tooltip = "text") %>%
-      plotly::layout(legend = list(orientation = "h", x = 0.5, y = 1.12,
-                                   xanchor = "center", yanchor = "bottom"))
-  })
-
-  # --- Panel B: normalized divergence (% of constrained maximum) ---
-  output$jsd_normalized_plot <- renderPlotly({
-    req(PRECOMPUTED)
-
-    norm_combined <- rbind(PRECOMPUTED$jsd_norm_model_summary, PRECOMPUTED$jsd_norm_dir_summary)
-    norm_combined$method <- factor(norm_combined$method, levels = JSD_METHOD_LEVELS)
-
-    norm_combined$hover_text <- sprintf(
+  jsd_norm_plotly <- function(d, method_label) {
+    col <- unname(JSD_METHOD_COLORS[method_label]); if (is.na(col)) col <- "#0072B2"
+    d$hover_text <- sprintf(
       "<b>%s</b><br>Century: %sth c. AH<br>Normalized JSD: %.0f%%<br>95%% CI: [%.0f%%, %.0f%%]",
-      norm_combined$method, norm_combined$century,
-      norm_combined$mean * 100, norm_combined$ci95_low * 100, norm_combined$ci95_high * 100
-    )
-
-    p <- ggplot(norm_combined, aes(x = century, color = method, fill = method)) +
-      geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high, group = method),
-                  alpha = 0.12, color = NA) +
-      geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high, group = method),
-                  alpha = 0.25, color = NA) +
-      geom_line(aes(y = mean, group = method), linewidth = 0.9) +
-      geom_point(aes(y = mean, text = hover_text), size = 2.5) +
-      scale_color_manual(values = JSD_METHOD_COLORS) +
-      scale_fill_manual(values = JSD_METHOD_COLORS) +
+      method_label, d$century, d$mean * 100, d$ci95_low * 100, d$ci95_high * 100)
+    p <- ggplot(d, aes(x = century)) +
+      geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high), fill = col, alpha = 0.12) +
+      geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high), fill = col, alpha = 0.25) +
+      geom_line(aes(y = mean), color = col, linewidth = 0.9) +
+      geom_point(aes(y = mean, text = hover_text), color = col, size = 2.5) +
       scale_x_continuous(breaks = PRECOMPUTED$centuries,
                          labels = paste0(PRECOMPUTED$centuries, "th c.")) +
       scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2),
                          labels = function(x) paste0(x * 100, "%")) +
-      labs(x = "Century (AH)", y = "JSD (% of constrained max)",
-           color = "Method", fill = "Method") +
+      labs(x = "Century (AH)", y = "JSD (% of constrained max)") +
       theme_tufte_custom(base_size = 11)
+    ggplotly(p, tooltip = "text") %>% plotly::layout(showlegend = FALSE)
+  }
 
-    ggplotly(p, tooltip = "text") %>%
-      plotly::layout(legend = list(orientation = "h", x = 0.5, y = 1.12,
-                                   xanchor = "center", yanchor = "bottom"))
+  output$jsd_absolute_model_plot <- renderPlotly({
+    req(PRECOMPUTED)
+    jsd_abs_plotly(PRECOMPUTED$jsd_model_summary, PRECOMPUTED$jsd_max_model_summary, "Model-based")
+  })
+  output$jsd_absolute_dir_plot <- renderPlotly({
+    req(PRECOMPUTED)
+    jsd_abs_plotly(PRECOMPUTED$jsd_dir_summary, PRECOMPUTED$jsd_max_dir_summary, "Dirichlet-smoothed")
+  })
+  output$jsd_normalized_model_plot <- renderPlotly({
+    req(PRECOMPUTED)
+    jsd_norm_plotly(PRECOMPUTED$jsd_norm_model_summary, "Model-based")
+  })
+  output$jsd_normalized_dir_plot <- renderPlotly({
+    req(PRECOMPUTED)
+    jsd_norm_plotly(PRECOMPUTED$jsd_norm_dir_summary, "Dirichlet-smoothed")
   })
 
   # JSD summary table
