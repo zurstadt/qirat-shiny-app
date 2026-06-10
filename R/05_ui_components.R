@@ -667,7 +667,7 @@ ui_tab_acknowledgements <- function() {
           " research and innovation programme (",
           tags$a(href = "https://cordis.europa.eu/project/id/101044127", target = "_blank", rel = "noopener",
                  "Grant Agreement No. 101044127"),
-          ", QurXan)."),
+          ", QurCan)."),
         br(),
         h4("Institutional Support"),
         p("This project is based at the ",
@@ -731,7 +731,7 @@ ui_footer <- function() {
       tags$a(
         href = "https://www.universiteitleiden.nl/en/research/research-projects/humanities/quran-quotations-in-literary-arabic-texts",
         target = "_blank",
-        tags$img(src = "images/qurxan_logo.png", height = "60px", alt = "QurXan Project",
+        tags$img(src = "images/qurxan_logo.png", height = "60px", alt = "QurCan Project",
                  style = "opacity: 0.9; transition: opacity 0.2s;",
                  onmouseover = "this.style.opacity='1'",
                  onmouseout = "this.style.opacity='0.9'")
@@ -739,7 +739,7 @@ ui_footer <- function() {
     ),
     p(
       style = "margin-top: 15px; font-size: 0.85em; color: #666;",
-      "Funded by the European Research Council (ERC) under the European Union's Horizon Europe programme (Grant Agreement No. 101044127, QurXan)"
+      "Funded by the European Research Council (ERC) under the European Union's Horizon Europe programme (Grant Agreement No. 101044127, QurCan)"
     ),
     p(
       style = "margin-top: 10px; font-size: 0.8em; color: #888;",
