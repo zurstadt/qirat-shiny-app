@@ -32,6 +32,10 @@ PRIMARY_ABBREVS <- if (!is.null(WORK_SCHEMAS)) {
 }
 
 # Okabe-Ito colorblind-friendly palette for academic publication
+# JSD method colors (model-based = blue, Dirichlet-smoothed = vermillion);
+# shared by the Bayesian server panels and the Card 5 UI labels.
+JSD_METHOD_COLORS <- c("Model-based" = "#0072B2", "Dirichlet-smoothed" = "#D55E00")
+
 COLORS <- list(
   # Reading systems (sets)
   set = c(

@@ -294,20 +294,20 @@ server_bayesian <- function(input, output, session, rv) {
         h5(class = "section-header-bold", "Absolute divergence (bits)"),
         fluidRow(
           column(6,
-            p(tags$strong("Model-based"), style = "text-align:center; margin-bottom:2px; color:#0072B2;"),
+            p(tags$strong("Model-based"), style = paste0("text-align:center; margin-bottom:2px; color:", JSD_METHOD_COLORS[["Model-based"]], ";")),
             plotlyOutput("jsd_absolute_model_plot", height = "340px")),
           column(6,
-            p(tags$strong("Dirichlet-smoothed"), style = "text-align:center; margin-bottom:2px; color:#D55E00;"),
+            p(tags$strong("Dirichlet-smoothed"), style = paste0("text-align:center; margin-bottom:2px; color:", JSD_METHOD_COLORS[["Dirichlet-smoothed"]], ";")),
             plotlyOutput("jsd_absolute_dir_plot", height = "340px"))
         ),
         br(),
         h5(class = "section-header-bold", "Normalized divergence (% of constrained maximum)"),
         fluidRow(
           column(6,
-            p(tags$strong("Model-based"), style = "text-align:center; margin-bottom:2px; color:#0072B2;"),
+            p(tags$strong("Model-based"), style = paste0("text-align:center; margin-bottom:2px; color:", JSD_METHOD_COLORS[["Model-based"]], ";")),
             plotlyOutput("jsd_normalized_model_plot", height = "340px")),
           column(6,
-            p(tags$strong("Dirichlet-smoothed"), style = "text-align:center; margin-bottom:2px; color:#D55E00;"),
+            p(tags$strong("Dirichlet-smoothed"), style = paste0("text-align:center; margin-bottom:2px; color:", JSD_METHOD_COLORS[["Dirichlet-smoothed"]], ";")),
             plotlyOutput("jsd_normalized_dir_plot", height = "340px"))
         ),
         br(),
@@ -405,8 +405,7 @@ server_bayesian <- function(input, output, session, rv) {
     )
   }
 
-  # JSD method colors (shared by both panels): blue = model, vermillion = Dirichlet
-  JSD_METHOD_COLORS <- c("Model-based" = "#0072B2", "Dirichlet-smoothed" = "#D55E00")
+  # JSD_METHOD_COLORS is defined globally in R/01_constants.R (shared with the UI).
 
   # NB: do NOT put `text = hover_text` in the global aes — ggplotly splits a
   # geom_line into separate traces when the inherited text aesthetic varies
@@ -426,7 +425,7 @@ server_bayesian <- function(input, output, session, rv) {
     dmax$hover_text <- sprintf(
       "<b>Constrained max</b><br>Century: %sth c. AH<br>Ceiling JSD: %.3f",
       dmax$century, dmax$mean)
-    y_top <- max(d$ci95_high, dmax$mean) * 1.08
+    y_top <- max(d$ci95_high, dmax$mean, na.rm = TRUE) * 1.08
     p <- ggplot(d, aes(x = century)) +
       geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high), fill = col, alpha = 0.12) +
       geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high), fill = col, alpha = 0.25) +
@@ -464,25 +463,25 @@ server_bayesian <- function(input, output, session, rv) {
   }
 
   output$jsd_absolute_model_plot <- renderPlotly({
-    req(PRECOMPUTED)
+    req(PRECOMPUTED, PRECOMPUTED$jsd_model_summary, PRECOMPUTED$jsd_max_model_summary)
     jsd_abs_plotly(PRECOMPUTED$jsd_model_summary, PRECOMPUTED$jsd_max_model_summary, "Model-based")
   })
   output$jsd_absolute_dir_plot <- renderPlotly({
-    req(PRECOMPUTED)
+    req(PRECOMPUTED, PRECOMPUTED$jsd_dir_summary, PRECOMPUTED$jsd_max_dir_summary)
     jsd_abs_plotly(PRECOMPUTED$jsd_dir_summary, PRECOMPUTED$jsd_max_dir_summary, "Dirichlet-smoothed")
   })
   output$jsd_normalized_model_plot <- renderPlotly({
-    req(PRECOMPUTED)
+    req(PRECOMPUTED, PRECOMPUTED$jsd_norm_model_summary)
     jsd_norm_plotly(PRECOMPUTED$jsd_norm_model_summary, "Model-based")
   })
   output$jsd_normalized_dir_plot <- renderPlotly({
-    req(PRECOMPUTED)
+    req(PRECOMPUTED, PRECOMPUTED$jsd_norm_dir_summary)
     jsd_norm_plotly(PRECOMPUTED$jsd_norm_dir_summary, "Dirichlet-smoothed")
   })
 
   # JSD summary table
   output$jsd_table <- DT::renderDataTable({
-    req(PRECOMPUTED)
+    req(PRECOMPUTED, PRECOMPUTED$jsd_model_summary, PRECOMPUTED$jsd_dir_summary)
 
     jsd_combined <- rbind(PRECOMPUTED$jsd_model_summary, PRECOMPUTED$jsd_dir_summary)
     jsd_max_combined <- rbind(PRECOMPUTED$jsd_max_model_summary, PRECOMPUTED$jsd_max_dir_summary)

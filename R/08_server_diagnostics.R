@@ -454,47 +454,6 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
     )
   })
 
-  # Legacy - keep for any references (now unused)
-  output$posterior_modal_stats_full <- renderUI({
-    diag <- diagnostics_data()
-    req(diag)
-
-    draws_array <- diag$draws_array
-    param_cols <- diag$param_cols
-    n_chains <- diag$n_chains
-
-    chain_colors <- COLORS$chains[1:n_chains]
-
-    # Calculate per-chain stats across all parameters
-    stats_rows <- lapply(1:n_chains, function(ch) {
-      # Aggregate stats across parameters
-      all_means <- sapply(param_cols, function(p) mean(draws_array[, ch, p]))
-      all_sds <- sapply(param_cols, function(p) sd(draws_array[, ch, p]))
-
-      tags$tr(
-        tags$td(style = paste0("color: ", chain_colors[ch], "; font-weight: bold;"),
-                paste("Chain", ch)),
-        tags$td(format(nrow(draws_array), big.mark = ",")),
-        tags$td(round(mean(all_sds), 4)),
-        tags$td(round(sd(all_means), 4))
-      )
-    })
-
-    tags$table(
-      class = "table table-sm table-striped",
-      style = "font-size: 13px; margin: 0;",
-      tags$thead(
-        tags$tr(
-          tags$th("Chain"),
-          tags$th("Samples"),
-          tags$th("Avg. SD"),
-          tags$th("Mean Variability")
-        )
-      ),
-      tags$tbody(stats_rows)
-    )
-  })
-
   # Chain Information Content Stats
   output$chain_info_stats <- renderUI({
     diag <- diagnostics_data()
