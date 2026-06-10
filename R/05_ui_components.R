@@ -468,7 +468,7 @@ ui_tab_methodology <- function() {
         p("The simple model omits ", code("beta_cent"), " and the ", code("century"), " data."),
         tags$pre(style = "background: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 0.95em; overflow-x: auto;",
 "data {
-  int<lower=1> N;                          // number of works (172)
+  int<lower=1> N;                          // number of works (173)
   int<lower=2> K;                          // number of categories (3)
   array[N] int<lower=1,upper=K> y;         // observed system for each work
   array[N] int<lower=0,upper=1> geo;       // region: 0 = Ma\u0121rib, 1 = Ma\u0161riq

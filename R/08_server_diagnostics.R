@@ -843,10 +843,11 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
       for (geo in 0:1) {
         region <- ifelse(geo == 0, "Maghrib", "Mashriq")
 
-        # All draws
-        eta_all <- cbind(0,
-                         alpha[,1] + beta_geo[,1] * geo + beta_cent[,1] * cent_dev,
-                         alpha[,2] + beta_geo[,2] * geo + beta_cent[,2] * cent_dev)
+        # All draws. Reference = last category (10+, p[K]=0): zero column LAST
+        # keeps softmax output in natural order [7, 7+1, 10+].
+        eta_all <- cbind(alpha[,1] + beta_geo[,1] * geo + beta_cent[,1] * cent_dev,
+                         alpha[,2] + beta_geo[,2] * geo + beta_cent[,2] * cent_dev,
+                         0)
         probs_all <- softmax_vec(eta_all)
 
         for (k in 1:K) {
