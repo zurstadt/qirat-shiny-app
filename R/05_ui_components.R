@@ -667,7 +667,7 @@ ui_tab_acknowledgements <- function() {
           " research and innovation programme (",
           tags$a(href = "https://cordis.europa.eu/project/id/101044127", target = "_blank", rel = "noopener",
                  "Grant Agreement No. 101044127"),
-          ", QurCan)."),
+          ", QurXan)."),
         br(),
         h4("Institutional Support"),
         p("This project is based at the ",
@@ -739,7 +739,7 @@ ui_footer <- function() {
     ),
     p(
       style = "margin-top: 15px; font-size: 0.85em; color: #666;",
-      "Funded by the European Research Council (ERC) under the European Union's Horizon Europe programme (Grant Agreement No. 101044127, QurCan)"
+      "Funded by the European Research Council (ERC) under the European Union's Horizon Europe programme (Grant Agreement No. 101044127, QurXan)"
     ),
     p(
       style = "margin-top: 10px; font-size: 0.8em; color: #888;",
