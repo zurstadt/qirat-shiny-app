@@ -739,7 +739,7 @@ ui_footer <- function() {
     ),
     p(
       style = "margin-top: 15px; font-size: 0.85em; color: #666;",
-      "Funded by the European Research Council (ERC) under the European Union's Horizon 2020 programme (Grant 101054849)"
+      "Funded by the European Research Council (ERC) under the European Union's Horizon Europe programme (Grant Agreement No. 101044127, QurCan)"
     ),
     p(
       style = "margin-top: 10px; font-size: 0.8em; color: #888;",
