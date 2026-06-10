@@ -123,10 +123,6 @@ server <- function(input, output, session) {
   }, deleteFile = FALSE)
 
   # Dynamic works counts
-  output$home_works_count <- renderText({
-    if (!is.null(rv$clean_data)) nrow(rv$clean_data) else "172"
-  })
-
   output$corpus_works_count <- renderText({
     if (!is.null(rv$clean_data)) nrow(rv$clean_data) else "172"
   })
