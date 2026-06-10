@@ -407,7 +407,6 @@ server_bayesian <- function(input, output, session, rv) {
 
   # JSD method colors (shared by both panels): blue = model, vermillion = Dirichlet
   JSD_METHOD_COLORS <- c("Model-based" = "#0072B2", "Dirichlet-smoothed" = "#D55E00")
-  JSD_METHOD_LEVELS <- c("Model-based", "Dirichlet-smoothed")
 
   # NB: do NOT put `text = hover_text` in the global aes — ggplotly splits a
   # geom_line into separate traces when the inherited text aesthetic varies
