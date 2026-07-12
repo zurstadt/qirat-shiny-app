@@ -77,11 +77,15 @@ COLORS <- list(
   )
 )
 
-# Cache-buster for the embedded paper. www/paper.html is 7.5 MB and www/manuscript.pdf 4.9 MB;
-# browsers cache both indefinitely, so a redeployed paper is invisible to anyone who has already
-# opened the app. Keying the URL to the file's mtime makes a new render a new URL.
-PAPER_VERSION <- if (file.exists("www/paper.html")) {
-  format(as.integer(as.POSIXct(file.mtime("www/paper.html"))))
-} else {
-  "0"
+# The embedded paper. Its filename carries a CONTENT HASH (paper-<hash>.html), so discover it by
+# pattern rather than naming it. See scripts/install_paper_into_app.R for why: a fixed path meant
+# readers were served a JUNE 11 copy of the paper for hours after the corrected one was deployed,
+# because nothing in the URL had changed. A `?v=` query string does not help — a path-keyed cache
+# ignores it. The version has to be in the filename, and then no cache can substitute one for the
+# other.
+.find_asset <- function(stem, ext) {
+  f <- list.files("www", pattern = sprintf("^%s-[0-9a-f]+\\.%s$", stem, ext))
+  if (length(f)) f[[1]] else NA_character_          # NA -> the UI hides the tab rather than 404
 }
+PAPER_HTML <- .find_asset("paper", "html")
+PAPER_PDF  <- .find_asset("manuscript", "pdf")

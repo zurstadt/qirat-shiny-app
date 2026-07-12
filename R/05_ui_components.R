@@ -340,16 +340,15 @@ ui_tab_paper <- function() {
     value = "paper",
     br(),
     div(class = "home-section",
-      # CACHE-BUST BOTH. paper.html is 7.5 MB of static asset and the browser will happily serve a
-      # months-old copy of it forever. On 2026-07-12 the corrected paper landed on the server and
-      # readers kept seeing the pre-refit one — odds ratio still 7.5 — because the iframe URL had
-      # not changed. PAPER_VERSION is the file's mtime: a new render is a new URL, always.
-      p(tags$a(href = sprintf("manuscript.pdf?v=%s", PAPER_VERSION),
-               target = "_blank", download = NA,
+      # The paper's filename carries a CONTENT HASH (paper-<hash>.html, manuscript-<hash>.pdf), so a
+      # new render is a new URL and no cache can serve the old one. A fixed path meant readers were
+      # still being handed the JUNE 11 paper — odds ratio 7.5 — hours after the corrected one was
+      # deployed. `?v=` did not fix it; a path-keyed cache ignores query strings.
+      p(tags$a(href = PAPER_PDF, target = "_blank", download = "manuscript.pdf",
                icon("file-pdf"), " Download the paper (PDF)"),
         " — the full manuscript, updated with each deployment."),
       tags$iframe(
-        src = sprintf("paper.html?v=%s", PAPER_VERSION),
+        src = PAPER_HTML,
         style = "width:100%; height:1100px; border:1px solid #ddd; border-radius:4px;",
         title = "The Rise of Mašriqī and Maġribī Pedagogical Canons"
       )

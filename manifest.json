@@ -2473,7 +2473,7 @@
       "checksum": "07b18a44889aeead00607b7813626bc5"
     },
     "R/01_constants.R": {
-      "checksum": "f691be7c9c0df6d8c1265850fa1902c4"
+      "checksum": "d9c6a53be7da06ad546c3c5879af74b2"
     },
     "R/02_utils.R": {
       "checksum": "90cee0455f336c029702f340efd85869"
@@ -2485,7 +2485,7 @@
       "checksum": "59a1cef1cf72e023526f28f8723b3920"
     },
     "R/05_ui_components.R": {
-      "checksum": "c8ea69c84bc4daad4e2355d5948adc45"
+      "checksum": "554401dfbca7e4bf42a7a636d2972cb9"
     },
     "R/06_server_corpus.R": {
       "checksum": "52da423142470ebdf5ad8e1a59da41b1"
@@ -2526,10 +2526,10 @@
     "www/images/qurxan_logo.png": {
       "checksum": "fb4069e9db9ca7757075c7416bd074cf"
     },
-    "www/manuscript.pdf": {
-      "checksum": "92dbf6de6dd5f6dbe0cb118165a86e07"
+    "www/manuscript-4125b8a402.pdf": {
+      "checksum": "4125b8a402f2451fcf6b6b381b5ce16f"
     },
-    "www/paper.html": {
+    "www/paper-dae4b10c9f.html": {
       "checksum": "dae4b10c9f6ca58472a1a61ddf161820"
     }
   },
