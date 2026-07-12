@@ -1,8 +1,28 @@
 #!/usr/bin/env Rscript
-# Deploy the app to Posit Connect. USE THIS — do not call rsconnect::deployApp() by hand.
+# ═════════════════════════════════════════════════════════════════════════════════════════════
+#  ⚠️  THIS SCRIPT DOES NOT DEPLOY THE APP. GIT DOES.
 #
-#     cd deploy && Rscript deploy.R            # deploy
-#     cd deploy && Rscript deploy.R --manifest # only refresh manifest.json
+#      cd deploy && git push origin main        <-- THIS is the deployment
+#
+#  connect.posit.cloud is Posit Connect CLOUD, and it is GIT-BACKED: it redeploys from
+#  github.com/zurstadt/qirat-shiny-app on every push. It does NOT serve bundles uploaded by
+#  rsconnect::deployApp() — those go nowhere, and deployApp() still cheerfully reports
+#  "Successfully deployed".
+#
+#  On 2026-07-12 that cost hours. Four commits — the corrected posterior, the fixed Confound
+#  card, the re-rendered paper — sat unpushed on deploy/ while deployApp() was run three times
+#  and reported success three times. Readers kept downloading the June 11 paper, odds ratio 7.5,
+#  because the repo Connect actually reads had never changed.
+#
+#  `make check` now refuses to pass with unpushed commits on deploy/.
+#
+#  What this script IS for: keeping manifest.json honest and keeping junk out of the repo (see
+#  the .rscignore note below). Run it, commit, THEN PUSH.
+# ═════════════════════════════════════════════════════════════════════════════════════════════
+#
+#     cd deploy && Rscript deploy.R --manifest  # refresh manifest.json (then commit + PUSH)
+#     cd deploy && Rscript deploy.R             # ...and also push a bundle, which Connect Cloud
+#                                               #    ignores. Harmless; not the deployment.
 #
 # ─────────────────────────────────────────────────────────────────────────────────────────────
 # WHY THIS FILE EXISTS.
