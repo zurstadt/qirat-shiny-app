@@ -2443,7 +2443,7 @@
       "checksum": "50a7646959b20a44cd69af7ddf722114"
     },
     "data/iqsa_deploy.db": {
-      "checksum": "952f76144fa9fb498975c21c1437e1bc"
+      "checksum": "6d253b67eec148c2b20e096f219c0678"
     },
     "data/mashriq-maghrib_bibliography.ris": {
       "checksum": "ac1da4b77e68b3855738643a07d38409"
@@ -2526,11 +2526,11 @@
     "www/images/qurxan_logo.png": {
       "checksum": "fb4069e9db9ca7757075c7416bd074cf"
     },
-    "www/manuscript-2afbe60a37.pdf": {
-      "checksum": "2afbe60a37da0a51684595d178d6ec6c"
+    "www/manuscript-5b36d85780.pdf": {
+      "checksum": "5b36d85780d09685838868ffdd1f1e34"
     },
-    "www/paper-45d44d8971.html": {
-      "checksum": "45d44d8971f7a957fbadfc6691ded9ec"
+    "www/paper-bb99489ee1.html": {
+      "checksum": "bb99489ee1d62c3e834c55ca61aba003"
     }
   },
   "users": null
