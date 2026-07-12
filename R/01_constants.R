@@ -76,3 +76,12 @@ COLORS <- list(
     high = "#D55E00"      # Vermillion (positive)
   )
 )
+
+# Cache-buster for the embedded paper. www/paper.html is 7.5 MB and www/manuscript.pdf 4.9 MB;
+# browsers cache both indefinitely, so a redeployed paper is invisible to anyone who has already
+# opened the app. Keying the URL to the file's mtime makes a new render a new URL.
+PAPER_VERSION <- if (file.exists("www/paper.html")) {
+  format(as.integer(as.POSIXct(file.mtime("www/paper.html"))))
+} else {
+  "0"
+}

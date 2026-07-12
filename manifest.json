@@ -2473,7 +2473,7 @@
       "checksum": "07b18a44889aeead00607b7813626bc5"
     },
     "R/01_constants.R": {
-      "checksum": "1ba33e0b8cab29dade921a7f5ceacc6f"
+      "checksum": "f691be7c9c0df6d8c1265850fa1902c4"
     },
     "R/02_utils.R": {
       "checksum": "90cee0455f336c029702f340efd85869"
@@ -2485,7 +2485,7 @@
       "checksum": "59a1cef1cf72e023526f28f8723b3920"
     },
     "R/05_ui_components.R": {
-      "checksum": "9ed6e87315dd5257e3f228d1fb07e8f9"
+      "checksum": "c8ea69c84bc4daad4e2355d5948adc45"
     },
     "R/06_server_corpus.R": {
       "checksum": "52da423142470ebdf5ad8e1a59da41b1"
