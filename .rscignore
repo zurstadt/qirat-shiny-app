@@ -1,4 +1,19 @@
-# Large DB snapshots & local metadata — never ship to Posit Connect
-data/*.bak-*
-*.bak-*
+# Never ship to Posit Connect.
+#
+# ⚠️ WILDCARDS DO NOT WORK HERE. rsconnect matches .rscignore entries as EXACT file or directory
+# names — no globs, no patterns. The lines below used to read `data/*.bak-*` and `*.bak-*`, which
+# matched nothing at all, and `rsconnect::writeManifest(appDir = ".")` duly swept 40 MB of database
+# snapshots, .claude/, and scratch notes into the deployment. (Caught 2026-07-12.)
+#
+# Because a wildcard cannot express "every .bak-* that will ever exist", DO NOT regenerate the
+# manifest with a bare appDir. Pass an explicit file list:
+#
+#     files <- <the 34 files that actually constitute the app>
+#     rsconnect::writeManifest(appDir = ".", appFiles = files)
+#
+# `make check` (root) asserts the manifest contains no .bak/scratch files and that every checksum
+# in it matches the file on disk.
+
 rsconnect/
+.claude/
+prompts/

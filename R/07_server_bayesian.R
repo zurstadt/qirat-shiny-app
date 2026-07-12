@@ -372,17 +372,38 @@ server_bayesian <- function(input, output, session, rv) {
             hr(),
 
             h4(class = "section-header-bold", "Mobility \u00d7 Century Interaction"),
+            # THE VERDICT IS COMPUTED, NOT TYPED.
+            #
+            # This card used to assert, in prose, that the interaction model was "the best-fitting
+            # by LOO-CV" and that the mobility effect "intensifies over time". Both were true only
+            # of a model whose REGION COVARIATE WAS MIS-CODED: an unanchored grepl() put every
+            # eastward-travelling Ma\u0121rib\u012b (al-D\u0101n\u012b included) on the Ma\u0161riq side, so the mobile
+            # authors were partly DEFINING the Ma\u0161riq category and the interaction was partly
+            # circular. With region coded as origin it collapses to a null (see the 2026-07-12
+            # refit, root commit 66dc132). The footnote in the paper now reports it as a tested
+            # null, and so does this card \u2014 by reading the posterior instead of describing it.
             if (!is.null(CONFOUND$interaction)) {
+              int_row  <- CONFOUND$interaction[CONFOUND$interaction$category == "7", ][1, ]
+              decisive <- (int_row$interaction_ci_lower > 0) || (int_row$interaction_ci_upper < 0)
+              best_loo <- as.character(
+                CONFOUND$loo_table$model[which.min(CONFOUND$loo_table$looic)])
               tagList(
-                p("The interaction model (the best-fitting by LOO-CV) reveals that the mobility effect on Set preference ",
-                  "is not constant across centuries\u2014it intensifies over time:"),
+                p("Does the compositional behaviour of inter-regional scholars change over time? ",
+                  "This model adds an interaction between mobility and century to test exactly that. ",
+                  sprintf("The best-fitting model by LOO-CV is in fact the %s model.", best_loo)),
                 DT::dataTableOutput("confound_interaction_table"),
                 br(),
-                p("A positive interaction coefficient means that in later centuries, inter-regional scholars become ",
-                  tags$em("more"), " likely to produce works on the Set of 7 (relative to 10+) compared to their sedentary peers. ",
-                  "In other words, by the 6th\u20137th centuries, regional canons were so entrenched that mobile scholars ",
-                  "who crossed the boundary carried their region-of-origin norms more rigidly than the earlier, ",
-                  "more ecumenical generation.")
+                if (decisive) {
+                  p(tags$strong("The interaction is decisive."), " Its 95% credible interval excludes zero: ",
+                    "in later centuries, inter-regional scholars are measurably ", tags$em("more"),
+                    " likely to produce works on the Set of 7 (relative to 10+) than their sedentary peers.")
+                } else {
+                  p(tags$strong("The interaction is not supported."),
+                    sprintf(" The posterior leans toward a Set-of-7 skew among later mobile scholars (P = %.0f%%), but its 95%% credible interval spans zero [%.2f, %.2f], so the data do not settle the question. ",
+                            100 * int_row$interaction_prob_positive,
+                            int_row$interaction_ci_lower, int_row$interaction_ci_upper),
+                    "It is reported here as a null rather than omitted.")
+                }
               )
             } else {
               NULL
