@@ -439,7 +439,7 @@ ui_tab_methodology <- function() {
         hr(),
 
         h3("1. Data Structure"),
-        p(strong("N"), " = 172 works on Qur\u02beanic reading traditions, 4th\u20137th c. AH. ",
+        p(strong("N"), " = 173 works on Qur\u02beanic reading traditions, 4th\u20137th c. AH. ",
           strong("Outcome:"), " categorical Set of Readings ", em("y"), " \u2208 {7, 7+1, 10+}. ",
           strong("Predictor:"), " region (geo \u2208 {0 = Ma\u0121rib, 1 = Ma\u0161riq}). ",
           strong("Covariate:"), " author's death century (continuous, mean-centered)."),
@@ -450,13 +450,13 @@ ui_tab_methodology <- function() {
             tags$th("Set"), tags$th("Ma\u0121rib"), tags$th("Ma\u0161riq"), tags$th("Total")
           )),
           tags$tbody(
-            tags$tr(tags$td("7"), tags$td("48"), tags$td("38"), tags$td("86")),
+            tags$tr(tags$td("7"), tags$td("49"), tags$td("39"), tags$td("88")),
             tags$tr(tags$td("7+1"), tags$td("10"), tags$td("17"), tags$td("27")),
-            tags$tr(tags$td("10+"), tags$td("4"), tags$td("55"), tags$td("59")),
-            tags$tr(tags$td(strong("Total")), tags$td(strong("62")), tags$td(strong("110")), tags$td(strong("172")))
+            tags$tr(tags$td("10+"), tags$td("5"), tags$td("53"), tags$td("58")),
+            tags$tr(tags$td(strong("Total")), tags$td(strong("64")), tags$td(strong("109")), tags$td(strong("173")))
           )
         ),
-        p("Notable imbalance: 110 Ma\u0161riq vs. 62 Ma\u0121rib works; the Ma\u0121rib \u00d7 10+ cell contains only 4 observations. ",
+        p("Notable imbalance: 109 Ma\u0161riq vs. 64 Ma\u0121rib works; the Ma\u0121rib \u00d7 10+ cell contains only 5 observations. ",
           strong("Assumption:"), " works are treated as independent observations. No author-level hierarchy is modeled; ",
           "this is an acknowledged limitation given that some authors contribute multiple works."),
         hr(),
