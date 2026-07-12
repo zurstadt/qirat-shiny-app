@@ -539,7 +539,10 @@ model {
             ))
         ),
         p(strong("Posterior predictive check:"), " For each posterior draw, simulated counts per region \u00d7 Set cell ",
-          "are compared to observed counts. Adequate fit requires observed values to fall within the 95% posterior predictive interval."),
+          paste0("are compared to observed counts. Adequate fit requires observed values to fall within the ",
+                 PPC_LABEL, " posterior predictive interval. This band is a model-adequacy check and is ",
+                 "deliberately held at ", PPC_LABEL, ": widening it would only make the check easier to pass. ",
+                 "It is not the ", CI_LABEL, " credible interval reported for the coefficients.")),
         hr(),
 
         h3("5. Jensen-Shannon Divergence"),

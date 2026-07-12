@@ -60,7 +60,8 @@ server_bayesian <- function(input, output, session, rv) {
         h4("Key Advantages"),
         tags$ul(
           tags$li(tags$strong("Full posterior distributions"), " - Not just point estimates, but complete probability distributions for each parameter"),
-          tags$li(tags$strong("Natural uncertainty quantification"), " - Credible intervals have intuitive interpretation: 'There is a 95% probability the true value lies in this range'"),
+          tags$li(tags$strong("Natural uncertainty quantification"),
+                  sprintf(" - Credible intervals have intuitive interpretation: 'There is a %s probability the true value lies in this range'", CI_LABEL)),
           tags$li(tags$strong("Small sample handling"), " - Bayesian methods perform well with limited data through principled use of prior information")
         ),
 
@@ -106,7 +107,8 @@ server_bayesian <- function(input, output, session, rv) {
               tags$li(tags$strong("Beta_geo (Regional Effects):"), " How being in Ma\u0161riq changes the log-odds. Positive = Ma\u0161riq preference; negative = Ma\u0121rib preference."),
               tags$li(tags$strong("Beta_cent (Temporal Effects):"), " How each additional century changes the log-odds.")
             ),
-            p("When the 95% credible interval (q5, q95) excludes zero, we have strong evidence for that effect.")
+            p(sprintf("When the %s credible interval excludes zero, we have strong evidence for that effect.",
+                      CI_LABEL))
           ),
           verbatimTextOutput("model_summary")
         ),
@@ -140,7 +142,7 @@ server_bayesian <- function(input, output, session, rv) {
               tags$li("Each panel represents a different century (4th through 7th AH)"),
               tags$li("Bar height shows the predicted probability (0-1 scale)"),
               tags$li("Colors distinguish regions: ", span(style = "color: #56B4E9;", "Ma\u0121rib"), " vs. ", span(style = "color: #E69F00;", "Ma\u0161riq")),
-              tags$li("Error bars show 95% credible intervals - ranges of plausible values")
+              tags$li(sprintf("Error bars show %s credible intervals - ranges of plausible values", CI_LABEL))
             ),
             p(tags$strong("Interpreting differences:"), " When error bars for Ma\u0121rib and Ma\u0161riq do not overlap for a given Set, this is suggestive of a regional difference. Note that non-overlapping marginal intervals are a conservative cue, not a formal test \u2014 the posterior contrast on the Regional Contrasts card provides the rigorous comparison.")
           ),
@@ -353,7 +355,8 @@ server_bayesian <- function(input, output, session, rv) {
           tagList(
             h4(class = "section-header-bold", "Region Coefficient Stability"),
             p("The forest plot shows the Region coefficient (log-odds of Ma\u0161riq effect) across all five models. ",
-              "Thick bars = 50% credible interval; thin bars = 95% CI. Stability across models means the regional effect is not an artifact of confounds."),
+              sprintf("Thick bars = %s credible interval; thin bars = %s CI. Stability across models means the regional effect is not an artifact of confounds.",
+                      CI_INNER_LABEL, CI_LABEL)),
             plotOutput("confound_forest_plot", height = "400px"),
 
             hr(),
@@ -394,13 +397,14 @@ server_bayesian <- function(input, output, session, rv) {
                 DT::dataTableOutput("confound_interaction_table"),
                 br(),
                 if (decisive) {
-                  p(tags$strong("The interaction is decisive."), " Its 95% credible interval excludes zero: ",
+                  p(tags$strong("The interaction is decisive."),
+                    sprintf(" Its %s credible interval excludes zero: ", CI_LABEL),
                     "in later centuries, inter-regional scholars are measurably ", tags$em("more"),
                     " likely to produce works on the Set of 7 (relative to 10+) than their sedentary peers.")
                 } else {
                   p(tags$strong("The interaction is not supported."),
-                    sprintf(" The posterior leans toward a Set-of-7 skew among later mobile scholars (P = %.0f%%), but its 95%% credible interval spans zero [%.2f, %.2f], so the data do not settle the question. ",
-                            100 * int_row$interaction_prob_positive,
+                    sprintf(" The posterior leans toward a Set-of-7 skew among later mobile scholars (P = %.0f%%), but its %s credible interval spans zero [%.2f, %.2f], so the data do not settle the question. ",
+                            100 * int_row$interaction_prob_positive, CI_LABEL,
                             int_row$interaction_ci_lower, int_row$interaction_ci_upper),
                     "It is reported here as a null rather than omitted.")
                 }
@@ -441,14 +445,14 @@ server_bayesian <- function(input, output, session, rv) {
   jsd_abs_plotly <- function(d, dmax, method_label) {
     col <- unname(JSD_METHOD_COLORS[method_label]); if (is.na(col)) col <- "#0072B2"
     d$hover_text <- sprintf(
-      "<b>%s</b><br>Century: %sth c. AH<br>Mean JSD: %.3f<br>95%% CI: [%.3f, %.3f]",
-      method_label, d$century, d$mean, d$ci95_low, d$ci95_high)
+      paste0("<b>%s</b><br>Century: %sth c. AH<br>Mean JSD: %.3f<br>", CI_LABEL, " CI: [%.3f, %.3f]"),
+      method_label, d$century, d$mean, d$ci_low, d$ci_high)
     dmax$hover_text <- sprintf(
       "<b>Constrained max</b><br>Century: %sth c. AH<br>Ceiling JSD: %.3f",
       dmax$century, dmax$mean)
-    y_top <- max(d$ci95_high, dmax$mean, na.rm = TRUE) * 1.08
+    y_top <- max(d$ci_high, dmax$mean, na.rm = TRUE) * 1.08
     p <- ggplot(d, aes(x = century)) +
-      geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high), fill = col, alpha = 0.12) +
+      geom_ribbon(aes(ymin = ci_low, ymax = ci_high), fill = col, alpha = 0.12) +
       geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high), fill = col, alpha = 0.25) +
       geom_line(data = dmax, aes(y = mean), linewidth = 0.7,
                 linetype = "dashed", color = "gray45") +
@@ -467,10 +471,10 @@ server_bayesian <- function(input, output, session, rv) {
   jsd_norm_plotly <- function(d, method_label) {
     col <- unname(JSD_METHOD_COLORS[method_label]); if (is.na(col)) col <- "#0072B2"
     d$hover_text <- sprintf(
-      "<b>%s</b><br>Century: %sth c. AH<br>Normalized JSD: %.0f%%<br>95%% CI: [%.0f%%, %.0f%%]",
-      method_label, d$century, d$mean * 100, d$ci95_low * 100, d$ci95_high * 100)
+      paste0("<b>%s</b><br>Century: %sth c. AH<br>Normalized JSD: %.0f%%<br>", CI_LABEL, " CI: [%.0f%%, %.0f%%]"),
+      method_label, d$century, d$mean * 100, d$ci_low * 100, d$ci_high * 100)
     p <- ggplot(d, aes(x = century)) +
-      geom_ribbon(aes(ymin = ci95_low, ymax = ci95_high), fill = col, alpha = 0.12) +
+      geom_ribbon(aes(ymin = ci_low, ymax = ci_high), fill = col, alpha = 0.12) +
       geom_ribbon(aes(ymin = ci50_low, ymax = ci50_high), fill = col, alpha = 0.25) +
       geom_line(aes(y = mean), color = col, linewidth = 0.9) +
       geom_point(aes(y = mean, text = hover_text), color = col, size = 2.5) +
@@ -512,7 +516,7 @@ server_bayesian <- function(input, output, session, rv) {
       Method = jsd_combined$method,
       Century = paste0(jsd_combined$century, "th c. AH"),
       `Mean JSD` = sprintf("%.3f", jsd_combined$mean),
-      `95% CI` = sprintf("[%.3f, %.3f]", jsd_combined$ci95_low, jsd_combined$ci95_high),
+      `CI` = sprintf("[%.3f, %.3f]", jsd_combined$ci_low, jsd_combined$ci_high),
       `Constrained Max` = sprintf("%.3f", jsd_max_combined$mean),
       `Normalized` = sprintf("%.0f%%", jsd_norm_combined$mean * 100),
       check.names = FALSE
@@ -613,7 +617,7 @@ server_bayesian <- function(input, output, session, rv) {
     display_df <- data.frame(
       `Category` = paste0(ix$category, " vs. 10+"),
       `Interaction Mean` = sprintf("%.3f", ix$interaction_mean),
-      `95% CI` = sprintf("[%.3f, %.3f]", ix$interaction_ci_lower, ix$interaction_ci_upper),
+      `CI` = sprintf("[%.3f, %.3f]", ix$interaction_ci_lower, ix$interaction_ci_upper),
       `P(> 0)` = sprintf("%.1f%%", ix$interaction_prob_positive * 100),
       `Mobility Main Effect` = sprintf("%.3f [%.3f, %.3f]", ix$mob_main_mean, ix$mob_main_ci_lower, ix$mob_main_ci_upper),
       check.names = FALSE
@@ -654,8 +658,8 @@ server_bayesian <- function(input, output, session, rv) {
     for (c_idx in 1:length(centuries)) {
       cent <- centuries[c_idx]
       mean_probs <- apply(pp[, , c_idx, ], c(2, 3), mean)
-      lower <- apply(pp[, , c_idx, ], c(2, 3), quantile, probs = 0.025)
-      upper <- apply(pp[, , c_idx, ], c(2, 3), quantile, probs = 0.975)
+      lower <- apply(pp[, , c_idx, ], c(2, 3), quantile, probs = CI_TAIL)
+      upper <- apply(pp[, , c_idx, ], c(2, 3), quantile, probs = 1 - CI_TAIL)
 
       df_cent <- data.frame(
         Category = rep(lvl, times = 2),
@@ -673,7 +677,7 @@ server_bayesian <- function(input, output, session, rv) {
     df_plot$Category <- factor(df_plot$Category, levels = c("7", "7+1", "10+"))
 
     df_plot$hover_text <- sprintf(
-      "<b>%s</b><br>Region: %s<br>Century: %s<br>Probability: %.1f%%<br>95%% CI: [%.1f%%, %.1f%%]",
+      paste0("<b>%s</b><br>Region: %s<br>Century: %s<br>Probability: %.1f%%<br>", CI_LABEL, " CI: [%.1f%%, %.1f%%]"),
       df_plot$Category, df_plot$Region, df_plot$Century,
       df_plot$mean * 100, df_plot$low * 100, df_plot$high * 100
     )
@@ -786,8 +790,8 @@ server_bayesian <- function(input, output, session, rv) {
       p_east = p_east, p_west = p_west, diff = diff,
       prob_east_greater = prob_east_greater,
       mean_diff = mean(diff),
-      ci_lower = quantile(diff, 0.025),
-      ci_upper = quantile(diff, 0.975)
+      ci_lower = ci_lo(diff),
+      ci_upper = ci_hi(diff)
     )
   }
 
@@ -858,8 +862,8 @@ server_bayesian <- function(input, output, session, rv) {
     for (c_idx in 1:length(centuries)) {
       cent <- centuries[c_idx]
       mean_probs <- apply(pp[, , c_idx, ], c(2, 3), mean)
-      lower <- apply(pp[, , c_idx, ], c(2, 3), quantile, probs = 0.025)
-      upper <- apply(pp[, , c_idx, ], c(2, 3), quantile, probs = 0.975)
+      lower <- apply(pp[, , c_idx, ], c(2, 3), quantile, probs = CI_TAIL)
+      upper <- apply(pp[, , c_idx, ], c(2, 3), quantile, probs = 1 - CI_TAIL)
 
       df_cent <- data.frame(
         Category = rep(lvl, times = 2),
@@ -903,8 +907,8 @@ server_bayesian <- function(input, output, session, rv) {
     for (c_idx in 1:length(centuries)) {
       cent <- centuries[c_idx]
       mean_probs <- apply(pp[, , c_idx, ], c(2, 3), mean)
-      lower <- apply(pp[, , c_idx, ], c(2, 3), quantile, probs = 0.025)
-      upper <- apply(pp[, , c_idx, ], c(2, 3), quantile, probs = 0.975)
+      lower <- apply(pp[, , c_idx, ], c(2, 3), quantile, probs = CI_TAIL)
+      upper <- apply(pp[, , c_idx, ], c(2, 3), quantile, probs = 1 - CI_TAIL)
       df_cent <- data.frame(
         Century = paste0(cent, "th"),
         Region = rep(c("ma\u0121rib", "ma\u0161riq"), each = K),
@@ -938,7 +942,7 @@ server_bayesian <- function(input, output, session, rv) {
                    sprintf(" %.3f", contrast$prob_east_greater)),
             tags$li(tags$strong("Mean difference (ma\u0161riq - ma\u0121rib):"),
                    sprintf(" %.3f", contrast$mean_diff)),
-            tags$li(tags$strong("95% Credible Interval:"),
+            tags$li(tags$strong(sprintf("%s Credible Interval:", CI_LABEL)),
                    sprintf(" [%.3f, %.3f]", contrast$ci_lower, contrast$ci_upper))
           ),
           tags$hr(),
@@ -948,7 +952,7 @@ server_bayesian <- function(input, output, session, rv) {
         plotOutput(paste0("contrast_plot_", gsub("\\+", "plus", input$selected_system_card4)),
                   height = "350px"),
         p(class = "text-muted", style = "font-size: 0.85em;",
-          "The histogram shows the posterior distribution of the difference in probabilities. The dark vertical line marks the mean difference, while the gray line at zero represents no regional effect. The subtle gray shaded region indicates the 95% credible interval. When the distribution is clearly shifted away from zero, this provides evidence of systematic regional preference for this Set of Readings.")
+          sprintf("The histogram shows the posterior distribution of the difference in probabilities. The dark vertical line marks the mean difference, while the gray line at zero represents no regional effect. The subtle gray shaded region indicates the %s credible interval. When the distribution is clearly shifted away from zero, this provides evidence of systematic regional preference for this Set of Readings.", CI_LABEL))
       )
     )
   })
@@ -1030,8 +1034,8 @@ server_bayesian <- function(input, output, session, rv) {
       labs(
         title = sprintf("P(%s|Ma\u0161riq) \u2212 P(%s|Ma\u0121rib)", contrast_result$set, contrast_result$set),
         x = "Difference in Probability", y = NULL,
-        caption = sprintf("Mean difference: %.3f  |  95%% CI: [%.3f, %.3f]",
-                         contrast_result$mean_diff, contrast_result$ci_lower, contrast_result$ci_upper)
+        caption = sprintf("Mean difference: %.3f  |  %s CI: [%.3f, %.3f]",
+                         contrast_result$mean_diff, CI_LABEL, contrast_result$ci_lower, contrast_result$ci_upper)
       ) +
       theme(axis.line.y = element_blank(), axis.text.y = element_text(color = "gray50", size = 8),
             axis.ticks.y = element_blank())
@@ -1061,8 +1065,10 @@ server_bayesian <- function(input, output, session, rv) {
     }
     observed_counts <- as.numeric(table(factor(df$outcome, levels = preds$levels)))
     sim_mean <- colMeans(sim_counts_mat)
-    sim_low <- apply(sim_counts_mat, 2, quantile, prob = 0.025)
-    sim_high <- apply(sim_counts_mat, 2, quantile, prob = 0.975)
+    # PPC_TAIL, not CI_TAIL: this band is compared against the OBSERVED counts, so it is a
+    # model-adequacy check. Widening it would only make the check easier to pass. Held at 95%.
+    sim_low <- apply(sim_counts_mat, 2, quantile, prob = PPC_TAIL)
+    sim_high <- apply(sim_counts_mat, 2, quantile, prob = 1 - PPC_TAIL)
     data.frame(
       Category = preds$levels,
       Observed = observed_counts,

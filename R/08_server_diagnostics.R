@@ -247,9 +247,9 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
       output[[output_id]] <- renderPlot({
         # Combine all chain values for overall statistics
         all_vals <- as.vector(draws_array[, , param])
-        q025 <- quantile(all_vals, 0.025)
-        q975 <- quantile(all_vals, 0.975)
-        zero_in_ci <- (0 >= q025 && 0 <= q975)
+        q_lo <- ci_lo(all_vals)
+        q_hi <- ci_hi(all_vals)
+        zero_in_ci <- (0 >= q_lo && 0 <= q_hi)
         zero_line_color <- if (zero_in_ci) "#D55E00" else "gray50"
 
         # Build data for this parameter
@@ -267,8 +267,8 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
         max_y <- max(plot_data$y)
 
         ggplot(plot_data, aes(x = x, y = y, color = Chain, fill = Chain)) +
-          # 95% CI shading (background)
-          annotate("rect", xmin = q025, xmax = q975, ymin = 0, ymax = max_y * 1.05,
+          # credible-interval shading (background)
+          annotate("rect", xmin = q_lo, xmax = q_hi, ymin = 0, ymax = max_y * 1.05,
                    fill = "#0072B2", alpha = 0.15) +
           geom_line(linewidth = 0.8) +
           geom_area(alpha = 0.3, position = "identity") +
@@ -321,11 +321,11 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
     n_chains <- diag$n_chains
     chain_colors <- COLORS$chains[1:n_chains]
 
-    # Calculate overall 95% CI from combined chains
+    # Overall credible interval from the combined chains (level comes from the artifact)
     all_vals <- as.vector(draws_array[, , param])
-    overall_q025 <- quantile(all_vals, 0.025)
-    overall_q975 <- quantile(all_vals, 0.975)
-    zero_in_ci <- (0 >= overall_q025 && 0 <= overall_q975)
+    overall_q_lo <- ci_lo(all_vals)
+    overall_q_hi <- ci_hi(all_vals)
+    zero_in_ci <- (0 >= overall_q_lo && 0 <= overall_q_hi)
     zero_line_color <- if (zero_in_ci) "#D55E00" else "gray50"
 
     # Get max y for shapes
@@ -333,18 +333,18 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
 
     p <- plot_ly()
 
-    # Add 95% CI shading first (behind other traces)
+    # Add credible-interval shading first (behind other traces)
     p <- p %>% add_trace(
-      x = c(overall_q025, overall_q975, overall_q975, overall_q025, overall_q025),
+      x = c(overall_q_lo, overall_q_hi, overall_q_hi, overall_q_lo, overall_q_lo),
       y = c(0, 0, max_y * 1.05, max_y * 1.05, 0),
       type = 'scatter',
       mode = 'none',
       fill = 'toself',
       fillcolor = 'rgba(0, 114, 178, 0.15)',
       line = list(width = 0),
-      name = '95% CI',
+      name = paste0(CI_LABEL, ' CI'),
       hoverinfo = 'text',
-      text = paste0("95% Credible Interval<br>[", round(overall_q025, 4), ", ", round(overall_q975, 4), "]"),
+      text = paste0(CI_LABEL, " Credible Interval<br>[", round(overall_q_lo, 4), ", ", round(overall_q_hi, 4), "]"),
       showlegend = TRUE
     )
 
@@ -355,8 +355,8 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
         mean = round(mean(chain_values), 4),
         median = round(median(chain_values), 4),
         sd = round(sd(chain_values), 4),
-        q025 = round(quantile(chain_values, 0.025), 4),
-        q975 = round(quantile(chain_values, 0.975), 4),
+        q_lo = round(ci_lo(chain_values), 4),
+        q_hi = round(ci_hi(chain_values), 4),
         n = length(chain_values)
       )
 
@@ -369,7 +369,7 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
         "Median: ", stats$median, "<br><br>",
         "<b>Spread:</b><br>",
         "SD: ", stats$sd, "<br>",
-        "95% CI: [", stats$q025, ", ", stats$q975, "]<br><br>",
+        CI_LABEL, " CI: [", stats$q_lo, ", ", stats$q_hi, "]<br><br>",
         "<b>Samples:</b> ", format(stats$n, big.mark = ",")
       )
 
@@ -395,7 +395,7 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
       line = list(color = zero_line_color, width = 2, dash = 'dash'),
       name = zero_label,
       hoverinfo = 'text',
-      text = paste0("Zero reference line<br>", if(zero_in_ci) "Inside 95% CI (effect may be zero)" else "Outside 95% CI (significant effect)")
+      text = paste0("Zero reference line<br>", if(zero_in_ci) paste0("Inside ", CI_LABEL, " CI (effect may be zero)") else paste0("Outside ", CI_LABEL, " CI (significant effect)"))
     )
 
     p %>% layout(
@@ -428,8 +428,8 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
         mean = round(mean(vals), 4),
         median = round(median(vals), 4),
         sd = round(sd(vals), 4),
-        q025 = round(quantile(vals, 0.025), 4),
-        q975 = round(quantile(vals, 0.975), 4)
+        q_lo = round(ci_lo(vals), 4),
+        q_hi = round(ci_hi(vals), 4)
       )
     })
 
@@ -448,7 +448,7 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
           p(style = "margin: 3px 0; font-size: 0.9em;",
             tags$b("SD: "), s$sd),
           p(style = "margin: 3px 0; font-size: 0.9em;",
-            tags$b("95% CI: "), paste0("[", s$q025, ", ", s$q975, "]"))
+            tags$b(paste0(CI_LABEL, " CI: ")), paste0("[", s$q_lo, ", ", s$q_hi, "]"))
         )
       })
     )
@@ -688,8 +688,8 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
         diff_val <- obs_val - pred_val
         sim_mean <- round(mean(sim_vals), 1)
         sim_sd <- round(sd(sim_vals), 1)
-        sim_q025 <- round(quantile(sim_vals, 0.025), 0)
-        sim_q975 <- round(quantile(sim_vals, 0.975), 0)
+        sim_ppc_lo <- round(quantile(sim_vals, PPC_TAIL), 0)
+        sim_ppc_hi <- round(quantile(sim_vals, 1 - PPC_TAIL), 0)
 
         data.frame(
           Region = region_names[r],
@@ -700,8 +700,8 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
           Difference = diff_val,
           SimMean = sim_mean,
           SimSD = sim_sd,
-          SimQ025 = sim_q025,
-          SimQ975 = sim_q975
+          SimPpcLo = sim_ppc_lo,
+          SimPpcHi = sim_ppc_hi
         )
       }))
     }))
@@ -718,13 +718,13 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
         "<b>Simulation Stats:</b><br>",
         "Mean: %.1f<br>",
         "SD: %.1f<br>",
-        "95%% Interval: [%d, %d]"
+        paste0(PPC_LABEL, " Predictive Interval: [%d, %d]")
       ),
       ppc_plot_data$Category, ppc_plot_data$Region,
       ppc_plot_data$Observed, ppc_plot_data$Predicted,
       ifelse(ppc_plot_data$Difference >= 0, "+", ""), ppc_plot_data$Difference,
       ppc_plot_data$SimMean, ppc_plot_data$SimSD,
-      ppc_plot_data$SimQ025, ppc_plot_data$SimQ975
+      ppc_plot_data$SimPpcLo, ppc_plot_data$SimPpcHi
     )
 
     # Map categories to colors (orange=7, green=7+1, blue=10+)
@@ -815,8 +815,8 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
             Mean = mean(probs_all[, k]),
             CI50_low = quantile(probs_all[, k], 0.25),
             CI50_high = quantile(probs_all[, k], 0.75),
-            CI95_low = quantile(probs_all[, k], 0.025),
-            CI95_high = quantile(probs_all[, k], 0.975)
+            ci_low = ci_lo(probs_all[, k]),
+            ci_high = ci_hi(probs_all[, k])
           ))
         }
       }
@@ -835,9 +835,9 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
     }
 
     ggplot() +
-      # 95% credible band (outer) — replaces the near-invisible spaghetti
+      # outer credible band — replaces the near-invisible spaghetti
       geom_ribbon(data = results,
-                  aes(x = Century, ymin = CI95_low, ymax = CI95_high,
+                  aes(x = Century, ymin = ci_low, ymax = ci_high,
                       fill = Category),
                   alpha = 0.12) +
       # 50% credible band (inner)

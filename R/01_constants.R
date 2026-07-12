@@ -19,6 +19,61 @@ CONFOUND <- if (file.exists(CONFOUND_PATH)) {
   NULL
 }
 
+# ─────────────────────────────────────────────────────────────────────────────────────────────
+# CREDIBLE LEVEL — DERIVED FROM THE ARTIFACT. DO NOT HARDCODE A NUMBER HERE.
+#
+# The level is authored in the SOURCE repo (scripts/credible_interval.R) and stamped into the
+# .rds by the extract scripts. This app reads it back off the very artifact it plots.
+#
+# Why not just write 0.99 here? Because deploy/ is a separate repo with its own remote, and a
+# second authored copy of the level is a copy free to drift. The failure it produces is the nasty
+# kind: the app keeps drawing the ribbons the .rds gives it, while confidently LABELLING them at
+# whatever level this file happens to say. Values from one place, label from another, both
+# insisting they agree. Deriving the label from the data makes that unrepresentable.
+#
+# Raised 95% -> 99% on 2026-07-12; the Region coefficient still excludes zero in all five models.
+# ─────────────────────────────────────────────────────────────────────────────────────────────
+CI_LEVEL <- if (!is.null(PRECOMPUTED) && !is.null(PRECOMPUTED$ci_level)) {
+  PRECOMPUTED$ci_level
+} else if (!is.null(PRECOMPUTED)) {
+  stop("precomputed_bayesian_results.rds carries no `ci_level`. It was written by an extract ",
+       "script that predates the transport contract — re-run scripts/extract_bayesian_results.R ",
+       "in the source repo and commit the regenerated .rds. Refusing to guess a credible level.")
+} else {
+  NULL  # no artifact at all: the app already degrades gracefully elsewhere on PRECOMPUTED = NULL
+}
+
+if (!is.null(CI_LEVEL)) {
+  # The two artifacts must agree, or the Bayesian tab and the confound tab would silently show
+  # intervals at different levels under a single heading.
+  if (!is.null(CONFOUND) && !is.null(CONFOUND$ci_level) &&
+      !isTRUE(all.equal(CONFOUND$ci_level, CI_LEVEL))) {
+    stop(sprintf("Artifact level mismatch: bayesian .rds = %g%%, confound .rds = %g%%. ",
+                 CI_LEVEL * 100, CONFOUND$ci_level * 100),
+         "Re-run BOTH extract scripts and commit them together.")
+  }
+  CI_PCT   <- CI_LEVEL * 100
+  CI_LABEL <- sprintf("%g%%", CI_PCT)
+  CI_TAIL  <- (1 - CI_LEVEL) / 2
+} else {
+  CI_PCT <- NA_real_; CI_LABEL <- "credible"; CI_TAIL <- NA_real_
+}
+
+CI_INNER_LABEL <- "50%"
+
+ci_lo <- function(v) unname(quantile(v, CI_TAIL,     na.rm = TRUE))
+ci_hi <- function(v) unname(quantile(v, 1 - CI_TAIL, na.rm = TRUE))
+
+# NOT the credible level. The posterior-predictive band in the diagnostics tab asks whether the
+# OBSERVED counts fall inside the model's predictive spread — a model-ADEQUACY check, not a claim
+# about a parameter. Widening a credible interval makes a claim HARDER to assert; widening a
+# predictive band makes a fit check EASIER to pass. They pull opposite ways, so they get separate
+# constants and must never be swept together. Held at the conventional 95%; the model passes 6/6
+# cells there with room to spare (checked 2026-07-12).
+PPC_LEVEL <- 0.95
+PPC_LABEL <- sprintf("%g%%", PPC_LEVEL * 100)
+PPC_TAIL  <- (1 - PPC_LEVEL) / 2
+
 # Primary/secondary citation classification from parser-work-schemas.json
 WORK_SCHEMAS <- tryCatch({
   raw <- jsonlite::fromJSON("data/parser-work-schemas.json")$schemas

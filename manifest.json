@@ -2455,10 +2455,10 @@
       "checksum": "2c4d42bb0561b4f0eaa5b402bd15550a"
     },
     "data/precomputed_bayesian_results.rds": {
-      "checksum": "e70e7c5c00dc09b08e45f74b87e622d3"
+      "checksum": "ed3a7772fcf0602ae79a56882f174547"
     },
     "data/precomputed_confound_results.rds": {
-      "checksum": "b21e212b16eb0454111ff68acafcf63d"
+      "checksum": "d20d35c9288f4831f8e8999e7d623740"
     },
     "data/zotero-type-mappings.json": {
       "checksum": "9e88f2d4468810b6a5e929f835a728f0"
@@ -2473,7 +2473,7 @@
       "checksum": "07b18a44889aeead00607b7813626bc5"
     },
     "R/01_constants.R": {
-      "checksum": "d9c6a53be7da06ad546c3c5879af74b2"
+      "checksum": "249e4a36b455d379bac7cdffb99cd290"
     },
     "R/02_utils.R": {
       "checksum": "90cee0455f336c029702f340efd85869"
@@ -2485,16 +2485,16 @@
       "checksum": "59a1cef1cf72e023526f28f8723b3920"
     },
     "R/05_ui_components.R": {
-      "checksum": "554401dfbca7e4bf42a7a636d2972cb9"
+      "checksum": "fdc01375397bd2f9ea453c5bed21780f"
     },
     "R/06_server_corpus.R": {
       "checksum": "52da423142470ebdf5ad8e1a59da41b1"
     },
     "R/07_server_bayesian.R": {
-      "checksum": "5616beaf4f22978c4c6a70074beceadc"
+      "checksum": "ab708767f4024d10d63f6af346279c83"
     },
     "R/08_server_diagnostics.R": {
-      "checksum": "6e45cab5e5d80616b82743b68cb7f41c"
+      "checksum": "aae0f781790e0415d804b4325a9efbb1"
     },
     "R/09_server_citations.R": {
       "checksum": "5e021166c996fcf1e27c7cc03ac79b4e"
@@ -2526,11 +2526,11 @@
     "www/images/qurxan_logo.png": {
       "checksum": "fb4069e9db9ca7757075c7416bd074cf"
     },
-    "www/manuscript-4125b8a402.pdf": {
-      "checksum": "4125b8a402f2451fcf6b6b381b5ce16f"
+    "www/manuscript-2afbe60a37.pdf": {
+      "checksum": "2afbe60a37da0a51684595d178d6ec6c"
     },
-    "www/paper-dae4b10c9f.html": {
-      "checksum": "dae4b10c9f6ca58472a1a61ddf161820"
+    "www/paper-45d44d8971.html": {
+      "checksum": "45d44d8971f7a957fbadfc6691ded9ec"
     }
   },
   "users": null
