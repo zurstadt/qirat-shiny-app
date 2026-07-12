@@ -648,7 +648,7 @@ server_bayesian <- function(input, output, session, rv) {
     }
     df_plot <- do.call(rbind, plot_data_list)
     df_plot$Century <- factor(df_plot$Century, levels = paste0(centuries, "th c."))
-    df_plot$Region <- factor(df_plot$Region, levels = c("Ma\u0161riq", "Ma\u0121rib"))
+    df_plot$Region <- factor(df_plot$Region, levels = c("Ma\u0121rib", "Ma\u0161riq"))
     df_plot$Category <- factor(df_plot$Category, levels = c("7", "7+1", "10+"))
 
     df_plot$hover_text <- sprintf(
