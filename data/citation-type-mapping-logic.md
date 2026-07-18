@@ -227,7 +227,7 @@ For PUA and other database-only resources:
     {"family": "Penelas", "given": "Mayte"},
     {"family": "López Fernández", "given": "María"}
   ],
-  "URL": "https://www.eea.csic.es/pua/personaje/consulta_personaje.php?id=1178",
+  "URL": "https://archivo.eea.csic.es/pua/personaje/consulta_personaje.php?id=1178",
   "accessed": {"date-parts": [[2026, 1, 27]]}
 }
 ```
