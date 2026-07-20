@@ -2433,12 +2433,6 @@
     "app.R": {
       "checksum": "4ee35fc4c764499fa1081e21654a96f4"
     },
-    "citation_annotation.R": {
-      "checksum": "032a74d07d135493e60365b9b15ae39d"
-    },
-    "citation_parsers.R": {
-      "checksum": "fa20c3bbf79ecbd0c81cd1668b66bbee"
-    },
     "data/gn_url_concordance.csv": {
       "checksum": "50a7646959b20a44cd69af7ddf722114"
     },
@@ -2460,14 +2454,8 @@
     "data/precomputed_confound_results.rds": {
       "checksum": "d20d35c9288f4831f8e8999e7d623740"
     },
-    "data/zotero-type-mappings.json": {
-      "checksum": "9e88f2d4468810b6a5e929f835a728f0"
-    },
     "db_config.R": {
       "checksum": "f71cc5cf5b6fd54ada5825312616068f"
-    },
-    "geographic_alpha.R": {
-      "checksum": "b63c1c9a9cd136ea15f5550ae1c985b6"
     },
     "output/animations/islamic_bibliography_map_ALL.gif": {
       "checksum": "07b18a44889aeead00607b7813626bc5"
@@ -2513,9 +2501,6 @@
     },
     "routes/sea_routes_gis.json": {
       "checksum": "9f6bb53f87e2b68b030b26835887840b"
-    },
-    "training-bibliography.zip": {
-      "checksum": "e7b114791bedf97dfba37a1a5468b9ef"
     },
     "www/images/erc_logo.png": {
       "checksum": "80533ad78459d908f8f3bb921a68b1f9"

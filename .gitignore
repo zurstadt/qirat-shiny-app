@@ -13,3 +13,13 @@ _site/
 *.bak-*
 data/*.bak-*
 *_backup_*.db
+# internal tooling kept local-only (public-repo tightness audit 2026-07-20)
+citation_annotation.R
+citation_parsers.R
+geographic_alpha.R
+training-bibliography.zip
+data/zotero-type-mappings.json
+data/gal-examples.txt
+data/gal-parser-analysis.md
+data/citation-type-mapping-logic.md
+prompts/

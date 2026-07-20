@@ -60,6 +60,9 @@ EXCLUDE <- paste(
   "\\.DS_Store$", "\\.Rhistory$", "\\.Rproj",
   "^\\.gitignore$", "^\\.rscignore$", "^deploy\\.R$",   # repo/deploy machinery, not app content
   "^docs/",                 # the GitHub Pages landing site — public web, never app bundle
+  "^citation_annotation\\.R$", "^citation_parsers\\.R$", "^geographic_alpha\\.R$",
+  "^training-bibliography\\.zip$", "^data/zotero-type-mappings\\.json$",
+  # ^ internal annotation tooling + training data — never referenced by app.R/R/ (audit 2026-07-20)
   "^data/.*\\.(md|txt)$",   # scratch notes in data/ — the app reads only .db/.rds/.csv/.json/.ris
   sep = "|"
 )
