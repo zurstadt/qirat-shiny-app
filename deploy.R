@@ -59,6 +59,7 @@ EXCLUDE <- paste(
   "^renv/", "^\\.git/",
   "\\.DS_Store$", "\\.Rhistory$", "\\.Rproj",
   "^\\.gitignore$", "^\\.rscignore$", "^deploy\\.R$",   # repo/deploy machinery, not app content
+  "^docs/",                 # the GitHub Pages landing site — public web, never app bundle
   "^data/.*\\.(md|txt)$",   # scratch notes in data/ — the app reads only .db/.rds/.csv/.json/.ris
   sep = "|"
 )
