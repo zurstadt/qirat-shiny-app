@@ -2226,11 +2226,15 @@ unicode-bidi: embed;
 margin: 1.2em 0;
 }
 .arabic-poem .bayt {
-display: flex;
-justify-content: space-between;
+display: grid;
+grid-template-columns: 1fr 1fr;
 gap: 3em;
 max-width: 36em;
 margin: 0.15em auto;
+}
+
+.arabic-poem .bayt span {
+text-align: right;
 }
 </style>
 </head>
