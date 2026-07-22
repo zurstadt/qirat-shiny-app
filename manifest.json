@@ -2437,7 +2437,7 @@
       "checksum": "50a7646959b20a44cd69af7ddf722114"
     },
     "data/iqsa_deploy.db": {
-      "checksum": "924154a9c66d8480465b49b9bac619ea"
+      "checksum": "b350575b221fd8a27c1816e0cff79336"
     },
     "data/mashriq-maghrib_bibliography.ris": {
       "checksum": "ac1da4b77e68b3855738643a07d38409"
@@ -2458,7 +2458,7 @@
       "checksum": "f71cc5cf5b6fd54ada5825312616068f"
     },
     "output/animations/islamic_bibliography_map_ALL.gif": {
-      "checksum": "07b18a44889aeead00607b7813626bc5"
+      "checksum": "92333f737f896f4e07188a31fe46e264"
     },
     "R/01_constants.R": {
       "checksum": "249e4a36b455d379bac7cdffb99cd290"
@@ -2511,11 +2511,11 @@
     "www/images/qurxan_logo.png": {
       "checksum": "fb4069e9db9ca7757075c7416bd074cf"
     },
-    "www/manuscript-06246e542f.pdf": {
-      "checksum": "06246e542f7180db87c6e96aa7f6c42b"
+    "www/manuscript-8b02da5f33.pdf": {
+      "checksum": "8b02da5f33a1bb4603e6a2292cab444d"
     },
-    "www/paper-8ffe784efe.html": {
-      "checksum": "8ffe784efeebeb00c72f9e043823d8a3"
+    "www/paper-d728b860d9.html": {
+      "checksum": "d728b860d9fff53c478a9d12f0356041"
     }
   },
   "users": null
