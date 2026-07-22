@@ -718,7 +718,7 @@ server_diagnostics <- function(input, output, session, rv, posterior_preds) {
         "<b>Simulation Stats:</b><br>",
         "Mean: %.1f<br>",
         "SD: %.1f<br>",
-        paste0(PPC_LABEL, " Predictive Interval: [%d, %d]")
+        paste0(PPC_LABEL_FMT, " Predictive Interval: [%d, %d]")
       ),
       ppc_plot_data$Category, ppc_plot_data$Region,
       ppc_plot_data$Observed, ppc_plot_data$Predicted,

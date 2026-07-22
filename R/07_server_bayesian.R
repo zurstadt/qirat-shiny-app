@@ -445,7 +445,7 @@ server_bayesian <- function(input, output, session, rv) {
   jsd_abs_plotly <- function(d, dmax, method_label) {
     col <- unname(JSD_METHOD_COLORS[method_label]); if (is.na(col)) col <- "#0072B2"
     d$hover_text <- sprintf(
-      paste0("<b>%s</b><br>Century: %sth c. AH<br>Mean JSD: %.3f<br>", CI_LABEL, " CI: [%.3f, %.3f]"),
+      paste0("<b>%s</b><br>Century: %sth c. AH<br>Mean JSD: %.3f<br>", CI_LABEL_FMT, " CI: [%.3f, %.3f]"),
       method_label, d$century, d$mean, d$ci_low, d$ci_high)
     dmax$hover_text <- sprintf(
       "<b>Constrained max</b><br>Century: %sth c. AH<br>Ceiling JSD: %.3f",
@@ -471,7 +471,7 @@ server_bayesian <- function(input, output, session, rv) {
   jsd_norm_plotly <- function(d, method_label) {
     col <- unname(JSD_METHOD_COLORS[method_label]); if (is.na(col)) col <- "#0072B2"
     d$hover_text <- sprintf(
-      paste0("<b>%s</b><br>Century: %sth c. AH<br>Normalized JSD: %.0f%%<br>", CI_LABEL, " CI: [%.0f%%, %.0f%%]"),
+      paste0("<b>%s</b><br>Century: %sth c. AH<br>Normalized JSD: %.0f%%<br>", CI_LABEL_FMT, " CI: [%.0f%%, %.0f%%]"),
       method_label, d$century, d$mean * 100, d$ci_low * 100, d$ci_high * 100)
     p <- ggplot(d, aes(x = century)) +
       geom_ribbon(aes(ymin = ci_low, ymax = ci_high), fill = col, alpha = 0.12) +
@@ -677,7 +677,7 @@ server_bayesian <- function(input, output, session, rv) {
     df_plot$Category <- factor(df_plot$Category, levels = c("7", "7+1", "10+"))
 
     df_plot$hover_text <- sprintf(
-      paste0("<b>%s</b><br>Region: %s<br>Century: %s<br>Probability: %.1f%%<br>", CI_LABEL, " CI: [%.1f%%, %.1f%%]"),
+      paste0("<b>%s</b><br>Region: %s<br>Century: %s<br>Probability: %.1f%%<br>", CI_LABEL_FMT, " CI: [%.1f%%, %.1f%%]"),
       df_plot$Category, df_plot$Region, df_plot$Century,
       df_plot$mean * 100, df_plot$low * 100, df_plot$high * 100
     )

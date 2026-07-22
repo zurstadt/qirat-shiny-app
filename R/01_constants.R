@@ -59,6 +59,12 @@ if (!is.null(CI_LEVEL)) {
   CI_PCT <- NA_real_; CI_LABEL <- "credible"; CI_TAIL <- NA_real_
 }
 
+# CI_LABEL carries a literal "%". Embedding it INSIDE a sprintf() *format* string (as several hover
+# texts did) makes sprintf() read that "%" as a conversion directive and abort with "invalid format"
+# — which surfaces in the app as "An error has occurred" on every plot that builds hover this way.
+# Use CI_LABEL_FMT inside sprintf() formats; keep CI_LABEL for %s arguments and plain paste0().
+CI_LABEL_FMT <- gsub("%", "%%", CI_LABEL)
+
 CI_INNER_LABEL <- "50%"
 
 ci_lo <- function(v) unname(quantile(v, CI_TAIL,     na.rm = TRUE))
@@ -72,6 +78,7 @@ ci_hi <- function(v) unname(quantile(v, 1 - CI_TAIL, na.rm = TRUE))
 # cells there with room to spare (checked 2026-07-12).
 PPC_LEVEL <- 0.95
 PPC_LABEL <- sprintf("%g%%", PPC_LEVEL * 100)
+PPC_LABEL_FMT <- gsub("%", "%%", PPC_LABEL)   # escaped for sprintf() format strings (see CI_LABEL_FMT)
 PPC_TAIL  <- (1 - PPC_LEVEL) / 2
 
 # Primary/secondary citation classification from parser-work-schemas.json

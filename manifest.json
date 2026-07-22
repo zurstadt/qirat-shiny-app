@@ -2461,7 +2461,7 @@
       "checksum": "92333f737f896f4e07188a31fe46e264"
     },
     "R/01_constants.R": {
-      "checksum": "249e4a36b455d379bac7cdffb99cd290"
+      "checksum": "b17b0c41c459f322298da3bf8d14fb65"
     },
     "R/02_utils.R": {
       "checksum": "90cee0455f336c029702f340efd85869"
@@ -2479,10 +2479,10 @@
       "checksum": "52da423142470ebdf5ad8e1a59da41b1"
     },
     "R/07_server_bayesian.R": {
-      "checksum": "ab708767f4024d10d63f6af346279c83"
+      "checksum": "e1bd222acf2faca1e213e2071defc2c2"
     },
     "R/08_server_diagnostics.R": {
-      "checksum": "aae0f781790e0415d804b4325a9efbb1"
+      "checksum": "0df6bf51aaabd9901ce9041b0a063cdf"
     },
     "R/09_server_citations.R": {
       "checksum": "5e021166c996fcf1e27c7cc03ac79b4e"
